@@ -98,10 +98,10 @@ public class PlayScreen extends ScreenAdapter {
             @Override
             public String execute(String[] cmd) {
                 try {
-                    player.getAm().switchAnimState(cmd[1]);
+                    player.getAm().switchAnimState(cmd[1].toUpperCase());
                     return "ok!";
                 } catch (Exception e) {
-                    return "available states: IDLE";
+                    return "available states: IDLE, RUN, SPRAY, HURT, DEAD";
                 }
             }
 

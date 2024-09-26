@@ -17,6 +17,10 @@ public class Player {
                 , new ArrayList<Integer>(Arrays.asList(6,8,5,4,7))
                 , new HashMap<String, Integer>() {{
                     put("IDLE", 0);
+                    put("RUN", 1);
+                    put("SPRAY", 2);
+                    put("HURT", 3);
+                    put("DEAD", 4);
                     }}
                 , 0.08f, 32, 32
         );
