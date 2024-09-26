@@ -7,16 +7,17 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    public static int SIZE = 32;
-    public static int SCALE = 2;
-
     private ArrayList<Object> entities;
     private TextureRegion img;
 
     public Tile(Game game, int row, int col) {
         entities = new ArrayList<Object>();
         Texture spriteSheetImg = game.am.get(Game.RSC_SS_GRASS_IMG);
-        img = new TextureRegion(spriteSheetImg, col * SIZE, row * SIZE, SIZE, SIZE);
+        img = new TextureRegion(spriteSheetImg
+                , col * PlayScreen.TILE_SIZE
+                , row * PlayScreen.TILE_SIZE
+                , PlayScreen.TILE_SIZE
+                , PlayScreen.TILE_SIZE);
     }
 
     public TextureRegion getImg() {

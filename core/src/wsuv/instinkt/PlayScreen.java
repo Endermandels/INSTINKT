@@ -15,6 +15,9 @@ public class PlayScreen extends ScreenAdapter {
     private final int TILE_ROWS = 12;
     private final int TILE_COLS = 18;
 
+    public static int TILE_SIZE = 32;
+    public static int TILE_SCALE = 2;
+
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
     private float timer;
@@ -88,6 +91,25 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // Animation - Change the animation of the player to specified state
+        hud.registerAction("anim", new HUDActionCommand() {
+            static final String help = "usage: anim <state>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    player.getAm().switchAnimState(cmd[1].toUpperCase());
+                    return "ok!";
+                } catch (Exception e) {
+                    return "available states: IDLE, RUN, SPRAY, HURT, DEAD";
+                }
+            }
+
+            public String help(String[] cmd) {
+                return help;
+            }
+        });
+
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
         // the HUD's input controls. Do that by using an InputMultiplexer
@@ -115,7 +137,7 @@ public class PlayScreen extends ScreenAdapter {
         if (!paused || doStep) {
             // Playing
             if (state == SubState.PLAYING) {
-                // TODO: Make playing state
+                player.update();
             }
             // Game Over
             if (state == SubState.GAME_OVER) {
@@ -166,12 +188,12 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getImg(), col * Tile.SIZE * Tile.SCALE, row * Tile.SIZE * Tile.SCALE
-                                , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
+                        game.batch.draw(tile.getImg(), col * TILE_SIZE * TILE_SCALE, row * TILE_SIZE * TILE_SCALE
+                                , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                     }
                 // Draw Player
                 game.batch.draw(player.getImg(), 0, 16
-                        , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
+                        , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                 break;
         }
         hud.draw(game.batch);
