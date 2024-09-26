@@ -8,6 +8,7 @@ public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
     private Game game;
     private HUD hud;
+    private Player player;
     private SubState state;
 
     private Tile[][] tileMap;
@@ -26,6 +27,8 @@ public class PlayScreen extends ScreenAdapter {
         hud = new HUD(16, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         populateTileMap(tileMap);
+
+        player = new Player(game);
 
         timer = 0f;
         paused = false;
@@ -163,8 +166,10 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getTileImg(), col * Tile.SIZE, row * Tile.SIZE);
+                        game.batch.draw(tile.getImg(), col * Tile.SIZE, row * Tile.SIZE);
                     }
+                // Draw Player
+                game.batch.draw(player.getImg(), 0, 0);
                 break;
         }
         hud.draw(game.batch);
