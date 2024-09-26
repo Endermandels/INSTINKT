@@ -1,4 +1,4 @@
-package wsuv.bounce;
+package wsuv.instinkt;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -14,8 +14,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import java.util.Random;
 
 public class Game extends com.badlogic.gdx.Game {
+    // Images
     public static final String RSC_GAMEOVER_IMG = "gameover.png";
     public static final String RSC_PRESSAKEY_IMG = "pressakey.png";
+
+    // Sprite Sheets
+    public static final String RSC_SS_GRASS_IMG = "Tileset Grass.png";
+
+    // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
     public static final String RSC_DPCOMIC_FONT = "DPComic.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
@@ -53,6 +59,7 @@ public class Game extends com.badlogic.gdx.Game {
         // Load Textures after the font...
         am.load(RSC_GAMEOVER_IMG, Texture.class);
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
+        am.load(RSC_SS_GRASS_IMG, Texture.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
