@@ -18,8 +18,12 @@ public class Player {
                 , new HashMap<String, Integer>() {{
                     put("IDLE", 0);
                     }}
-                , 1f, 32, 32
+                , 0.08f, 32, 32
         );
+    }
+
+    public void update() {
+        am.update();
     }
 
     public TextureRegion getImg() {

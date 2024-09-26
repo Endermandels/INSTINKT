@@ -1,5 +1,6 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,6 +16,7 @@ public class AnimationManager {
 
     private int currentFrame;
     private int currentRow;
+    private float timer;
 
     public AnimationManager(Texture spriteSheet, ArrayList<Integer> framesPerRow, HashMap<String, Integer> animSates
             , float speed, int frameWidth, int frameHeight) {
@@ -24,13 +26,14 @@ public class AnimationManager {
 
         currentFrame = 0;
         currentRow = 0;
+        timer = 0;
 
         frames = loadFrames(spriteSheet, frameWidth, frameHeight);
     }
 
     /**
      * Initialize frames ArrayList with frames from given sprite sheet.
-     * Uses (does not modify) framesPerRow
+     * Uses (does not modify) framesPerRow.
      *
      * @param ss sprite sheet
      * @param frameWidth width of every frame in ss
@@ -50,6 +53,29 @@ public class AnimationManager {
             frames.add(framesRow);
         }
         return frames;
+    }
+
+    /**
+     * Cycle through the animation frames every speed seconds.
+     */
+    public void update() {
+        float time = Gdx.graphics.getDeltaTime();
+        if (time > 1f) time = 1f / 60f;
+        timer += time;
+
+        if (timer > speed) {
+            currentFrame += 1;
+            timer = 0;
+            if (currentFrame >= framesPerRow.get(currentRow)) currentFrame = 0;
+        }
+    }
+
+    public void switchAnimState(String state) {
+        currentRow = animStates.get(state);
+    }
+
+    public void switchAnimState(int row) {
+        currentRow = row;
     }
 
     public TextureRegion getCurrentImage() {

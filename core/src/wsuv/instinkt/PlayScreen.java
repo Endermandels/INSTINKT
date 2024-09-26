@@ -118,7 +118,7 @@ public class PlayScreen extends ScreenAdapter {
         if (!paused || doStep) {
             // Playing
             if (state == SubState.PLAYING) {
-                // TODO: Make playing state
+                player.update();
             }
             // Game Over
             if (state == SubState.GAME_OVER) {
