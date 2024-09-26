@@ -10,8 +10,9 @@
 
 - **[6]** Fix HUD
 - **[7]** Handle Keyboard Input for Player movement
-- **[8]** Create Obstacle class and spawn test instances
-- **[9]** Handle collisions between Player and Obstacle
+- **[8]** Add Game Background Music
+- **[9]** Create Obstacle class and spawn test instances
+- **[10]** Handle collisions between Player and Obstacle
 
 ## Backlog ##
 
