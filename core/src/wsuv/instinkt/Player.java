@@ -3,17 +3,26 @@ package wsuv.instinkt;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.HashMap;
+
 public class Player {
 
-    private Texture spriteSheet;
-    private TextureRegion img;
+    private AnimationManager am;
 
     public Player(Game game) {
-        spriteSheet = game.am.get(Game.RSC_SS_SKUNK_IMG);
-        img = new TextureRegion(spriteSheet, 0, 0, PlayScreen.TILE_SIZE, PlayScreen.TILE_SIZE);
+        am = new AnimationManager(game.am.get(Game.RSC_SS_SKUNK_IMG)
+                , new ArrayList<Integer>(Arrays.asList(6,8,5,4,7))
+                , new HashMap<String, Integer>() {{
+                    put("IDLE", 0);
+                    }}
+                , 1f, 32, 32
+        );
     }
 
     public TextureRegion getImg() {
-        return img;
+        return am.getCurrentImage();
     }
 }
