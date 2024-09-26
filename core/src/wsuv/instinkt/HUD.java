@@ -100,7 +100,7 @@ public class HUD {
 
         // make a background for the console...bigger than needed!
         Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-        pixmap.setColor(1, 1, 1, .6f);
+        pixmap.setColor(1, 1, 1, .3f);
         pixmap.fill();
         background = new Texture(pixmap);
         pixmap.dispose();
@@ -221,6 +221,7 @@ public class HUD {
 
         // draw based on the open/closed status
         if (open) {
+            System.out.println(Gdx.graphics.getHeight());
             batch.draw(background, 0, Gdx.graphics.getHeight() - ((font.getLineHeight()) * linesbuffered) - yMargin);
             console = String.join("\n", consoleLines);
             if (console.equals("")) {
