@@ -10,6 +10,10 @@ public class PlayScreen extends ScreenAdapter {
     private HUD hud;
     private SubState state;
 
+    private Tile[][] tileMap;
+    private final int TILE_ROWS = 21;
+    private final int TILE_COLS = 37;
+
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
     private float timer;
@@ -20,6 +24,7 @@ public class PlayScreen extends ScreenAdapter {
     public PlayScreen(Game game) {
         bounceGame = game;
         hud = new HUD(16, 13, 10, 500, bounceGame.am.get(Game.RSC_DPCOMIC_FONT));
+        tileMap = new Tile[TILE_ROWS][TILE_COLS];
 
         timer = 0f;
         paused = false;
