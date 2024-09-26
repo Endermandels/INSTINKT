@@ -1,4 +1,4 @@
-package wsuv.bounce;
+package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;

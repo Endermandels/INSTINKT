@@ -1,4 +1,4 @@
-package wsuv.bounce;
+package wsuv.instinkt;
 
 /**
  * A HUDViewCommand represents something the HUD can display

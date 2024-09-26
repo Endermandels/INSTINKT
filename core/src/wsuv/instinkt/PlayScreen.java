@@ -1,4 +1,4 @@
-package wsuv.bounce;
+package wsuv.instinkt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,12 +6,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
-    private Game bounceGame;
+    private Game game;
     private HUD hud;
     private SubState state;
 
     private Tile[][] tileMap;
-    private final int TILE_ROWS = 21;
+    private final int TILE_ROWS = 23;
     private final int TILE_COLS = 37;
 
     // Switching between Game Over and Ready
@@ -22,9 +22,10 @@ public class PlayScreen extends ScreenAdapter {
     private boolean doStep; // Stepping through update cycles while paused
 
     public PlayScreen(Game game) {
-        bounceGame = game;
-        hud = new HUD(16, 13, 10, 500, bounceGame.am.get(Game.RSC_DPCOMIC_FONT));
+        this.game = game;
+        hud = new HUD(16, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
+        populateTileMap(tileMap);
 
         timer = 0f;
         paused = false;
@@ -100,6 +101,13 @@ public class PlayScreen extends ScreenAdapter {
         state = SubState.READY;
     }
 
+    private void populateTileMap(Tile[][] tileMap) {
+        for (int row = 0; row < TILE_ROWS; row++)
+            for(int col = 0; col < TILE_COLS; col++) {
+                tileMap[row][col] = new Tile(game, 3,0);
+            }
+    }
+
     public void update(float delta) {
         if (!paused || doStep) {
             // Playing
@@ -133,26 +141,31 @@ public class PlayScreen extends ScreenAdapter {
         update(delta);
 
         ScreenUtils.clear(0, 0, 0, 1);
-        bounceGame.batch.begin();
+        game.batch.begin();
         // this logic could also be pushed into a method on SubState enum
         switch (state) {
             case GAME_OVER:
-                Texture gameover_img = bounceGame.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
-                bounceGame.batch.draw(gameover_img
+                Texture gameover_img = game.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
+                game.batch.draw(gameover_img
                         , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
                         , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
                 break;
             case READY:
-                Texture pressakey_img = bounceGame.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
-                bounceGame.batch.draw(pressakey_img
+                Texture pressakey_img = game.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
+                game.batch.draw(pressakey_img
                         , Gdx.graphics.getWidth() / 2f - pressakey_img.getWidth() / 2f
                         , Gdx.graphics.getHeight() / 2f - pressakey_img.getHeight() / 2f + 200f);
                 break;
             case PLAYING:
+                for (int row = 0; row < TILE_ROWS; row++)
+                    for (int col = 0; col < TILE_COLS; col++) {
+                        Tile tile = tileMap[row][col];
+                        game.batch.draw(tile.getTileImg(), col * Tile.SIZE, row * Tile.SIZE);
+                    }
                 break;
         }
-        hud.draw(bounceGame.batch);
-        bounceGame.batch.end();
+        hud.draw(game.batch);
+        game.batch.end();
     }
 }
 
