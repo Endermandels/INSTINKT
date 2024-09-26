@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class LoadScreen extends ScreenAdapter {
-    private final String TITLE = "INSTINKT";
+    private final String TITLE = "inSTINKt";
 
     Game game;
     int frames;
@@ -59,13 +59,14 @@ public class LoadScreen extends ScreenAdapter {
             // then we'll switch to the playing state.
             game.batch.begin();
             float y = 300;
+            float x = (float) Gdx.graphics.getWidth() / 2 - 200f;
             float lineHeight = font.getLineHeight();
-            font_big.draw(game.batch, TITLE, 200f, y + 2 * lineHeight + 120);
-            font.draw(game.batch, "By Elijah Delavar", 200f, y + 2 * lineHeight + 60);
-            font.draw(game.batch, "Thanks to...", 200f, y + 2 * lineHeight);
+            font_big.draw(game.batch, TITLE, x, y + 2 * lineHeight + 120);
+            font.draw(game.batch, "By Elijah Delavar", x, y + 2 * lineHeight + 60);
+            font.draw(game.batch, "Thanks to...", x, y + 2 * lineHeight);
 
             for(int i = 0; i < linesShown && (credits_offset + i) < credits.length; i++) {
-                font.draw(game.batch, credits[credits_offset + i], 200f, y);
+                font.draw(game.batch, credits[credits_offset + i], x, y);
                 y -= lineHeight;
             }
             game.batch.end();
