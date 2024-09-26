@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("inSTINKt");
-		config.setWindowedMode(1184, 736);
+		config.setWindowedMode(1152, 768);
 		config.useVsync(true);
 		new Lwjgl3Application(new Game(), config);
 	}

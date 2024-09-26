@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Tile {
 
     public static int SIZE = 32;
+    public static int SCALE = 2;
 
     private ArrayList<Object> entities;
     private TextureRegion img;

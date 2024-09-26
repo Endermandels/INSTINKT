@@ -12,8 +12,8 @@ public class PlayScreen extends ScreenAdapter {
     private SubState state;
 
     private Tile[][] tileMap;
-    private final int TILE_ROWS = 23;
-    private final int TILE_COLS = 37;
+    private final int TILE_ROWS = 12;
+    private final int TILE_COLS = 18;
 
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
@@ -166,10 +166,12 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getImg(), col * Tile.SIZE, row * Tile.SIZE);
+                        game.batch.draw(tile.getImg(), col * Tile.SIZE * Tile.SCALE, row * Tile.SIZE * Tile.SCALE
+                                , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
                     }
                 // Draw Player
-                game.batch.draw(player.getImg(), 0, 0);
+                game.batch.draw(player.getImg(), 0, 16
+                        , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
                 break;
         }
         hud.draw(game.batch);
