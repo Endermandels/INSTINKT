@@ -41,13 +41,13 @@ public class Game extends com.badlogic.gdx.Game {
         // Regular Font
         FreetypeFontLoader.FreeTypeFontLoaderParameter myFont = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         myFont.fontFileName = RSC_DPCOMIC_FONT_FILE;
-        myFont.fontParameters.size = 14;
+        myFont.fontParameters.size = 32;
         am.load(RSC_DPCOMIC_FONT, BitmapFont.class, myFont);
 
         // Big Font
         FreetypeFontLoader.FreeTypeFontLoaderParameter myFontBig = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         myFontBig.fontFileName = RSC_DPCOMIC_FONT_FILE;
-        myFontBig.fontParameters.size = 56;
+        myFontBig.fontParameters.size = 128;
         am.load(RSC_DPCOMIC_FONT_BIG, BitmapFont.class, myFontBig);
 
         // Load Textures after the font...

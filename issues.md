@@ -1,9 +1,9 @@
 ## Resolved Issues ##
 
+- **[1]** Resize Game Screen
 
 ## Open Issues ##
 
-- **[1]** Resize Game Screen
 - **[2]** Create Tile class and grid
 - **[3]** Draw tile grid using default tile sprites
 - **[4]** Create Player class and draw to screen at a tile location
