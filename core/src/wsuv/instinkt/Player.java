@@ -29,4 +29,8 @@ public class Player {
     public TextureRegion getImg() {
         return am.getCurrentImage();
     }
+
+    public AnimationManager getAm() {
+        return am;
+    }
 }

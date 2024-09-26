@@ -91,6 +91,25 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // Animation - Change the animation of the player to specified state
+        hud.registerAction("anim", new HUDActionCommand() {
+            static final String help = "usage: anim <state>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    player.getAm().switchAnimState(cmd[1]);
+                    return "ok!";
+                } catch (Exception e) {
+                    return "available states: IDLE";
+                }
+            }
+
+            public String help(String[] cmd) {
+                return help;
+            }
+        });
+
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
         // the HUD's input controls. Do that by using an InputMultiplexer
