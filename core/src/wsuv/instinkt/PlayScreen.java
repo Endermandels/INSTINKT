@@ -27,7 +27,7 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(Game game) {
         this.game = game;
-        hud = new HUD(16, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT));
+        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         populateTileMap(tileMap);
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +26,7 @@ public class Game extends com.badlogic.gdx.Game {
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
     public static final String RSC_DPCOMIC_FONT = "DPComic.ttf";
+    public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
 
     AssetManager am;  // AssetManager provides a single source for loaded resources
@@ -56,6 +58,13 @@ public class Game extends com.badlogic.gdx.Game {
         myFontBig.fontFileName = RSC_DPCOMIC_FONT_FILE;
         myFontBig.fontParameters.size = 128;
         am.load(RSC_DPCOMIC_FONT_BIG, BitmapFont.class, myFontBig);
+
+        // Black Font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter myFontBlack = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        myFontBlack.fontFileName = RSC_DPCOMIC_FONT_FILE;
+        myFontBlack.fontParameters.size = 20;
+        myFontBlack.fontParameters.color = new Color(Color.BLACK);
+        am.load(RSC_DPCOMIC_FONT_BLACK, BitmapFont.class, myFontBlack);
 
         // Load Textures after the font...
         am.load(RSC_GAMEOVER_IMG, Texture.class);

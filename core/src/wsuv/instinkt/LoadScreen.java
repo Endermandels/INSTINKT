@@ -20,7 +20,7 @@ public class LoadScreen extends ScreenAdapter {
 
     public LoadScreen(Game game) {
         this.game = game;
-        linesShown = 10;
+        linesShown = 6;
         scrollrate = 5;  // this is currently pixels/frame, not pixels/sec!
         // TODO: Skippable load screen
 
