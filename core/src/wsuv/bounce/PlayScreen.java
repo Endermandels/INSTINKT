@@ -1,12 +1,8 @@
 package wsuv.bounce;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -136,10 +132,16 @@ public class PlayScreen extends ScreenAdapter {
         // this logic could also be pushed into a method on SubState enum
         switch (state) {
             case GAME_OVER:
-                bounceGame.batch.draw(bounceGame.am.get(Game.RSC_GAMEOVER_IMG, Texture.class), 200, 200);
+                Texture gameover_img = bounceGame.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
+                bounceGame.batch.draw(gameover_img
+                        , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
+                        , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
                 break;
             case READY:
-                bounceGame.batch.draw(bounceGame.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class), 200, 200);
+                Texture pressakey_img = bounceGame.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
+                bounceGame.batch.draw(pressakey_img
+                        , Gdx.graphics.getWidth() / 2f - pressakey_img.getWidth() / 2f
+                        , Gdx.graphics.getHeight() / 2f - pressakey_img.getHeight() / 2f + 200f);
                 break;
             case PLAYING:
                 break;

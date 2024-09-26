@@ -58,12 +58,12 @@ public class LoadScreen extends ScreenAdapter {
             // at a fixed rate per frame until all credits are off screen
             // then we'll switch to the playing state.
             game.batch.begin();
-            float y = 300;
-            float x = (float) Gdx.graphics.getWidth() / 2 - 200f;
+            float y = 300f;
+            float x = Gdx.graphics.getWidth() / 2f - 200f;
             float lineHeight = font.getLineHeight();
-            font_big.draw(game.batch, TITLE, x, y + 2 * lineHeight + 120);
-            font.draw(game.batch, "By Elijah Delavar", x, y + 2 * lineHeight + 60);
-            font.draw(game.batch, "Thanks to...", x, y + 2 * lineHeight);
+            font_big.draw(game.batch, TITLE, x, y + 2f * lineHeight + 240f);
+            font.draw(game.batch, "By Elijah Delavar", x, y + 2f * lineHeight + 60f);
+            font.draw(game.batch, "Thanks to...", x, y + 2f * lineHeight);
 
             for(int i = 0; i < linesShown && (credits_offset + i) < credits.length; i++) {
                 font.draw(game.batch, credits[credits_offset + i], x, y);
