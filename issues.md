@@ -15,6 +15,6 @@
 ## Backlog ##
 
 - **[]** Spawn Obstacle instances using text file
-- **[]**
+- **[]** Vary tiles to look cooler
 - **[]**
 - **[]**

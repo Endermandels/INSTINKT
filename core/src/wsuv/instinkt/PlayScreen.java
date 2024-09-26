@@ -15,6 +15,9 @@ public class PlayScreen extends ScreenAdapter {
     private final int TILE_ROWS = 12;
     private final int TILE_COLS = 18;
 
+    public static int TILE_SIZE = 32;
+    public static int TILE_SCALE = 2;
+
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
     private float timer;
@@ -166,12 +169,12 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getImg(), col * Tile.SIZE * Tile.SCALE, row * Tile.SIZE * Tile.SCALE
-                                , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
+                        game.batch.draw(tile.getImg(), col * TILE_SIZE * TILE_SCALE, row * TILE_SIZE * TILE_SCALE
+                                , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                     }
                 // Draw Player
                 game.batch.draw(player.getImg(), 0, 16
-                        , Tile.SIZE * Tile.SCALE, Tile.SIZE * Tile.SCALE);
+                        , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                 break;
         }
         hud.draw(game.batch);

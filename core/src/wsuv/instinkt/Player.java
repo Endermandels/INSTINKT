@@ -10,7 +10,7 @@ public class Player {
 
     public Player(Game game) {
         spriteSheet = game.am.get(Game.RSC_SS_SKUNK_IMG);
-        img = new TextureRegion(spriteSheet, 0, 0, Tile.SIZE, Tile.SIZE);
+        img = new TextureRegion(spriteSheet, 0, 0, PlayScreen.TILE_SIZE, PlayScreen.TILE_SIZE);
     }
 
     public TextureRegion getImg() {
