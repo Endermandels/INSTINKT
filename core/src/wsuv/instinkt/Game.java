@@ -20,6 +20,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     // Sprite Sheets
     public static final String RSC_SS_GRASS_IMG = "Tileset Grass.png";
+    public static final String RSC_SS_SKUNK_IMG = "Sprite Sheet Skunk.png";
 
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
@@ -60,6 +61,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_GAMEOVER_IMG, Texture.class);
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
         am.load(RSC_SS_GRASS_IMG, Texture.class);
+        am.load(RSC_SS_SKUNK_IMG, Texture.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
