@@ -145,18 +145,21 @@ public class PlayScreen extends ScreenAdapter {
         // this logic could also be pushed into a method on SubState enum
         switch (state) {
             case GAME_OVER:
+                // Draw Game Over image
                 Texture gameover_img = game.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
                 game.batch.draw(gameover_img
                         , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
                         , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
                 break;
             case READY:
+                // Draw Press A Key image
                 Texture pressakey_img = game.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
                 game.batch.draw(pressakey_img
                         , Gdx.graphics.getWidth() / 2f - pressakey_img.getWidth() / 2f
                         , Gdx.graphics.getHeight() / 2f - pressakey_img.getHeight() / 2f + 200f);
                 break;
             case PLAYING:
+                // Draw Tiles
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];

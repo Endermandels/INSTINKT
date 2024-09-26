@@ -2,10 +2,10 @@
 
 - **[1]** Resize Game Screen
 - **[2]** Create Tile class and grid
+- **[3]** Draw tile grid using default tile sprites
 
 ## Open Issues ##
 
-- **[3]** Draw tile grid using default tile sprites
 - **[4]** Create Player class and draw to screen at a tile location
 - **[5]** Create Animation Handler class and add one to the player
 - **[6]** Handle Keyboard Input for Player movement
