@@ -145,7 +145,7 @@ public class Player {
                 }
             }
             if (dir != null) {
-                if (am.getCurrentAnimState().compareTo("RUN") != 0) am.switchAnimState("RUN");
+                am.switchAnimState("RUN");
                 switch (dir) {
                     case LEFT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
@@ -167,7 +167,7 @@ public class Player {
                         break;
                 }
             } else {
-                if (am.getCurrentAnimState().compareTo("IDLE") != 0) am.switchAnimState("IDLE");
+                am.switchAnimState("IDLE");
             }
         }
 

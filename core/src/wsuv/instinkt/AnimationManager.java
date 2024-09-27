@@ -74,13 +74,17 @@ public class AnimationManager {
     }
 
     public void switchAnimState(String state) {
-        currentRow = animStates.get(state);
-        currentFrame = 0;
+        if (state.compareTo(getCurrentAnimState()) != 0) {
+            currentRow = animStates.get(state);
+            currentFrame = 0;
+        }
     }
 
     public void switchAnimState(int row) {
-        currentRow = row;
-        currentFrame = 0;
+        if (row != currentRow) {
+            currentRow = row;
+            currentFrame = 0;
+        }
     }
 
     public TextureRegion getCurrentImage(boolean flipped) {
