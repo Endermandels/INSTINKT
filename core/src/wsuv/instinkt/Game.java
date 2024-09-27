@@ -35,7 +35,8 @@ public class Game extends com.badlogic.gdx.Game {
 
     public Random random = new Random();
 
-    public Music music;
+    public Music battleMusic;
+    public Music menuMusic;
 
     @Override
     public void create() {
@@ -77,9 +78,14 @@ public class Game extends com.badlogic.gdx.Game {
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("Essence of Battle.mp3"));
-        music.setLooping(true);
-        music.setVolume(0.05f);
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("Essence of Battle.mp3"));
+        battleMusic.setLooping(true);
+        battleMusic.setVolume(0.05f);
+
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Going Somewhere Slow.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.setVolume(0.1f);
+        menuMusic.play();
     }
 
     @Override
