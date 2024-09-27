@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class AnimationManager {
 
     private ArrayList<ArrayList<TextureRegion>> frames;
+    private ArrayList<ArrayList<TextureRegion>> flippedFrames;
     private ArrayList<Integer> framesPerRow;
     private HashMap<String, Integer> animStates;
     private float speed;
@@ -28,7 +29,8 @@ public class AnimationManager {
         currentRow = 0;
         timer = 0;
 
-        frames = loadFrames(spriteSheet, frameWidth, frameHeight);
+        frames = loadFrames(spriteSheet, frameWidth, frameHeight, false);
+        flippedFrames = loadFrames(spriteSheet, frameWidth, frameHeight, true);
     }
 
     /**
@@ -41,7 +43,7 @@ public class AnimationManager {
      *
      * @return 2D ArrayList of frames for every row
      */
-    private ArrayList<ArrayList<TextureRegion>> loadFrames(Texture ss, int frameWidth, int frameHeight) {
+    private ArrayList<ArrayList<TextureRegion>> loadFrames(Texture ss, int frameWidth, int frameHeight, boolean flipped) {
         ArrayList<ArrayList<TextureRegion>> frames = new ArrayList<ArrayList<TextureRegion>>(framesPerRow.size());
         for (int row = 0; row < framesPerRow.size(); row++) {
             ArrayList<TextureRegion> framesRow = new ArrayList<TextureRegion>(framesPerRow.get(row));
@@ -49,6 +51,7 @@ public class AnimationManager {
                 framesRow.add(new TextureRegion(ss
                         , col * frameWidth, row * frameHeight
                         , frameWidth, frameHeight));
+                framesRow.get(col).flip(flipped, false);
             }
             frames.add(framesRow);
         }
@@ -71,14 +74,30 @@ public class AnimationManager {
     }
 
     public void switchAnimState(String state) {
-        currentRow = animStates.get(state);
+        if (state.compareTo(getCurrentAnimState()) != 0) {
+            currentRow = animStates.get(state);
+            currentFrame = 0;
+        }
     }
 
     public void switchAnimState(int row) {
-        currentRow = row;
+        if (row != currentRow) {
+            currentRow = row;
+            currentFrame = 0;
+        }
     }
 
-    public TextureRegion getCurrentImage() {
+    public TextureRegion getCurrentImage(boolean flipped) {
+        if (flipped) return flippedFrames.get(currentRow).get(currentFrame);
         return frames.get(currentRow).get(currentFrame);
+    }
+
+    public String getCurrentAnimState() {
+        for (HashMap.Entry<String, Integer> entry : animStates.entrySet()) {
+            if (entry.getValue().equals(currentRow)) {
+                return entry.getKey(); // Return the animation state name
+            }
+        }
+        return null;
     }
 }

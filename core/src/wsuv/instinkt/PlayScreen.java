@@ -31,7 +31,8 @@ public class PlayScreen extends ScreenAdapter {
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         populateTileMap(tileMap);
 
-        player = new Player(game);
+        player = new Player(game,0,0);
+        tileMap[player.getTileX()][player.getTileY()].addEntity(player);
 
         timer = 0f;
         paused = false;
@@ -127,35 +128,39 @@ public class PlayScreen extends ScreenAdapter {
     }
 
     private void populateTileMap(Tile[][] tileMap) {
-        for (int row = 0; row < TILE_ROWS; row++)
-            for(int col = 0; col < TILE_COLS; col++) {
-                tileMap[row][col] = new Tile(game, 3,0);
+        for (int y = 0; y < TILE_ROWS; y++)
+            for(int x = 0; x < TILE_COLS; x++) {
+                tileMap[y][x] = new Tile(game, x, y, x*TILE_SIZE*TILE_SCALE, y*TILE_SIZE*TILE_SCALE);
             }
     }
 
     public void update(float delta) {
         if (!paused || doStep) {
-            // Playing
-            if (state == SubState.PLAYING) {
-                player.update();
-            }
-            // Game Over
-            if (state == SubState.GAME_OVER) {
-                timer += delta;
-            }
-            // Ready
-            if (state == SubState.GAME_OVER && timer > TIMER_MAX) {
-                state = SubState.READY;
-            }
-            // ignore key presses when console is open...
-            if (!hud.isOpen()) {
-                if (state == SubState.READY && Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
-                    state = SubState.PLAYING;
-                }
-                else if (state == SubState.PLAYING && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                    state = SubState.GAME_OVER;
-                    timer = 0;
-                }
+            switch (state) {
+                case PLAYING:
+                    player.update(tileMap);
+                    if (!hud.isOpen()) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                            state = SubState.GAME_OVER;
+                            timer = 0;
+                        }
+                        player.setTakeInput(true);
+                    } else {
+                        player.setTakeInput(false);
+                    }
+                    break;
+                case GAME_OVER:
+                    timer += delta;
+                    if (timer > TIMER_MAX) state = SubState.READY;
+                    break;
+                case READY:
+                    if (!hud.isOpen()) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
+                            state = SubState.PLAYING;
+                        }
+                    }
+                default:
+                    break;
             }
             doStep = false;
         }
@@ -188,11 +193,11 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getImg(), col * TILE_SIZE * TILE_SCALE, row * TILE_SIZE * TILE_SCALE
+                        game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
                                 , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                     }
                 // Draw Player
-                game.batch.draw(player.getImg(), 0, 16
+                game.batch.draw(player.getImg(), player.getImgX(), player.getImgY() + 16f
                         , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                 break;
         }
