@@ -18,5 +18,5 @@
 
 - **[]** Spawn Obstacle instances using text file
 - **[]** Vary tiles to look cooler
-- **[]**
+- **[]** Debug Entity Tile Locations
 - **[]**
