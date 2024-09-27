@@ -7,10 +7,10 @@
 - **[5]** Create Animation Handler class and add one to the player
 - **[6]** Fix HUD
 - **[7]** Handle Keyboard Input for Player movement
+- **[8]** Add Game Background Music
 
 ## Open Issues ##
 
-- **[8]** Add Game Background Music
 - **[9]** Create Obstacle class and spawn test instances
 - **[10]** Handle collisions between Player and Obstacle
 

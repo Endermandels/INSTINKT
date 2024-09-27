@@ -1,5 +1,6 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -29,12 +30,14 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
 
-    AssetManager am;  // AssetManager provides a single source for loaded resources
-    SpriteBatch batch;
+    public AssetManager am;  // AssetManager provides a single source for loaded resources
+    public SpriteBatch batch;
 
-    Random random = new Random();
+    public Random random = new Random();
 
-    Music music;
+    public Music battleMusic;
+    public Music menuMusic;
+
     @Override
     public void create() {
         am = new AssetManager();
@@ -75,6 +78,14 @@ public class Game extends com.badlogic.gdx.Game {
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
 
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("Essence of Battle.mp3"));
+        battleMusic.setLooping(true);
+        battleMusic.setVolume(0.05f);
+
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Jizzy Jazz.mp3"));
+        menuMusic.setLooping(true);
+        menuMusic.setVolume(0.1f);
+        menuMusic.play();
     }
 
     @Override
