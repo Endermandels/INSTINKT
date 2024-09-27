@@ -85,8 +85,8 @@ public class Game extends com.badlogic.gdx.Game {
 
     // VARIOUS USEFUL FUNCTIONS
     public Tile findTile(Tile[][] tileMap, int tileX, int tileY, int rowOffset, int colOffset) {
-        if (!(rowOffset + tileY > tileMap.length || rowOffset + tileY < 0)) {
-            if (!(colOffset + tileX > tileMap[0].length || colOffset + tileX < 0)) {
+        if (!(rowOffset + tileY >= tileMap.length || rowOffset + tileY < 0)) {
+            if (!(colOffset + tileX >= tileMap[0].length || colOffset + tileX < 0)) {
                 return tileMap[rowOffset + tileY][colOffset + tileX];
             }
         }

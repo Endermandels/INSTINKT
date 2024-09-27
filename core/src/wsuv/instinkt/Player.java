@@ -2,15 +2,17 @@ package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 
 public class Player {
+
+    private enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     private Game game;
     private AnimationManager am;
@@ -25,8 +27,10 @@ public class Player {
     private int tileY;
 
     private Tile targetTile; // When the player is moving
-    private int dirX;
-    private int dirY;
+    private boolean movingHorizontal;
+    private boolean movingVertical;
+    private boolean[] moveRequests; // Requests in each of the four directions
+    private boolean prioritizeHorizontal;
 
     public Player(Game game, int tileX, int tileY) {
         this.game = game;
@@ -44,7 +48,11 @@ public class Player {
 
         imgX = 0;
         imgY = 0;
-        imgSpeed = 200f;
+        imgSpeed = 400f;
+        movingHorizontal = false;
+        movingVertical = false;
+        moveRequests = new boolean[4];
+        prioritizeHorizontal = false;
 
         this.tileX = tileX;
         this.tileY = tileY;
@@ -60,20 +68,41 @@ public class Player {
         boolean rightInput = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upInput = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
-        if (upInput) {
-            targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
-        }
-        if (downInput) {
-            targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
-        }
-        if (leftInput) {
-            targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
-        }
-        if (rightInput) {
-            targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
+
+
+
+        if (!movingHorizontal && (upInput || downInput) && (!(leftInput || rightInput) || !prioritizeHorizontal)) {
+            if (upInput && !movingHorizontal) {
+                targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
+                if (targetTile.getY() == tileY) targetTile = null;
+            }
+            if (downInput && !movingHorizontal) {
+                targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
+                if (targetTile.getY() == tileY) targetTile = null;
+            }
+            if (targetTile != null) {
+                movingVertical = true;
+                prioritizeHorizontal = true;
+            }
+        } else if (!movingVertical) {
+            if (leftInput && !movingVertical) {
+                targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
+                if (targetTile.getX() == tileX) targetTile = null;
+            }
+            if (rightInput && !movingVertical) {
+                targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
+                if (targetTile.getX() == tileX) targetTile = null;
+            }
+            if (targetTile != null) {
+                movingHorizontal = true;
+                prioritizeHorizontal = false;
+            }
         }
 
+
+
         if (targetTile != null && imgX > targetTile.getImgX()) {
+            // LEFT
             imgX -= imgSpeed * time;
 
             if (imgX < targetTile.getImgX()) {
@@ -81,9 +110,11 @@ public class Player {
                 imgX = targetTile.getImgX();
                 tileX = targetTile.getX();
                 targetTile = null;
+                movingHorizontal = false;
             }
         }
         else if (targetTile != null && imgX < targetTile.getImgX()) {
+            // RIGHT
             imgX += imgSpeed * time;
 
             if (imgX > targetTile.getImgX()) {
@@ -91,9 +122,11 @@ public class Player {
                 imgX = targetTile.getImgX();
                 tileX = targetTile.getX();
                 targetTile = null;
+                movingHorizontal = false;
             }
         }
         else if (targetTile != null && imgY < targetTile.getImgY()) {
+            // UP
             imgY += imgSpeed * time;
 
             if (imgY > targetTile.getImgY()) {
@@ -101,9 +134,11 @@ public class Player {
                 imgY = targetTile.getImgY();
                 tileY = targetTile.getY();
                 targetTile = null;
+                movingVertical = false;
             }
         }
         else if (targetTile != null && imgY > targetTile.getImgY()) {
+            // DOWN
             imgY -= imgSpeed * time;
 
             if (imgY < targetTile.getImgY()) {
@@ -111,6 +146,7 @@ public class Player {
                 imgY = targetTile.getImgY();
                 tileY = targetTile.getY();
                 targetTile = null;
+                movingVertical = false;
             }
         }
         else {
