@@ -143,6 +143,7 @@ public class PlayScreen extends ScreenAdapter {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
                             timer = 0;
+                            game.music.stop();
                         }
                         player.setTakeInput(true);
                     } else {
@@ -157,6 +158,7 @@ public class PlayScreen extends ScreenAdapter {
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
                             state = SubState.PLAYING;
+                            game.music.play();
                         }
                     }
                 default:
