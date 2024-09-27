@@ -69,14 +69,19 @@ public class Player {
         boolean upInput = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
+        if (leftInput) moveRequests[Direction.LEFT.ordinal()] = true;
+        if (rightInput) moveRequests[Direction.RIGHT.ordinal()] = true;
+        if (upInput) moveRequests[Direction.UP.ordinal()] = true;
+        if (downInput) moveRequests[Direction.DOWN.ordinal()] = true;
 
-
-        if (!movingHorizontal && (upInput || downInput) && (!(leftInput || rightInput) || !prioritizeHorizontal)) {
-            if (upInput && !movingHorizontal) {
+        if (!movingHorizontal && (moveRequests[Direction.UP.ordinal()] || moveRequests[Direction.DOWN.ordinal()])
+                && (!(moveRequests[Direction.LEFT.ordinal()] || moveRequests[Direction.RIGHT.ordinal()])
+                || !prioritizeHorizontal)) {
+            if (moveRequests[Direction.UP.ordinal()]) {
                 targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
                 if (targetTile.getY() == tileY) targetTile = null;
             }
-            if (downInput && !movingHorizontal) {
+            if (moveRequests[Direction.DOWN.ordinal()]) {
                 targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
                 if (targetTile.getY() == tileY) targetTile = null;
             }
@@ -84,12 +89,14 @@ public class Player {
                 movingVertical = true;
                 prioritizeHorizontal = true;
             }
+            moveRequests[Direction.UP.ordinal()] = false;
+            moveRequests[Direction.DOWN.ordinal()] = false;
         } else if (!movingVertical) {
-            if (leftInput && !movingVertical) {
+            if (moveRequests[Direction.LEFT.ordinal()]) {
                 targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                 if (targetTile.getX() == tileX) targetTile = null;
             }
-            if (rightInput && !movingVertical) {
+            if (moveRequests[Direction.RIGHT.ordinal()]) {
                 targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                 if (targetTile.getX() == tileX) targetTile = null;
             }
@@ -97,9 +104,9 @@ public class Player {
                 movingHorizontal = true;
                 prioritizeHorizontal = false;
             }
+            moveRequests[Direction.LEFT.ordinal()] = false;
+            moveRequests[Direction.RIGHT.ordinal()] = false;
         }
-
-
 
         if (targetTile != null && imgX > targetTile.getImgX()) {
             // LEFT
@@ -111,6 +118,7 @@ public class Player {
                 tileX = targetTile.getX();
                 targetTile = null;
                 movingHorizontal = false;
+                moveRequests[Direction.LEFT.ordinal()] = false;
             }
         }
         else if (targetTile != null && imgX < targetTile.getImgX()) {
@@ -123,6 +131,7 @@ public class Player {
                 tileX = targetTile.getX();
                 targetTile = null;
                 movingHorizontal = false;
+                moveRequests[Direction.RIGHT.ordinal()] = false;
             }
         }
         else if (targetTile != null && imgY < targetTile.getImgY()) {
@@ -135,6 +144,7 @@ public class Player {
                 tileY = targetTile.getY();
                 targetTile = null;
                 movingVertical = false;
+                moveRequests[Direction.UP.ordinal()] = false;
             }
         }
         else if (targetTile != null && imgY > targetTile.getImgY()) {
@@ -147,6 +157,7 @@ public class Player {
                 tileY = targetTile.getY();
                 targetTile = null;
                 movingVertical = false;
+                moveRequests[Direction.DOWN.ordinal()] = false;
             }
         }
         else {
