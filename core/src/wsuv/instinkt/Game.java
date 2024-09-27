@@ -82,7 +82,7 @@ public class Game extends com.badlogic.gdx.Game {
         battleMusic.setLooping(true);
         battleMusic.setVolume(0.05f);
 
-        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Going Somewhere Slow.mp3"));
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Jizzy Jazz.mp3"));
         menuMusic.setLooping(true);
         menuMusic.setVolume(0.1f);
         menuMusic.play();
