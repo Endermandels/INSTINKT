@@ -221,7 +221,6 @@ public class HUD {
 
         // draw based on the open/closed status
         if (open) {
-            System.out.println(Gdx.graphics.getHeight());
             batch.draw(background, 0, Gdx.graphics.getHeight() - ((font.getLineHeight()) * linesbuffered) - yMargin);
             console = String.join("\n", consoleLines);
             if (console.equals("")) {

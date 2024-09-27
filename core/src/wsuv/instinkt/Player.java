@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class Player {
 
@@ -29,8 +27,10 @@ public class Player {
     private Tile targetTile; // When the player is moving
     private boolean movingHorizontal;
     private boolean movingVertical;
-    private boolean[] moveRequests; // Requests in each of the four directions
-    private boolean prioritizeHorizontal;
+    private Direction dir;
+    private Map<Direction, Long> pressedButtons; // Direction key, timestamp value (-1 if not pressed)
+
+    private boolean takeInput;
 
     public Player(Game game, int tileX, int tileY) {
         this.game = game;
@@ -51,123 +51,185 @@ public class Player {
         imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
-        moveRequests = new boolean[4];
-        prioritizeHorizontal = false;
+
+        pressedButtons = new HashMap<>(4);
+        pressedButtons.put(Direction.UP, -1L);
+        pressedButtons.put(Direction.DOWN, -1L);
+        pressedButtons.put(Direction.LEFT, -1L);
+        pressedButtons.put(Direction.RIGHT, -1L);
+        dir = null;
+
+        takeInput = true;
 
         this.tileX = tileX;
         this.tileY = tileY;
         targetTile = null;
     }
 
-
     private void move(Tile[][] tileMap) {
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
 
-        boolean leftInput = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean rightInput = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean upInput = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean leftInput = false, rightInput = false, upInput = false, downInput = false;
 
-        if (leftInput) moveRequests[Direction.LEFT.ordinal()] = true;
-        if (rightInput) moveRequests[Direction.RIGHT.ordinal()] = true;
-        if (upInput) moveRequests[Direction.UP.ordinal()] = true;
-        if (downInput) moveRequests[Direction.DOWN.ordinal()] = true;
+        if (takeInput){
+            leftInput = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT);
+            rightInput = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+            upInput = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
+            downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        }
 
-        if (!movingHorizontal && (moveRequests[Direction.UP.ordinal()] || moveRequests[Direction.DOWN.ordinal()])
-                && (!(moveRequests[Direction.LEFT.ordinal()] || moveRequests[Direction.RIGHT.ordinal()])
-                || !prioritizeHorizontal)) {
-            if (moveRequests[Direction.UP.ordinal()]) {
-                targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
-                if (targetTile.getY() == tileY) targetTile = null;
-            }
-            if (moveRequests[Direction.DOWN.ordinal()]) {
-                targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
-                if (targetTile.getY() == tileY) targetTile = null;
-            }
-            if (targetTile != null) {
-                movingVertical = true;
-                prioritizeHorizontal = true;
-            }
-            moveRequests[Direction.UP.ordinal()] = false;
-            moveRequests[Direction.DOWN.ordinal()] = false;
-        } else if (!movingVertical) {
-            if (moveRequests[Direction.LEFT.ordinal()]) {
+
+        if (leftInput && pressedButtons.get(Direction.LEFT) < 0) {
+            pressedButtons.put(Direction.LEFT, System.currentTimeMillis());
+        }
+        if (rightInput && pressedButtons.get(Direction.RIGHT) < 0) {
+            pressedButtons.put(Direction.RIGHT, System.currentTimeMillis());
+        }
+        if (upInput && pressedButtons.get(Direction.UP) < 0) {
+            pressedButtons.put(Direction.UP, System.currentTimeMillis());
+        }
+        if (downInput && pressedButtons.get(Direction.DOWN) < 0) {
+            pressedButtons.put(Direction.DOWN, System.currentTimeMillis());
+        }
+
+        if (movingHorizontal) {
+            // Horizontal movement only
+            if (leftInput && rightInput) {
+                // Choose most recent
+                if (pressedButtons.get(Direction.LEFT) > pressedButtons.get(Direction.RIGHT)) {
+                    targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
+                    dir = Direction.LEFT;
+                } else {
+                    targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
+                    dir = Direction.RIGHT;
+                }
+            } else if (leftInput) {
+                dir = Direction.LEFT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
-                if (targetTile.getX() == tileX) targetTile = null;
-            }
-            if (moveRequests[Direction.RIGHT.ordinal()]) {
+            } else if (rightInput) {
+                dir = Direction.RIGHT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
-                if (targetTile.getX() == tileX) targetTile = null;
             }
-            if (targetTile != null) {
-                movingHorizontal = true;
-                prioritizeHorizontal = false;
+        } else if (movingVertical) {
+            // Vertical movement only
+            if (upInput && downInput) {
+                // Choose most recent
+                if (pressedButtons.get(Direction.UP) > pressedButtons.get(Direction.DOWN)) {
+                    targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
+                    dir = Direction.UP;
+                } else {
+                    targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
+                    dir = Direction.DOWN;
+                }
+            } else if (upInput) {
+                dir = Direction.UP;
+                targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
+            } else if (downInput) {
+                dir = Direction.DOWN;
+                targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
             }
-            moveRequests[Direction.LEFT.ordinal()] = false;
-            moveRequests[Direction.RIGHT.ordinal()] = false;
-        }
-
-        if (targetTile != null && imgX > targetTile.getImgX()) {
-            // LEFT
-            imgX -= imgSpeed * time;
-
-            if (imgX < targetTile.getImgX()) {
-                // Moved passed the tile, center on the tile
-                imgX = targetTile.getImgX();
-                tileX = targetTile.getX();
-                targetTile = null;
-                movingHorizontal = false;
-                moveRequests[Direction.LEFT.ordinal()] = false;
+        } else {
+            // Start moving
+            long mostRecentTime = -1L;
+            dir = null;
+            for (Direction d : Direction.values()) {
+                if (pressedButtons.get(d) > mostRecentTime) {
+                    dir = d;
+                    mostRecentTime = pressedButtons.get(d);
+                }
             }
-        }
-        else if (targetTile != null && imgX < targetTile.getImgX()) {
-            // RIGHT
-            imgX += imgSpeed * time;
-
-            if (imgX > targetTile.getImgX()) {
-                // Moved passed the tile, center on the tile
-                imgX = targetTile.getImgX();
-                tileX = targetTile.getX();
-                targetTile = null;
-                movingHorizontal = false;
-                moveRequests[Direction.RIGHT.ordinal()] = false;
-            }
-        }
-        else if (targetTile != null && imgY < targetTile.getImgY()) {
-            // UP
-            imgY += imgSpeed * time;
-
-            if (imgY > targetTile.getImgY()) {
-                // Moved passed the tile, center on the tile
-                imgY = targetTile.getImgY();
-                tileY = targetTile.getY();
-                targetTile = null;
-                movingVertical = false;
-                moveRequests[Direction.UP.ordinal()] = false;
-            }
-        }
-        else if (targetTile != null && imgY > targetTile.getImgY()) {
-            // DOWN
-            imgY -= imgSpeed * time;
-
-            if (imgY < targetTile.getImgY()) {
-                // Moved passed the tile, center on the tile
-                imgY = targetTile.getImgY();
-                tileY = targetTile.getY();
-                targetTile = null;
-                movingVertical = false;
-                moveRequests[Direction.DOWN.ordinal()] = false;
+            if (dir != null) {
+                switch (dir) {
+                    case LEFT:
+                        targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
+                        movingHorizontal = true;
+                        break;
+                    case RIGHT:
+                        targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
+                        movingHorizontal = true;
+                        break;
+                    case UP:
+                        targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
+                        movingVertical = true;
+                        break;
+                    case DOWN:
+                        targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
+                        movingVertical = true;
+                        break;
+                }
             }
         }
-        else {
-            targetTile = null;
+
+        if (dir != null) {
+            switch (dir) {
+                case LEFT:
+                    imgX -= imgSpeed * time;
+
+                    if (imgX < targetTile.getImgX()) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetTile.getImgX();
+                        tileX = targetTile.getX();
+
+                        targetTile = null;
+                        movingHorizontal = false;
+                        if (!rightInput) pressedButtons.put(Direction.RIGHT, -1L);
+                        if (!leftInput) pressedButtons.put(Direction.LEFT, -1L);
+                    }
+                    break;
+                case RIGHT:
+                    imgX += imgSpeed * time;
+
+                    if (imgX > targetTile.getImgX()) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetTile.getImgX();
+                        tileX = targetTile.getX();
+
+                        targetTile = null;
+                        movingHorizontal = false;
+                        if (!rightInput) pressedButtons.put(Direction.RIGHT, -1L);
+                        if (!leftInput) pressedButtons.put(Direction.LEFT, -1L);
+                    }
+                    break;
+                case UP:
+                    imgY += imgSpeed * time;
+
+                    if (imgY > targetTile.getImgY()) {
+                        // Moved passed the tile, center on the tile
+                        imgY = targetTile.getImgY();
+                        tileY = targetTile.getY();
+
+                        targetTile = null;
+                        movingVertical = false;
+                        if (!upInput) pressedButtons.put(Direction.UP, -1L);
+                        if (!downInput) pressedButtons.put(Direction.DOWN, -1L);
+                    }
+                    break;
+                case DOWN:
+                    imgY -= imgSpeed * time;
+
+                    if (imgY < targetTile.getImgY()) {
+                        // Moved passed the tile, center on the tile
+                        imgY = targetTile.getImgY();
+                        tileY = targetTile.getY();
+
+                        targetTile = null;
+                        movingVertical = false;
+                        if (!upInput) pressedButtons.put(Direction.UP, -1L);
+                        if (!downInput) pressedButtons.put(Direction.DOWN, -1L);
+                    }
+                    break;
+            }
         }
     }
 
     public void update(Tile[][] tileMap) {
         am.update();
         move(tileMap);
+    }
+
+    public void setTakeInput(boolean takeInput) {
+        this.takeInput = takeInput;
     }
 
     public TextureRegion getImg() {
