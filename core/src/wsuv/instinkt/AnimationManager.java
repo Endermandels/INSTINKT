@@ -72,13 +72,24 @@ public class AnimationManager {
 
     public void switchAnimState(String state) {
         currentRow = animStates.get(state);
+        currentFrame = 0;
     }
 
     public void switchAnimState(int row) {
         currentRow = row;
+        currentFrame = 0;
     }
 
     public TextureRegion getCurrentImage() {
         return frames.get(currentRow).get(currentFrame);
+    }
+
+    public String getCurrentAnimState() {
+        for (HashMap.Entry<String, Integer> entry : animStates.entrySet()) {
+            if (entry.getValue().equals(currentRow)) {
+                return entry.getKey(); // Return the animation state name
+            }
+        }
+        return null;
     }
 }
