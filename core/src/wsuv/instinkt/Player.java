@@ -27,6 +27,7 @@ public class Player {
     private Tile targetTile; // When the player is moving
     private boolean movingHorizontal;
     private boolean movingVertical;
+    private boolean flipped;
     private Direction dir;
     private Map<Direction, Long> pressedButtons; // Direction key, timestamp value (-1 if not pressed)
 
@@ -100,16 +101,20 @@ public class Player {
                 if (pressedButtons.get(Direction.LEFT) > pressedButtons.get(Direction.RIGHT)) {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                     dir = Direction.LEFT;
+                    flipped = true;
                 } else {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                     dir = Direction.RIGHT;
+                    flipped = false;
                 }
             } else if (leftInput) {
                 dir = Direction.LEFT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
+                flipped = true;
             } else if (rightInput) {
                 dir = Direction.RIGHT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
+                flipped = false;
             }
         } else if (movingVertical) {
             // Vertical movement only
@@ -145,10 +150,12 @@ public class Player {
                     case LEFT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                         movingHorizontal = true;
+                        flipped = true;
                         break;
                     case RIGHT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                         movingHorizontal = true;
+                        flipped = false;
                         break;
                     case UP:
                         targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
@@ -236,7 +243,7 @@ public class Player {
     }
 
     public TextureRegion getImg() {
-        return am.getCurrentImage();
+        return am.getCurrentImage(flipped);
     }
 
     public AnimationManager getAm() {
