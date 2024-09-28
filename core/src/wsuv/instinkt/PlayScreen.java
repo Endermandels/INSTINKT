@@ -36,7 +36,6 @@ public class PlayScreen extends ScreenAdapter {
         populateTileMap();
 
         player = new Player(game,0,0);
-        tileMap[player.getTileX()][player.getTileY()].addEntity(player);
 
         obstacles = new ArrayList<>();
         addObstaclesToTileMap();
@@ -144,7 +143,7 @@ public class PlayScreen extends ScreenAdapter {
     private void spawnObstacleAt(int row, int col) {
         Obstacle obs = new Obstacle(game, col*TILE_SIZE*TILE_SCALE, row*TILE_SIZE*TILE_SCALE);
         obstacles.add(obs);
-        tileMap[row][col].addEntity(obs);
+        tileMap[row][col].setContainsObstacle(true);
     }
 
     private void addObstaclesToTileMap() {

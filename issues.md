@@ -9,14 +9,18 @@
 - **[7]** Handle Keyboard Input for Player movement
 - **[8]** Add Game Background Music
 - **[9]** Create Obstacle class and spawn test instances
+- **[10]** Handle collisions between Player and Obstacle
 
 ## Open Issues ##
 
-- **[10]** Handle collisions between Player and Obstacle
 
 ## Backlog ##
 
 - **[]** Spawn Obstacle instances using text file
 - **[]** Vary tiles to look cooler
 - **[]** Debug Entity Tile Locations
+- **[]** Add shadows to obstacles and Player
+- **[]** Vary obstacles
+- **[]** 
+- **[]** 
 - **[]** 
