@@ -137,7 +137,9 @@ public class PlayScreen extends ScreenAdapter {
     }
 
     /**
-     * Reads from tile_map.txt to determine which tile sprites are drawn
+     * Reads from text file to determine which tile sprites are drawn.
+     * Text file is formated where every tile is a pair of integers
+     *      and the tiles are separated by commas.
      */
     private void populateTileMap() {
         try (BufferedReader br = new BufferedReader(new FileReader("Text/tile_map.txt"))) {
@@ -161,6 +163,8 @@ public class PlayScreen extends ScreenAdapter {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Gdx.app.exit();
+            System.exit(-1);
         }
     }
 
