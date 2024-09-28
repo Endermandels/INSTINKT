@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class PlayScreen extends ScreenAdapter {
@@ -17,6 +18,8 @@ public class PlayScreen extends ScreenAdapter {
     private Player player;
     private SubState state;
     private ArrayList<Obstacle> obstacles;
+
+    private HashMap<Integer, ArrayList<Integer[]>> ssPlantsMap;
 
     private Tile[][] tileMap;
     private final int TILE_ROWS = 12;
@@ -39,6 +42,9 @@ public class PlayScreen extends ScreenAdapter {
         populateTileMap();
 
         player = new Player(game,0,0);
+
+        ssPlantsMap = new HashMap<>();
+        initializeSSPlantsMap();
 
         obstacles = new ArrayList<>();
         addObstaclesToTileMap();
@@ -168,20 +174,60 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
-    private void spawnObstacleAt(int row, int col) {
-        Obstacle obs = new Obstacle(game, col*TILE_SIZE*TILE_SCALE, row*TILE_SIZE*TILE_SCALE);
+    /**
+     * Maps each sprite in TX Plant.png to the top left and bottom right tiles that it occupies.
+     * If an array list has an extra integer array, that indicates how much to shift down the sprite image.
+     */
+    private void initializeSSPlantsMap() {
+        ssPlantsMap.put(0, new ArrayList<>(Arrays.asList(
+                new Integer[]{0,0},
+                new Integer[]{4,4}
+        )));
+        ssPlantsMap.put(1, new ArrayList<>(Arrays.asList(
+                new Integer[]{0,5},
+                new Integer[]{4,7}
+        )));
+        ssPlantsMap.put(2, new ArrayList<>(Arrays.asList(
+                new Integer[]{0,9},
+                new Integer[]{4,11}
+        )));
+        ssPlantsMap.put(3, new ArrayList<>(Arrays.asList(
+                new Integer[]{6,1},
+                new Integer[]{6,1}
+        )));
+        ssPlantsMap.put(4, new ArrayList<>(Arrays.asList(
+                new Integer[]{6,3},
+                new Integer[]{6,3}
+        )));
+        ssPlantsMap.put(5, new ArrayList<>(Arrays.asList(
+                new Integer[]{5,4},
+                new Integer[]{6,6}
+        )));
+        ssPlantsMap.put(6, new ArrayList<>(Arrays.asList(
+                new Integer[]{5,7},
+                new Integer[]{7,9},
+                new Integer[]{1}
+        )));
+        ssPlantsMap.put(7, new ArrayList<>(Arrays.asList(
+                new Integer[]{5,10},
+                new Integer[]{7,12},
+                new Integer[]{1}
+        )));
+        ssPlantsMap.put(8, new ArrayList<>(Arrays.asList(
+                new Integer[]{5,13},
+                new Integer[]{7,15},
+                new Integer[]{1}
+        )));
+    }
+
+    private void spawnObstacleAt(int row, int col, int obsType) {
+        Obstacle obs = new Obstacle(game, row, col, ssPlantsMap.get(obsType));
         obstacles.add(obs);
         tileMap[row][col].setContainsObstacle(true);
     }
 
     private void addObstaclesToTileMap() {
-        spawnObstacleAt(0,1);
-        spawnObstacleAt(0,2);
-        spawnObstacleAt(0,3);
-
-        spawnObstacleAt(1,3);
-        spawnObstacleAt(2,3);
-
+        spawnObstacleAt(1,7, 8);
     }
 
     public void update(float delta) {
