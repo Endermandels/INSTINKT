@@ -140,7 +140,7 @@ public class PlayScreen extends ScreenAdapter {
      * Reads from tile_map.txt to determine which tile sprites are drawn
      */
     private void populateTileMap() {
-        try (BufferedReader br = new BufferedReader(new FileReader("tile_map.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Text/tile_map.txt"))) {
             String line;
             char txtRow;
             char txtCol;
