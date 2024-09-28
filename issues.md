@@ -10,19 +10,18 @@
 - **[8]** Add Game Background Music
 - **[9]** Create Obstacle class and spawn test instances
 - **[10]** Handle collisions between Player and Obstacle
+- **[11]** Spawn tiles using text file
 
 ## Open Issues ##
 
-- **[11]** Vary tiles to look cooler
-- **[12]** Vary obstacles
+- **[12]** Spawn obstacles using text file
 - **[13]** Add farmland tiles
 - **[14]** Add Berry bushes
 - **[15]** Add Berry pile
+- **[16]** Design Level
 
 ## Backlog ##
 
-- **[]** Spawn Obstacle instances using text file
-- **[]** Design Level
 - **[]** Enemy spawn locations
 - **[]** Add shadows to obstacles and Player
 - **[]** Create enemy class

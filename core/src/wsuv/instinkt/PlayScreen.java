@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -133,11 +136,32 @@ public class PlayScreen extends ScreenAdapter {
         state = SubState.READY;
     }
 
+    /**
+     * Reads from tile_map.txt to determine which tile sprites are drawn
+     */
     private void populateTileMap() {
-        for (int y = 0; y < TILE_ROWS; y++)
-            for(int x = 0; x < TILE_COLS; x++) {
-                tileMap[y][x] = new Tile(game, x, y, x*TILE_SIZE*TILE_SCALE, y*TILE_SIZE*TILE_SCALE);
+        try (BufferedReader br = new BufferedReader(new FileReader("tile_map.txt"))) {
+            String line;
+            char txtRow;
+            char txtCol;
+            int y = TILE_ROWS-1;
+            int ssRow, ssCol;
+
+            while ((line = br.readLine()) != null && y >= 0) {
+                for (int x = 0; x < line.length(); x+=3) {
+                    txtRow = line.charAt(x);
+                    txtCol = line.charAt(x+1);
+                    ssRow = Character.getNumericValue(txtRow);
+                    ssCol = Character.getNumericValue(txtCol);
+
+                    tileMap[y][x/3] = new Tile(game, x/3, y, (x/3f)*TILE_SIZE*TILE_SCALE, y*TILE_SIZE*TILE_SCALE
+                            , ssRow, ssCol);
+                }
+                y--;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void spawnObstacleAt(int row, int col) {
