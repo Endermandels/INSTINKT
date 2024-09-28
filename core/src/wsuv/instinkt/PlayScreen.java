@@ -2,7 +2,10 @@ package wsuv.instinkt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import java.util.ArrayList;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -10,6 +13,7 @@ public class PlayScreen extends ScreenAdapter {
     private HUD hud;
     private Player player;
     private SubState state;
+    private ArrayList<Obstacle> obstacles;
 
     private Tile[][] tileMap;
     private final int TILE_ROWS = 12;
@@ -29,10 +33,13 @@ public class PlayScreen extends ScreenAdapter {
         this.game = game;
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
-        populateTileMap(tileMap);
+        populateTileMap();
 
         player = new Player(game,0,0);
         tileMap[player.getTileX()][player.getTileY()].addEntity(player);
+
+        obstacles = new ArrayList<>();
+        addObstaclesToTileMap();
 
         timer = 0f;
         paused = false;
@@ -127,11 +134,27 @@ public class PlayScreen extends ScreenAdapter {
         state = SubState.READY;
     }
 
-    private void populateTileMap(Tile[][] tileMap) {
+    private void populateTileMap() {
         for (int y = 0; y < TILE_ROWS; y++)
             for(int x = 0; x < TILE_COLS; x++) {
                 tileMap[y][x] = new Tile(game, x, y, x*TILE_SIZE*TILE_SCALE, y*TILE_SIZE*TILE_SCALE);
             }
+    }
+
+    private void spawnObstacleAt(int row, int col) {
+        Obstacle obs = new Obstacle(game, col*TILE_SIZE*TILE_SCALE, row*TILE_SIZE*TILE_SCALE);
+        obstacles.add(obs);
+        tileMap[row][col].addEntity(obs);
+    }
+
+    private void addObstaclesToTileMap() {
+        spawnObstacleAt(0,1);
+        spawnObstacleAt(0,2);
+        spawnObstacleAt(0,3);
+
+        spawnObstacleAt(1,3);
+        spawnObstacleAt(2,3);
+
     }
 
     public void update(float delta) {
@@ -203,6 +226,12 @@ public class PlayScreen extends ScreenAdapter {
                 // Draw Player
                 game.batch.draw(player.getImg(), player.getImgX(), player.getImgY() + 16f
                         , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
+                // Draw Obstacles
+                for (Obstacle obs : obstacles) {
+                    TextureRegion img = obs.getImg();
+                    game.batch.draw(img, obs.getImgX(), obs.getImgY()
+                            , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                }
                 break;
         }
         hud.draw(game.batch);
