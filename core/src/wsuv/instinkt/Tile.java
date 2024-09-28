@@ -18,7 +18,7 @@ public class Tile {
 
     private boolean containsObstacle;
 
-    public Tile(Game game, int x, int y, float imgX, float imgY) {
+    public Tile(Game game, int x, int y, float imgX, float imgY, int ssRow, int ssCol) {
         this.imgX = imgX;
         this.imgY = imgY;
         this.x = x;
@@ -26,8 +26,8 @@ public class Tile {
         containsObstacle = false;
         Texture spriteSheetImg = game.am.get(Game.RSC_SS_GRASS_IMG);
         img = new TextureRegion(spriteSheetImg
-                , 0 * PlayScreen.TILE_SIZE
-                , 3 * PlayScreen.TILE_SIZE
+                , ssCol * PlayScreen.TILE_SIZE
+                , ssRow * PlayScreen.TILE_SIZE
                 , PlayScreen.TILE_SIZE
                 , PlayScreen.TILE_SIZE);
     }
