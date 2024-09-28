@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    private ArrayList<Object> entities;
     private TextureRegion img;
 
     private float imgX;
@@ -17,12 +16,14 @@ public class Tile {
     private int x;
     private int y;
 
+    private boolean containsObstacle;
+
     public Tile(Game game, int x, int y, float imgX, float imgY) {
-        entities = new ArrayList<Object>();
         this.imgX = imgX;
         this.imgY = imgY;
         this.x = x;
         this.y = y;
+        containsObstacle = false;
         Texture spriteSheetImg = game.am.get(Game.RSC_SS_GRASS_IMG);
         img = new TextureRegion(spriteSheetImg
                 , 0 * PlayScreen.TILE_SIZE
@@ -31,12 +32,12 @@ public class Tile {
                 , PlayScreen.TILE_SIZE);
     }
 
-    public void addEntity(Object e) {
-        entities.add(e);
+    public void setContainsObstacle(boolean containsObstacle) {
+        this.containsObstacle = containsObstacle;
     }
 
-    public void removeEntity(Object e) {
-        entities.remove(e);
+    public boolean isObstacle() {
+        return containsObstacle;
     }
 
     public TextureRegion getImg() {
@@ -57,9 +58,5 @@ public class Tile {
 
     public int getY() {
         return y;
-    }
-
-    public ArrayList<Object> getEntities() {
-        return entities;
     }
 }
