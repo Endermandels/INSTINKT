@@ -13,14 +13,24 @@
 
 ## Open Issues ##
 
+- **[11]** Vary tiles to look cooler
+- **[12]** Vary obstacles
+- **[13]** Add farmland tiles
+- **[14]** Add Berry bushes
+- **[15]** Add Berry pile
 
 ## Backlog ##
 
 - **[]** Spawn Obstacle instances using text file
-- **[]** Vary tiles to look cooler
-- **[]** Debug Entity Tile Locations
+- **[]** Design Level
+- **[]** Enemy spawn locations
 - **[]** Add shadows to obstacles and Player
-- **[]** Vary obstacles
+- **[]** Create enemy class
+- **[]** Add enemy pathfinding using Dijkstra's Algorithm
+- **[]** Visually debug Entity Tile Locations
+- **[]** Visually debug enemy pathfinding
+- **[]** Fix player movement stickiness
+- **[]** 
 - **[]** 
 - **[]** 
 - **[]** 
