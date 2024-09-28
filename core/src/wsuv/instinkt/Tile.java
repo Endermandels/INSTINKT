@@ -35,6 +35,10 @@ public class Tile {
         entities.add(e);
     }
 
+    public void removeEntity(Object e) {
+        entities.remove(e);
+    }
+
     public TextureRegion getImg() {
         return img;
     }
@@ -53,5 +57,9 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public ArrayList<Object> getEntities() {
+        return entities;
     }
 }
