@@ -11,10 +11,10 @@
 - **[9]** Create Obstacle class and spawn test instances
 - **[10]** Handle collisions between Player and Obstacle
 - **[11]** Spawn tiles using text file
+- **[12]** Spawn obstacles using text file
 
 ## Open Issues ##
 
-- **[12]** Spawn obstacles using text file
 - **[13]** Add farmland tiles
 - **[14]** Add Berry bushes
 - **[15]** Add Berry pile

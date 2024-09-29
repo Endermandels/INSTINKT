@@ -17,14 +17,14 @@ import java.util.Random;
 
 public class Game extends com.badlogic.gdx.Game {
     // Images
-    public static final String RSC_GAMEOVER_IMG = "gameover.png";
-    public static final String RSC_PRESSAKEY_IMG = "pressakey.png";
+    public static final String RSC_GAMEOVER_IMG = "Images/gameover.png";
+    public static final String RSC_PRESSAKEY_IMG = "Images/pressakey.png";
 
     // Sprite Sheets
-    public static final String RSC_SS_GRASS_IMG = "Tileset Grass.png";
-    public static final String RSC_SS_PLANTS_IMG = "TX Plant.png";
-    public static final String RSC_SS_PLANTS_SHADOW_IMG = "TX Shadow Plant.png";
-    public static final String RSC_SS_SKUNK_IMG = "Sprite Sheet Skunk.png";
+    public static final String RSC_SS_GRASS_IMG = "Images/Tileset Grass.png";
+    public static final String RSC_SS_PLANTS_IMG = "Images/TX Plant.png";
+    public static final String RSC_SS_PLANTS_SHADOW_IMG = "Images/TX Shadow Plant.png";
+    public static final String RSC_SS_SKUNK_IMG = "Images/Sprite Sheet Skunk.png";
 
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
@@ -82,11 +82,11 @@ public class Game extends com.badlogic.gdx.Game {
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
 
-        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("Essence of Battle.mp3"));
+        battleMusic = Gdx.audio.newMusic(Gdx.files.internal("SFX/Essence of Battle.mp3"));
         battleMusic.setLooping(true);
         battleMusic.setVolume(0.05f);
 
-        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("Jizzy Jazz.mp3"));
+        menuMusic = Gdx.audio.newMusic(Gdx.files.internal("SFX/Jizzy Jazz.mp3"));
         menuMusic.setLooping(true);
         menuMusic.setVolume(0.1f);
         menuMusic.play();

@@ -28,7 +28,7 @@ public class LoadScreen extends ScreenAdapter {
         // fake a more complicated system... we'll wait
         // until we show all the credits...
         frames = 0;
-        FileHandle file = Gdx.files.internal("credits.txt");
+        FileHandle file = Gdx.files.internal("Text/credits.txt");
         credits = file.readString().split("\n");
     }
 
