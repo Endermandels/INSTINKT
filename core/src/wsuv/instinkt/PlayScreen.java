@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.SimpleTimeZone;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -227,7 +228,26 @@ public class PlayScreen extends ScreenAdapter {
     }
 
     private void addObstaclesToTileMap() {
-        spawnObstacleAt(1,7, 8);
+        try (BufferedReader br = new BufferedReader(new FileReader("Text/plants_map.txt"))) {
+            String line;
+            String substr;
+            int y = TILE_ROWS-1;
+            int obsType;
+
+            while ((line = br.readLine()) != null && y >= 0) {
+                for (int x = 0; x < line.length(); x+=3) {
+                    substr = line.substring(x,x+2);
+                    obsType = Integer.parseInt(substr);
+
+                    if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1);
+                }
+                y--;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Gdx.app.exit();
+            System.exit(-1);
+        }
     }
 
     public void update(float delta) {
