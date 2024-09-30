@@ -9,18 +9,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * Spawns assets such as tiles and obstacles using text files.
+ * Spawns assets such as tiles and gameObjects using text files.
  */
 public class AssetsSpawner {
     Game game;
     Tile[][] tileMap;
-    ArrayList<Obstacle> obstacles;
+    ArrayList<GameObject> gameObjects;
     HashMap<String, HashMap<Integer, ArrayList<Integer[]>>> ssMaps;
 
-    public AssetsSpawner(Game game, Tile[][] tileMap, ArrayList<Obstacle> obstacles) {
+    public AssetsSpawner(Game game, Tile[][] tileMap, ArrayList<GameObject> gameObjects) {
         this.game = game;
         this.tileMap = tileMap;
-        this.obstacles = obstacles;
+        this.gameObjects = gameObjects;
         ssMaps = new HashMap<>();
     }
 
@@ -131,8 +131,8 @@ public class AssetsSpawner {
     }
 
     private void spawnObstacleAt(int row, int col, int obsType, String ssID) {
-        Obstacle obs = new Obstacle(game, row, col, ssMaps.get(ssID).get(obsType), ssID);
-        obstacles.add(obs);
+        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID, 0);
+        gameObjects.add(obs);
         tileMap[row][col].setContainsObstacle(true);
     }
 
@@ -149,7 +149,13 @@ public class AssetsSpawner {
                     substr = line.substring(x,x+2);
                     obsType = Integer.parseInt(substr);
 
-                    if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_PLANTS_IMG);
+                    if (obsType > 0) {
+                        GameObject shadow = new GameObject(game, y, x/3
+                                , ssMaps.get(Game.RSC_SS_PLANTS_IMG).get(obsType-1)
+                                , Game.RSC_SS_PLANTS_SHADOW_IMG, 1000);
+                        gameObjects.add(shadow);
+                        spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_PLANTS_IMG);
+                    }
                 }
                 y--;
             }

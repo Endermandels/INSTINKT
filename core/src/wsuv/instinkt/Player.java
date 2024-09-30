@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.*;
 
-public class Player {
+public class Player extends GameObject {
 
     private enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -34,6 +34,8 @@ public class Player {
     private boolean takeInput;
 
     public Player(Game game, int tileX, int tileY) {
+        super(null, tileX * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE
+                , tileY * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE, 10);
         this.game = game;
         am = new AnimationManager(game.am.get(Game.RSC_SS_SKUNK_IMG)
                 , new ArrayList<Integer>(Arrays.asList(6,8,5,4,7))
@@ -47,8 +49,9 @@ public class Player {
                 , 0.08f, 32, 32
         );
 
-        imgX = 0;
-        imgY = 0;
+        imgX = tileX * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+        imgY = tileY * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+
         imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
