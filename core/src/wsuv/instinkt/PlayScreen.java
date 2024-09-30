@@ -5,12 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.SimpleTimeZone;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -18,7 +13,7 @@ public class PlayScreen extends ScreenAdapter {
     private HUD hud;
     private Player player;
     private SubState state;
-    private ArrayList<Obstacle> obstacles;
+    private ArrayList<GameObject> obstacles;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -207,7 +202,7 @@ public class PlayScreen extends ScreenAdapter {
                 game.batch.draw(player.getImg(), player.getImgX(), player.getImgY() + 16f
                         , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                 // Draw Obstacles
-                for (Obstacle obs : obstacles) {
+                for (GameObject obs : obstacles) {
                     TextureRegion img = obs.getImg();
                     game.batch.draw(img, obs.getImgX(), obs.getImgY()
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);

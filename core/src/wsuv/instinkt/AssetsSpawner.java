@@ -14,10 +14,10 @@ import java.util.HashMap;
 public class AssetsSpawner {
     Game game;
     Tile[][] tileMap;
-    ArrayList<Obstacle> obstacles;
+    ArrayList<GameObject> obstacles;
     HashMap<String, HashMap<Integer, ArrayList<Integer[]>>> ssMaps;
 
-    public AssetsSpawner(Game game, Tile[][] tileMap, ArrayList<Obstacle> obstacles) {
+    public AssetsSpawner(Game game, Tile[][] tileMap, ArrayList<GameObject> obstacles) {
         this.game = game;
         this.tileMap = tileMap;
         this.obstacles = obstacles;
@@ -131,7 +131,7 @@ public class AssetsSpawner {
     }
 
     private void spawnObstacleAt(int row, int col, int obsType, String ssID) {
-        Obstacle obs = new Obstacle(game, row, col, ssMaps.get(ssID).get(obsType), ssID);
+        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID);
         obstacles.add(obs);
         tileMap[row][col].setContainsObstacle(true);
     }

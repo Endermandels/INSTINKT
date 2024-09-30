@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 
-public class Obstacle {
+public class GameObject {
     private TextureRegion img;
 
     private float imgX;
     private float imgY;
 
-    public Obstacle(Game game, int row, int col, ArrayList<Integer[]> ssTiles, String fileName) {
+    public GameObject(Game game, int row, int col, ArrayList<Integer[]> ssTiles, String fileName) {
         Integer[] ssTopLeft = ssTiles.get(0);
         Integer[] ssBottomRight = ssTiles.get(1);
         int yDown = 0;
