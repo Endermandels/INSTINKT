@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -13,7 +14,7 @@ public class PlayScreen extends ScreenAdapter {
     private HUD hud;
     private Player player;
     private SubState state;
-    private ArrayList<GameObject> obstacles;
+    private ArrayList<GameObject> gameObjects;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -34,9 +35,10 @@ public class PlayScreen extends ScreenAdapter {
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,0,0);
-        obstacles = new ArrayList<>();
+        gameObjects = new ArrayList<>();
+        gameObjects.add(player);
 
-        AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, obstacles);
+        AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         assetsSpawner.spawnAllAssets();
 
         timer = 0f;
@@ -198,11 +200,9 @@ public class PlayScreen extends ScreenAdapter {
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
                                 , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
                     }
-                // Draw Player
-                game.batch.draw(player.getImg(), player.getImgX(), player.getImgY() + 16f
-                        , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
-                // Draw Obstacles
-                for (GameObject obs : obstacles) {
+                // Draw Game Objects
+                gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
+                for (GameObject obs : gameObjects) {
                     TextureRegion img = obs.getImg();
                     game.batch.draw(img, obs.getImgX(), obs.getImgY()
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
