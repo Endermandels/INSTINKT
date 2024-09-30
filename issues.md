@@ -14,10 +14,10 @@
 - **[12]** Spawn obstacles using text file
 - **[13]** Add farmland tiles, berry bushes, berry pile
 - **[14]** Design Level
+- **[15]** Add shadows to obstacles and Player
 
 ## Open Issues ##
 
-- **[15]** Add shadows to obstacles and Player
 - **[16]** Create enemy class
 - **[17]** Add enemy pathfinding using Dijkstra's Algorithm
 - **[18]** Enemy spawn locations
