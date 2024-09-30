@@ -12,13 +12,11 @@
 - **[10]** Handle collisions between Player and Obstacle
 - **[11]** Spawn tiles using text file
 - **[12]** Spawn obstacles using text file
+- **[13]** Add farmland tiles, berry bushes, berry pile
 
 ## Open Issues ##
 
-- **[13]** Add farmland tiles
-- **[14]** Add Berry bushes
-- **[15]** Add Berry pile
-- **[16]** Design Level
+- **[14]** Design Level
 
 ## Backlog ##
 

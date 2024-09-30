@@ -24,6 +24,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_GRASS_IMG = "Images/Tileset Grass.png";
     public static final String RSC_SS_PLANTS_IMG = "Images/TX Plant.png";
     public static final String RSC_SS_PLANTS_SHADOW_IMG = "Images/TX Shadow Plant.png";
+    public static final String RSC_SS_BERRIES_IMG = "Images/TX Berries.png";
     public static final String RSC_SS_SKUNK_IMG = "Images/Sprite Sheet Skunk.png";
 
     // Fonts
@@ -77,6 +78,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_GRASS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_SHADOW_IMG, Texture.class);
+        am.load(RSC_SS_BERRIES_IMG, Texture.class);
         am.load(RSC_SS_SKUNK_IMG, Texture.class);
 
         batch = new SpriteBatch();

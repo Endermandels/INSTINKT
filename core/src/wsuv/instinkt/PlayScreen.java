@@ -20,11 +20,9 @@ public class PlayScreen extends ScreenAdapter {
     private SubState state;
     private ArrayList<Obstacle> obstacles;
 
-    private HashMap<Integer, ArrayList<Integer[]>> ssPlantsMap;
-
     private Tile[][] tileMap;
-    private final int TILE_ROWS = 12;
-    private final int TILE_COLS = 18;
+    public static final int TILE_ROWS = 12;
+    public final int TILE_COLS = 18;
 
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
@@ -40,15 +38,11 @@ public class PlayScreen extends ScreenAdapter {
         this.game = game;
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
-        populateTileMap();
-
         player = new Player(game,0,0);
-
-        ssPlantsMap = new HashMap<>();
-        initializeSSPlantsMap();
-
         obstacles = new ArrayList<>();
-        addObstaclesToTileMap();
+
+        AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, obstacles);
+        assetsSpawner.spawnAllAssets();
 
         timer = 0f;
         paused = false;
@@ -141,113 +135,6 @@ public class PlayScreen extends ScreenAdapter {
     public void show() {
         Gdx.app.log("PlayScreen", "show");
         state = SubState.READY;
-    }
-
-    /**
-     * Reads from text file to determine which tile sprites are drawn.
-     * Text file is formated where every tile is a pair of integers
-     *      and the tiles are separated by commas.
-     */
-    private void populateTileMap() {
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/tile_map.txt"))) {
-            String line;
-            char txtRow;
-            char txtCol;
-            int y = TILE_ROWS-1;
-            int ssRow, ssCol;
-
-            while ((line = br.readLine()) != null && y >= 0) {
-                for (int x = 0; x < line.length(); x+=3) {
-                    txtRow = line.charAt(x);
-                    txtCol = line.charAt(x+1);
-                    ssRow = Character.getNumericValue(txtRow);
-                    ssCol = Character.getNumericValue(txtCol);
-
-                    tileMap[y][x/3] = new Tile(game, x/3, y, (x/3f)*TILE_SIZE*TILE_SCALE, y*TILE_SIZE*TILE_SCALE
-                            , ssRow, ssCol);
-                }
-                y--;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Gdx.app.exit();
-            System.exit(-1);
-        }
-    }
-
-    /**
-     * Maps each sprite in TX Plant.png to the top left and bottom right tiles that it occupies.
-     * If an array list has an extra integer array, that indicates how much to shift down the sprite image.
-     */
-    private void initializeSSPlantsMap() {
-        ssPlantsMap.put(0, new ArrayList<>(Arrays.asList(
-                new Integer[]{0,0},
-                new Integer[]{4,4}
-        )));
-        ssPlantsMap.put(1, new ArrayList<>(Arrays.asList(
-                new Integer[]{0,5},
-                new Integer[]{4,7}
-        )));
-        ssPlantsMap.put(2, new ArrayList<>(Arrays.asList(
-                new Integer[]{0,9},
-                new Integer[]{4,11}
-        )));
-        ssPlantsMap.put(3, new ArrayList<>(Arrays.asList(
-                new Integer[]{6,1},
-                new Integer[]{6,1}
-        )));
-        ssPlantsMap.put(4, new ArrayList<>(Arrays.asList(
-                new Integer[]{6,3},
-                new Integer[]{6,3}
-        )));
-        ssPlantsMap.put(5, new ArrayList<>(Arrays.asList(
-                new Integer[]{5,4},
-                new Integer[]{6,6}
-        )));
-        ssPlantsMap.put(6, new ArrayList<>(Arrays.asList(
-                new Integer[]{5,7},
-                new Integer[]{7,9},
-                new Integer[]{1}
-        )));
-        ssPlantsMap.put(7, new ArrayList<>(Arrays.asList(
-                new Integer[]{5,10},
-                new Integer[]{7,12},
-                new Integer[]{1}
-        )));
-        ssPlantsMap.put(8, new ArrayList<>(Arrays.asList(
-                new Integer[]{5,13},
-                new Integer[]{7,15},
-                new Integer[]{1}
-        )));
-    }
-
-    private void spawnObstacleAt(int row, int col, int obsType) {
-        Obstacle obs = new Obstacle(game, row, col, ssPlantsMap.get(obsType));
-        obstacles.add(obs);
-        tileMap[row][col].setContainsObstacle(true);
-    }
-
-    private void addObstaclesToTileMap() {
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/plants_map.txt"))) {
-            String line;
-            String substr;
-            int y = TILE_ROWS-1;
-            int obsType;
-
-            while ((line = br.readLine()) != null && y >= 0) {
-                for (int x = 0; x < line.length(); x+=3) {
-                    substr = line.substring(x,x+2);
-                    obsType = Integer.parseInt(substr);
-
-                    if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1);
-                }
-                y--;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Gdx.app.exit();
-            System.exit(-1);
-        }
     }
 
     public void update(float delta) {
