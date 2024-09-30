@@ -17,13 +17,13 @@
 
 ## Open Issues ##
 
+- **[15]** Add shadows to obstacles and Player
+- **[16]** Create enemy class
+- **[17]** Add enemy pathfinding using Dijkstra's Algorithm
+- **[18]** Enemy spawn locations
 
 ## Backlog ##
 
-- **[]** Enemy spawn locations
-- **[]** Add shadows to obstacles and Player
-- **[]** Create enemy class
-- **[]** Add enemy pathfinding using Dijkstra's Algorithm
 - **[]** Visually debug Entity Tile Locations
 - **[]** Visually debug enemy pathfinding
 - **[]** Fix player movement stickiness
