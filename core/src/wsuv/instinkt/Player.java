@@ -34,7 +34,8 @@ public class Player extends GameObject {
     private boolean takeInput;
 
     public Player(Game game, int tileX, int tileY) {
-        super(null, 0, 0, 10);
+        super(null, tileX * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE
+                , tileY * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE, 10);
         this.game = game;
         am = new AnimationManager(game.am.get(Game.RSC_SS_SKUNK_IMG)
                 , new ArrayList<Integer>(Arrays.asList(6,8,5,4,7))
@@ -48,8 +49,9 @@ public class Player extends GameObject {
                 , 0.08f, 32, 32
         );
 
-        imgX = 0;
-        imgY = 0;
+        imgX = tileX * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+        imgY = tileY * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+
         imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
