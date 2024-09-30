@@ -11,7 +11,7 @@ public class Obstacle {
     private float imgX;
     private float imgY;
 
-    public Obstacle(Game game, int row, int col, ArrayList<Integer[]> ssTiles) {
+    public Obstacle(Game game, int row, int col, ArrayList<Integer[]> ssTiles, String fileName) {
         Integer[] ssTopLeft = ssTiles.get(0);
         Integer[] ssBottomRight = ssTiles.get(1);
         int yDown = 0;
@@ -22,7 +22,7 @@ public class Obstacle {
         int width = ssBottomRight[1]*PlayScreen.TILE_SIZE - x + PlayScreen.TILE_SIZE;
         int height = ssBottomRight[0]*PlayScreen.TILE_SIZE - y + PlayScreen.TILE_SIZE;
 
-        img = new TextureRegion((Texture) game.am.get(Game.RSC_SS_PLANTS_IMG), x, y, width, height);
+        img = new TextureRegion((Texture) game.am.get(fileName), x, y, width, height);
         int dif = ssBottomRight[1] - ssTopLeft[1];
         this.imgX = (col - (float) (dif / 2)) * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
         this.imgY = (row - yDown) * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
