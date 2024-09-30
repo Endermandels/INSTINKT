@@ -13,10 +13,10 @@
 - **[11]** Spawn tiles using text file
 - **[12]** Spawn obstacles using text file
 - **[13]** Add farmland tiles, berry bushes, berry pile
+- **[14]** Design Level
 
 ## Open Issues ##
 
-- **[14]** Design Level
 
 ## Backlog ##
 
