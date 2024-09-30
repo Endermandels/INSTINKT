@@ -186,7 +186,7 @@ public class AssetsSpawner {
 
     public void spawnAllAssets() {
         populateTileMap();
-        plantObstacles();
         berryObstacles();
+        plantObstacles();
     }
 }
