@@ -23,7 +23,7 @@ public class Enemy extends GameObject {
     private int tileX;
     private int tileY;
 
-    private Tile targetTile;
+    private int[] targetPos;
     private boolean movingHorizontal;
     private boolean movingVertical;
     private boolean flipped;
@@ -53,24 +53,97 @@ public class Enemy extends GameObject {
         movingHorizontal = false;
         movingVertical = false;
 
-        dir = null;
+        dir = Direction.RIGHT;
         flipped = false;
 
         this.tileX = tileX;
         this.tileY = tileY;
-        targetTile = null;
+        targetPos = new int[2];
     }
-
 
     private void move(Tile[][] tileMap) {
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
 
+        if (dir != null) {
+            am.switchAnimState("RUN");
+            switch (dir) {
+                case LEFT:
+                    if (game.validMove(tileX - 1, tileY)) targetPos[0] = tileX - 1;
+                    movingHorizontal = true;
+                    flipped = true;
+                    break;
+                case RIGHT:
+                    if (game.validMove(tileX + 1, tileY)) targetPos[0] = tileX + 1;
+                    movingHorizontal = true;
+                    flipped = false;
+                    break;
+                case UP:
+                    if (game.validMove(tileX, tileY + 1)) targetPos[1] = tileY + 1;
+                    movingVertical = true;
+                    break;
+                case DOWN:
+                    if (game.validMove(tileX, tileY - 1)) targetPos[1] = tileY - 1;
+                    movingVertical = true;
+                    break;
+            }
+        } else {
+            am.switchAnimState("IDLE");
+        }
+
+        if (dir != null) {
+            switch (dir) {
+                case LEFT:
+                    imgX -= imgSpeed * time;
+
+                    if (imgX < targetPos[0] * PlayScreen.TILE_SCALED_SIZE) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetPos[0] * PlayScreen.TILE_SCALED_SIZE;
+                        tileX = targetPos[0];
+
+                        movingHorizontal = false;
+                    }
+                    break;
+                case RIGHT:
+                    imgX += imgSpeed * time;
+
+                    if (imgX > targetPos[0]*PlayScreen.TILE_SCALED_SIZE) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetPos[0]*PlayScreen.TILE_SCALED_SIZE;
+                        tileX = targetPos[0];
+
+                        movingHorizontal = false;
+                    }
+                    break;
+                case UP:
+                    imgY += imgSpeed * time;
+
+                    if (imgY > targetPos[1] * PlayScreen.TILE_SCALED_SIZE) {
+                        // Moved passed the tile, center on the tile
+                        imgY = targetPos[1]*PlayScreen.TILE_SCALED_SIZE;
+                        tileY = targetPos[1];
+
+                        movingVertical = false;
+                    }
+                    break;
+                case DOWN:
+                    imgY -= imgSpeed * time;
+
+                    if (imgY < targetPos[1] * PlayScreen.TILE_SCALED_SIZE) {
+                        // Moved passed the tile, center on the tile
+                        imgY = targetPos[1] * PlayScreen.TILE_SCALED_SIZE;
+                        tileY = (int) targetPos[1];
+
+                        movingVertical = false;
+                    }
+                    break;
+            }
+        }
     }
 
     public void update(Tile[][] tileMap) {
         am.update();
-//        move(tileMap);
+        move(tileMap);
     }
 
     public TextureRegion getImg() {

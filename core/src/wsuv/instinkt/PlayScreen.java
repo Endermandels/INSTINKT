@@ -19,7 +19,7 @@ public class PlayScreen extends ScreenAdapter {
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
-    public final int TILE_COLS = 18;
+    public static final int TILE_COLS = 18;
 
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
