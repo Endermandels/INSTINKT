@@ -15,6 +15,7 @@ public class Enemy extends GameObject {
 
     private Game game;
     private AnimationManager am;
+    private ArrayList<Integer[]> enemySpawnLocations;
 
     private float imgX;
     private float imgY;
@@ -29,9 +30,10 @@ public class Enemy extends GameObject {
     private boolean flipped;
     private Direction dir;
 
-    public Enemy(Game game, int tileX, int tileY) {
+    public Enemy(Game game, int tileX, int tileY, ArrayList<Integer[]> enemySpawnLocations) {
         super(null, 0, 0, 20);
         this.game = game;
+        this.enemySpawnLocations = enemySpawnLocations;
         am = new AnimationManager(game.am.get(Game.RSC_SS_FOX_IMG)
                 , new ArrayList<Integer>(Arrays.asList(5,14,8,11,5,6,7))
                 , new HashMap<String, Integer>() {{
@@ -61,7 +63,19 @@ public class Enemy extends GameObject {
         targetPos = new int[2];
     }
 
-    private void move(Tile[][] tileMap) {
+    private boolean isSpawnTile(int tileX, int tileY) {
+        for (Integer[] location : enemySpawnLocations) {
+            if (location[1] == tileX && location[0] == tileY) return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param tileMap
+     * @return Whether the enemy should be removed
+     */
+    private boolean move(Tile[][] tileMap) {
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
 
@@ -69,21 +83,25 @@ public class Enemy extends GameObject {
             am.switchAnimState("RUN");
             switch (dir) {
                 case LEFT:
-                    if (game.validMove(tileX - 1, tileY)) targetPos[0] = tileX - 1;
+                    if (game.validMove(tileMap, tileX - 1, tileY) || isSpawnTile(tileX-1, tileY))
+                        targetPos[0] = tileX - 1;
                     movingHorizontal = true;
                     flipped = true;
                     break;
                 case RIGHT:
-                    if (game.validMove(tileX + 1, tileY)) targetPos[0] = tileX + 1;
+                    if (game.validMove(tileMap, tileX + 1, tileY) || isSpawnTile(tileX+1, tileY))
+                        targetPos[0] = tileX + 1;
                     movingHorizontal = true;
                     flipped = false;
                     break;
                 case UP:
-                    if (game.validMove(tileX, tileY + 1)) targetPos[1] = tileY + 1;
+                    if (game.validMove(tileMap, tileX, tileY + 1) || isSpawnTile(tileX, tileY+1))
+                        targetPos[1] = tileY + 1;
                     movingVertical = true;
                     break;
                 case DOWN:
-                    if (game.validMove(tileX, tileY - 1)) targetPos[1] = tileY - 1;
+                    if (game.validMove(tileMap, tileX, tileY - 1) || isSpawnTile(tileX, tileY-1))
+                        targetPos[1] = tileY - 1;
                     movingVertical = true;
                     break;
             }
@@ -113,6 +131,7 @@ public class Enemy extends GameObject {
                         tileX = targetPos[0];
 
                         movingHorizontal = false;
+                        if (isSpawnTile(tileX, tileY)) return true;
                     }
                     break;
                 case UP:
@@ -139,11 +158,12 @@ public class Enemy extends GameObject {
                     break;
             }
         }
+        return false;
     }
 
-    public void update(Tile[][] tileMap) {
+    public boolean update(Tile[][] tileMap) {
         am.update();
-        move(tileMap);
+        return move(tileMap);
     }
 
     public TextureRegion getImg() {

@@ -117,7 +117,8 @@ public class Game extends com.badlogic.gdx.Game {
     /**
      * Returns whether the given tile position is a valid move from the current tile position of the enemy
      */
-    public boolean validMove(int tileX, int tileY) {
-        return tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS;
+    public boolean validMove(Tile[][] tileMap, int tileX, int tileY) {
+        return tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS
+                && !tileMap[tileY][tileX].isObstacle();
     }
 }

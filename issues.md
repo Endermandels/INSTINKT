@@ -27,7 +27,7 @@
 - **[]** Visually debug Entity Tile Locations
 - **[]** Visually debug enemy pathfinding
 - **[]** Fix player movement stickiness
-- **[]** 
+- **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
 - **[]** 
