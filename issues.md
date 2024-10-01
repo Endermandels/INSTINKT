@@ -21,13 +21,21 @@
 
 ## Open Issues ##
 
+- **[19]** Visually debug Entity Tile Locations (HUD)
+- **[20]** Visually debug enemy pathfinding (HUD)
 
 ## Backlog ##
 
-- **[]** Visually debug Entity Tile Locations
-- **[]** Visually debug enemy pathfinding
+- **[]** Change Entity Tile locations to center of Tile, instead of bottom left?
+- **[]** Add melee damage and HP system
+- **[]** Add HUD command for setting player stats (HP, atk, etc.)
+- **[]** Create Spray class and allow player to use the spray ability
+- **[]** Create Squirrel enemy
+- **[]** Create Cobra enemy
+- **[]** Create enemy spawn formations
+- **[]** 
+- **[]** 
 - **[]** Fix player movement stickiness
 - **[]** Enemies run a certain amount of distance before fainting from smell
-- **[]** 
 - **[]** 
 - **[]** 
