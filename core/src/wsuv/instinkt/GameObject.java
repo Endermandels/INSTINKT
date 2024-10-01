@@ -35,8 +35,8 @@ public class GameObject {
 
         img = new TextureRegion((Texture) game.am.get(fileName), x, y, width, height);
         int dif = ssBottomRight[1] - ssTopLeft[1];
-        this.imgX = (col - (float) (dif / 2)) * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
-        this.imgY = (row - yDown) * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+        this.imgX = (col - (float) (dif / 2)) * PlayScreen.TILE_SCALED_SIZE;
+        this.imgY = (row - yDown) * PlayScreen.TILE_SCALED_SIZE;
     }
 
     public TextureRegion getImg() {

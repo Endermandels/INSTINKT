@@ -45,7 +45,8 @@ public class AssetsSpawner {
                     ssRow = Character.getNumericValue(txtRow);
                     ssCol = Character.getNumericValue(txtCol);
 
-                    tileMap[y][x/3] = new Tile(game, x/3, y, (x/3f)*PlayScreen.TILE_SIZE*PlayScreen.TILE_SCALE, y*PlayScreen.TILE_SIZE*PlayScreen.TILE_SCALE
+                    tileMap[y][x/3] = new Tile(game, x/3, y
+                            , (x/3f)*PlayScreen.TILE_SCALED_SIZE, y*PlayScreen.TILE_SCALED_SIZE
                             , ssRow, ssCol);
                 }
                 y--;

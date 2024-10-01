@@ -16,10 +16,10 @@
 - **[14]** Design Level
 - **[15]** Add shadows to obstacles and Player
 - **[16]** Create enemy class
+- **[17]** Enemy spawn locations and basic movement
 
 ## Open Issues ##
 
-- **[17]** Enemy spawn locations and basic movement
 - **[18]** Add enemy pathfinding using Dijkstra's Algorithm
 
 ## Backlog ##
@@ -27,7 +27,7 @@
 - **[]** Visually debug Entity Tile Locations
 - **[]** Visually debug enemy pathfinding
 - **[]** Fix player movement stickiness
-- **[]** 
+- **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
 - **[]** 

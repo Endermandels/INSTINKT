@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class PlayScreen extends ScreenAdapter {
@@ -16,13 +17,17 @@ public class PlayScreen extends ScreenAdapter {
     private SubState state;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Enemy> enemies;
+    private ArrayList<Enemy> enemiesToRemove;
+
+    private ArrayList<Integer[]> enemySpawnLocations;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
-    public final int TILE_COLS = 18;
+    public static final int TILE_COLS = 18;
 
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
+    public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
 
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
@@ -38,9 +43,15 @@ public class PlayScreen extends ScreenAdapter {
         player = new Player(game,0,0);
         gameObjects = new ArrayList<>();
         enemies = new ArrayList<>();
+        enemySpawnLocations = new ArrayList<>(Arrays.asList(
+                new Integer[]{0,-1},
+                new Integer[]{0,TILE_COLS},
+                new Integer[]{TILE_ROWS,TILE_COLS-1}
+        ));
+        enemiesToRemove = new ArrayList<>();
+
         gameObjects.add(player);
-        enemies.add(new Enemy(game, 1,0));
-        gameObjects.add(enemies.get(0));
+        spawnEnemy(0);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         assetsSpawner.spawnAllAssets();
@@ -132,6 +143,12 @@ public class PlayScreen extends ScreenAdapter {
 
     }
 
+    private void spawnEnemy(int spawnLocationIdx) {
+        enemies.add(new Enemy(game, enemySpawnLocations.get(spawnLocationIdx)[1]
+                ,enemySpawnLocations.get(spawnLocationIdx)[0], enemySpawnLocations));
+        gameObjects.add(enemies.get(0));
+    }
+
     @Override
     public void show() {
         Gdx.app.log("PlayScreen", "show");
@@ -143,9 +160,15 @@ public class PlayScreen extends ScreenAdapter {
             switch (state) {
                 case PLAYING:
                     player.update(tileMap);
+
                     for (Enemy enemy : enemies) {
-                        enemy.update(tileMap);
+                        if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
                     }
+                    for (Enemy enemy : enemiesToRemove) {
+                        enemies.remove(enemy);
+                    }
+                    enemiesToRemove.clear();
+
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
@@ -205,7 +228,7 @@ public class PlayScreen extends ScreenAdapter {
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
-                                , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
+                                , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                     }
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
