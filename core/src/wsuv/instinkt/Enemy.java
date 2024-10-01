@@ -83,26 +83,30 @@ public class Enemy extends GameObject {
             am.switchAnimState("RUN");
             switch (dir) {
                 case LEFT:
-                    if (game.validMove(tileMap, tileX - 1, tileY) || isSpawnTile(tileX-1, tileY))
+                    if (game.validMove(tileMap, tileX - 1, tileY) || isSpawnTile(tileX-1, tileY)) {
                         targetPos[0] = tileX - 1;
-                    movingHorizontal = true;
-                    flipped = true;
+                        movingHorizontal = true;
+                        flipped = true;
+                    }
                     break;
                 case RIGHT:
-                    if (game.validMove(tileMap, tileX + 1, tileY) || isSpawnTile(tileX+1, tileY))
+                    if (game.validMove(tileMap, tileX + 1, tileY) || isSpawnTile(tileX+1, tileY)) {
                         targetPos[0] = tileX + 1;
-                    movingHorizontal = true;
-                    flipped = false;
+                        movingHorizontal = true;
+                        flipped = false;
+                    }
                     break;
                 case UP:
-                    if (game.validMove(tileMap, tileX, tileY + 1) || isSpawnTile(tileX, tileY+1))
+                    if (game.validMove(tileMap, tileX, tileY + 1) || isSpawnTile(tileX, tileY+1)) {
                         targetPos[1] = tileY + 1;
-                    movingVertical = true;
+                        movingVertical = true;
+                    }
                     break;
                 case DOWN:
-                    if (game.validMove(tileMap, tileX, tileY - 1) || isSpawnTile(tileX, tileY-1))
+                    if (game.validMove(tileMap, tileX, tileY - 1) || isSpawnTile(tileX, tileY-1)) {
                         targetPos[1] = tileY - 1;
-                    movingVertical = true;
+                        movingVertical = true;
+                    }
                     break;
             }
         } else {
