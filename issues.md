@@ -21,8 +21,9 @@
 
 ## Open Issues ##
 
-- **[19]** Visually debug Entity Tile Locations (HUD)
-- **[20]** Visually debug enemy pathfinding (HUD)
+- **[19]** Stop enemy when attacking the player
+- **[20]** Visually debug Entity Tile Locations (HUD)
+- **[21]** Visually debug enemy pathfinding (HUD)
 
 ## Backlog ##
 
@@ -33,6 +34,7 @@
 - **[]** Create Squirrel enemy
 - **[]** Create Cobra enemy
 - **[]** Create enemy spawn formations
+- **[]** 
 - **[]** 
 - **[]** 
 - **[]** Fix player movement stickiness
