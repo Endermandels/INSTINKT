@@ -3,9 +3,11 @@ package wsuv.instinkt;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.util.ArrayList;
-
 public class Tile {
+
+    public enum DistanceType {PLAYER}
+
+    public static final float INF = 10000f;
 
     private TextureRegion img;
 
@@ -16,6 +18,8 @@ public class Tile {
     private int x;
     private int y;
 
+    private float[] distances; // For Dijkstra's Algorithm
+
     private boolean containsObstacle;
 
     public Tile(Game game, int x, int y, float imgX, float imgY, int ssRow, int ssCol) {
@@ -23,7 +27,11 @@ public class Tile {
         this.imgY = imgY;
         this.x = x;
         this.y = y;
+
         containsObstacle = false;
+        distances = new float[1];
+        setDistance(DistanceType.PLAYER, INF);
+
         Texture spriteSheetImg = game.am.get(Game.RSC_SS_GRASS_IMG);
         img = new TextureRegion(spriteSheetImg
                 , ssCol * PlayScreen.TILE_SIZE
@@ -58,5 +66,13 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public void setDistance(DistanceType dt, float val) {
+        distances[dt.ordinal()] = val;
+    }
+
+    public float getDistance(DistanceType dt) {
+        return distances[dt.ordinal()];
     }
 }

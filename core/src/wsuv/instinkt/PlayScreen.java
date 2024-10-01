@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
@@ -40,7 +38,7 @@ public class PlayScreen extends ScreenAdapter {
         this.game = game;
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
-        player = new Player(game,0,0);
+        player = new Player(game,6,10);
         gameObjects = new ArrayList<>();
         enemies = new ArrayList<>();
         enemySpawnLocations = new ArrayList<>(Arrays.asList(
@@ -55,6 +53,8 @@ public class PlayScreen extends ScreenAdapter {
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         assetsSpawner.spawnAllAssets();
+
+        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
 
         timer = 0f;
         paused = false;
@@ -143,6 +143,65 @@ public class PlayScreen extends ScreenAdapter {
 
     }
 
+    private ArrayList<Tile> getNeighbors(Tile tile, PriorityQueue<Tile> queue) {
+        ArrayList<Tile> neighbors = new ArrayList<>();
+
+        if (game.validMove(tileMap,tile.getX()-1, tile.getY())
+                && queue.contains(tileMap[tile.getY()][tile.getX()-1]))
+            neighbors.add(tileMap[tile.getY()][tile.getX()-1]);
+        if (game.validMove(tileMap,tile.getX()+1, tile.getY())
+                && queue.contains(tileMap[tile.getY()][tile.getX()+1]))
+            neighbors.add(tileMap[tile.getY()][tile.getX()+1]);
+        if (game.validMove(tileMap, tile.getX(), tile.getY()-1)
+                && queue.contains(tileMap[tile.getY()-1][tile.getX()]))
+            neighbors.add(tileMap[tile.getY()-1][tile.getX()]);
+        if (game.validMove(tileMap, tile.getX(), tile.getY()+1)
+                && queue.contains(tileMap[tile.getY()+1][tile.getX()]))
+            neighbors.add(tileMap[tile.getY()+1][tile.getX()]);
+
+        return neighbors;
+    }
+
+    /**
+     * Fill each tile in tileMap with values from tileX and tileY location using Dijkstra's Algorithm
+     * Ignore obstacle tiles
+     */
+    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
+        Tile source = tileMap[tileY][tileX];
+        source.setDistance(dt, 0f);
+        Comparator<Tile> comparator = new DistanceComparator(dt);
+        PriorityQueue<Tile> queue = new PriorityQueue<>(comparator);
+
+        for (Tile[] tiles : tileMap) {
+            for (Tile tile : tiles) {
+                if (!tile.equals(source)) tile.setDistance(dt, Tile.INF);
+                if (!tile.isObstacle()) queue.add(tile);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            Tile tile = queue.poll();
+
+            for (Tile neighbor : getNeighbors(tile, queue)) {
+                float pathDist = tile.getDistance(dt) + 1f; // Each path has a weight of 1 for now.
+                if (pathDist < neighbor.getDistance(dt)) {
+                    neighbor.setDistance(dt, pathDist);
+                    queue.remove(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        // Shows the algorithm at work
+        for (int y = TILE_ROWS-1; y >= 0; y--) {
+            for (int x = 0; x < TILE_COLS; x++) {
+                System.out.print(tileMap[y][x].getDistance(dt));
+                System.out.print(',');
+            }
+            System.out.println();
+        }
+    }
+
     private void spawnEnemy(int spawnLocationIdx) {
         enemies.add(new Enemy(game, enemySpawnLocations.get(spawnLocationIdx)[1]
                 ,enemySpawnLocations.get(spawnLocationIdx)[0], enemySpawnLocations));
@@ -159,7 +218,9 @@ public class PlayScreen extends ScreenAdapter {
         if (!paused || doStep) {
             switch (state) {
                 case PLAYING:
-                    player.update(tileMap);
+                    if (player.update(tileMap)) {
+                        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                    }
 
                     for (Enemy enemy : enemies) {
                         if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
@@ -241,6 +302,20 @@ public class PlayScreen extends ScreenAdapter {
         }
         hud.draw(game.batch);
         game.batch.end();
+    }
+}
+
+class DistanceComparator implements Comparator<Tile> {
+
+    Tile.DistanceType dt;
+
+    public DistanceComparator(Tile.DistanceType dt) {
+        this.dt = dt;
+    }
+
+    @Override
+    public int compare(Tile t1, Tile t2) {
+        return Float.compare(t1.getDistance(dt), t2.getDistance(dt));
     }
 }
 
