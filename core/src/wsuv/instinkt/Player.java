@@ -70,7 +70,12 @@ public class Player extends GameObject {
         targetTile = null;
     }
 
-    private void move(Tile[][] tileMap) {
+    /**
+     * @return Whether the player has changed tile position
+     */
+    private boolean move(Tile[][] tileMap) {
+        boolean onNewTile = false;
+
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
 
@@ -182,7 +187,10 @@ public class Player extends GameObject {
                     if (imgX < targetTile.getImgX()) {
                         // Moved passed the tile, center on the tile
                         imgX = targetTile.getImgX();
-                        tileX = targetTile.getX();
+                        if (tileX != targetTile.getX()) {
+                            onNewTile = true;
+                            tileX = targetTile.getX();
+                        }
 
                         targetTile = null;
                         movingHorizontal = false;
@@ -196,7 +204,10 @@ public class Player extends GameObject {
                     if (imgX > targetTile.getImgX()) {
                         // Moved passed the tile, center on the tile
                         imgX = targetTile.getImgX();
-                        tileX = targetTile.getX();
+                        if (tileX != targetTile.getX()) {
+                            onNewTile = true;
+                            tileX = targetTile.getX();
+                        }
 
                         targetTile = null;
                         movingHorizontal = false;
@@ -210,7 +221,10 @@ public class Player extends GameObject {
                     if (imgY > targetTile.getImgY()) {
                         // Moved passed the tile, center on the tile
                         imgY = targetTile.getImgY();
-                        tileY = targetTile.getY();
+                        if (tileY != targetTile.getY()) {
+                            onNewTile = true;
+                            tileY = targetTile.getY();
+                        }
 
                         targetTile = null;
                         movingVertical = false;
@@ -224,7 +238,10 @@ public class Player extends GameObject {
                     if (imgY < targetTile.getImgY()) {
                         // Moved passed the tile, center on the tile
                         imgY = targetTile.getImgY();
-                        tileY = targetTile.getY();
+                        if (tileY != targetTile.getY()) {
+                            onNewTile = true;
+                            tileY = targetTile.getY();
+                        }
 
                         targetTile = null;
                         movingVertical = false;
@@ -234,11 +251,15 @@ public class Player extends GameObject {
                     break;
             }
         }
+        return onNewTile;
     }
 
-    public void update(Tile[][] tileMap) {
+    /**
+     * @return Whether the player is on a new tile
+     */
+    public boolean update(Tile[][] tileMap) {
         am.update();
-        move(tileMap);
+        return move(tileMap);
     }
 
     public void setTakeInput(boolean takeInput) {

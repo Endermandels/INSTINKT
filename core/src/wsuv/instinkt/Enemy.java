@@ -3,10 +3,7 @@ package wsuv.instinkt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Enemy extends GameObject {
     private enum Direction {
@@ -70,14 +67,54 @@ public class Enemy extends GameObject {
         return false;
     }
 
+
+    private ArrayList<Tile> getNeighbors(Tile[][] tileMap, Tile tile) {
+        ArrayList<Tile> neighbors = new ArrayList<>();
+
+        if (game.validMove(tileMap,tile.getX()-1, tile.getY()))
+            neighbors.add(tileMap[tile.getY()][tile.getX()-1]);
+        if (game.validMove(tileMap,tile.getX()+1, tile.getY()))
+            neighbors.add(tileMap[tile.getY()][tile.getX()+1]);
+        if (game.validMove(tileMap, tile.getX(), tile.getY()-1))
+            neighbors.add(tileMap[tile.getY()-1][tile.getX()]);
+        if (game.validMove(tileMap, tile.getX(), tile.getY()+1))
+            neighbors.add(tileMap[tile.getY()+1][tile.getX()]);
+
+        return neighbors;
+    }
+
     /**
-     *
-     * @param tileMap
      * @return Whether the enemy should be removed
      */
     private boolean move(Tile[][] tileMap) {
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
+
+        if (tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS) {
+            Tile currentTile = tileMap[tileY][tileX];
+            Tile lowestTile = currentTile;
+            for (Tile tile : getNeighbors(tileMap, currentTile)) {
+                if (tile.getDistance(Tile.DistanceType.PLAYER) < lowestTile.getDistance(Tile.DistanceType.PLAYER)) {
+                    if ((movingHorizontal && tileY == tile.getY())
+                            || (movingVertical && tileX == tile.getX())
+                            || (!movingHorizontal && !movingVertical)) {
+                        lowestTile = tile;
+                    }
+                }
+            }
+            if (movingHorizontal && tileY == lowestTile.getY()) {
+                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
+                else dir = Direction.RIGHT;
+            } else if (movingVertical && tileX == lowestTile.getX()) {
+                if (lowestTile.getY() < tileY) dir = Direction.DOWN;
+                else dir = Direction.UP;
+            } else if (!movingHorizontal && !movingVertical) {
+                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
+                else if (lowestTile.getX() > tileX) dir = Direction.RIGHT;
+                else if (lowestTile.getY() < tileY) dir = Direction.DOWN;
+                else dir = Direction.UP;
+            }
+        }
 
         if (dir != null) {
             am.switchAnimState("RUN");
