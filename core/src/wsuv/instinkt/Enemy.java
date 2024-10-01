@@ -112,7 +112,8 @@ public class Enemy extends GameObject {
                 if (lowestTile.getX() < tileX) dir = Direction.LEFT;
                 else if (lowestTile.getX() > tileX) dir = Direction.RIGHT;
                 else if (lowestTile.getY() < tileY) dir = Direction.DOWN;
-                else dir = Direction.UP;
+                else if (lowestTile.getY() > tileY) dir = Direction.UP;
+                else dir = null;
             }
         }
 
