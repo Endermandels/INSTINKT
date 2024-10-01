@@ -48,7 +48,7 @@ public class Enemy extends GameObject {
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
 
-        imgSpeed = 200f;
+        imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
 
@@ -92,21 +92,27 @@ public class Enemy extends GameObject {
 
         if (tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS) {
             Tile currentTile = tileMap[tileY][tileX];
+            Tile lowestTile = currentTile;
             for (Tile tile : getNeighbors(tileMap, currentTile)) {
-                if (tile.getDistance(Tile.DistanceType.PLAYER) < currentTile.getDistance(Tile.DistanceType.PLAYER)) {
-                    if (movingHorizontal && tileY == tile.getY()) {
-                        if (tile.getX() < tileX) dir = Direction.LEFT;
-                        else dir = Direction.RIGHT;
-                    } else if (movingVertical && tileX == tile.getX()) {
-                        if (tile.getY() < tileY) dir = Direction.DOWN;
-                        else dir = Direction.UP;
-                    } else {
-                        if (tile.getX() < tileX) dir = Direction.LEFT;
-                        else if (tile.getX() > tileX) dir = Direction.RIGHT;
-                        else if (tile.getY() < tileY) dir = Direction.DOWN;
-                        else dir = Direction.UP;
+                if (tile.getDistance(Tile.DistanceType.PLAYER) < lowestTile.getDistance(Tile.DistanceType.PLAYER)) {
+                    if ((movingHorizontal && tileY == tile.getY())
+                            || (movingVertical && tileX == tile.getX())
+                            || (!movingHorizontal && !movingVertical)) {
+                        lowestTile = tile;
                     }
                 }
+            }
+            if (movingHorizontal && tileY == lowestTile.getY()) {
+                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
+                else dir = Direction.RIGHT;
+            } else if (movingVertical && tileX == lowestTile.getX()) {
+                if (lowestTile.getY() < tileY) dir = Direction.DOWN;
+                else dir = Direction.UP;
+            } else if (!movingHorizontal && !movingVertical) {
+                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
+                else if (lowestTile.getX() > tileX) dir = Direction.RIGHT;
+                else if (lowestTile.getY() < tileY) dir = Direction.DOWN;
+                else dir = Direction.UP;
             }
         }
 

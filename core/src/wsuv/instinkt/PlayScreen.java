@@ -193,13 +193,13 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         // Shows the algorithm at work
-        for (int y = TILE_ROWS-1; y >= 0; y--) {
-            for (int x = 0; x < TILE_COLS; x++) {
-                System.out.print(tileMap[y][x].getDistance(dt));
-                System.out.print(',');
-            }
-            System.out.println();
-        }
+//        for (int y = TILE_ROWS-1; y >= 0; y--) {
+//            for (int x = 0; x < TILE_COLS; x++) {
+//                System.out.print(tileMap[y][x].getDistance(dt));
+//                System.out.print(',');
+//            }
+//            System.out.println();
+//        }
     }
 
     private void spawnEnemy(int spawnLocationIdx) {
