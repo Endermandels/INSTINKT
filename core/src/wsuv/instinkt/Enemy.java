@@ -46,14 +46,15 @@ public class Enemy extends GameObject {
                 , 0.08f, 32, 32
         );
 
-        imgX = tileX * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
-        imgY = tileY * PlayScreen.TILE_SIZE * PlayScreen.TILE_SCALE;
+        imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
+        imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
 
         imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
 
         dir = null;
+        flipped = false;
 
         this.tileX = tileX;
         this.tileY = tileY;
@@ -74,10 +75,6 @@ public class Enemy extends GameObject {
 
     public TextureRegion getImg() {
         return am.getCurrentImage(flipped);
-    }
-
-    public AnimationManager getAm() {
-        return am;
     }
 
     public float getImgX() {

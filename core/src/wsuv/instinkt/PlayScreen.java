@@ -23,6 +23,7 @@ public class PlayScreen extends ScreenAdapter {
 
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
+    public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
 
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
@@ -205,7 +206,7 @@ public class PlayScreen extends ScreenAdapter {
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
-                                , TILE_SIZE * TILE_SCALE, TILE_SIZE * TILE_SCALE);
+                                , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                     }
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
