@@ -15,6 +15,7 @@ public class PlayScreen extends ScreenAdapter {
     private Player player;
     private SubState state;
     private ArrayList<GameObject> gameObjects;
+    private ArrayList<Enemy> enemies;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -36,7 +37,10 @@ public class PlayScreen extends ScreenAdapter {
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,0,0);
         gameObjects = new ArrayList<>();
+        enemies = new ArrayList<>();
         gameObjects.add(player);
+        enemies.add(new Enemy(game, 1,0));
+        gameObjects.add(enemies.get(0));
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         assetsSpawner.spawnAllAssets();
@@ -139,6 +143,9 @@ public class PlayScreen extends ScreenAdapter {
             switch (state) {
                 case PLAYING:
                     player.update(tileMap);
+                    for (Enemy enemy : enemies) {
+                        enemy.update(tileMap);
+                    }
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
