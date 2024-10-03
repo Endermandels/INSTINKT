@@ -2,6 +2,7 @@ package wsuv.instinkt;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -13,10 +14,10 @@ public class PlayScreen extends ScreenAdapter {
     private HUD hud;
     private Player player;
     private SubState state;
+    private BitmapFont debugFont;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
-
     private ArrayList<Integer[]> enemySpawnLocations;
 
     private Tile[][] tileMap;
@@ -39,6 +40,7 @@ public class PlayScreen extends ScreenAdapter {
     public PlayScreen(Game game) {
         this.game = game;
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,6,10);
         gameObjects = new ArrayList<>();
@@ -290,6 +292,19 @@ public class PlayScreen extends ScreenAdapter {
                         Tile tile = tileMap[row][col];
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
                                 , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                        if (showTileLocations) {
+                            float dist = tile.getDistance(Tile.DistanceType.PLAYER);
+                            String num;
+                            if (dist == Tile.INF) num = "~";
+                            else num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
+
+                            float clampedDist = Math.min(Math.max(dist, 0), 12);
+                            float redIntensity = clampedDist / 12.0f;
+
+                            debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
+                            debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE);
+                            debugFont.setColor(1, 1, 1, 1);  // Reset to white
+                        }
                     }
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
@@ -298,12 +313,14 @@ public class PlayScreen extends ScreenAdapter {
                     if (showTileLocations) {
                         if (obs instanceof Enemy) {
                             Enemy e = (Enemy) obs;
-                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG), e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE,
+                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
+                                    , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                         else if (obs instanceof Player) {
                             Player p = (Player) obs;
-                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG), p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE,
+                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
+                                    , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
