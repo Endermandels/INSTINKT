@@ -19,6 +19,7 @@ public class Game extends com.badlogic.gdx.Game {
     // Images
     public static final String RSC_GAMEOVER_IMG = "Images/gameover.png";
     public static final String RSC_PRESSAKEY_IMG = "Images/pressakey.png";
+    public static final String RSC_OVERLAY_IMG = "Images/Overlay Image.png";
 
     // Sprite Sheets
     public static final String RSC_SS_GRASS_IMG = "Images/Tileset Grass.png";
@@ -76,6 +77,7 @@ public class Game extends com.badlogic.gdx.Game {
         // Load Textures after the font...
         am.load(RSC_GAMEOVER_IMG, Texture.class);
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
+        am.load(RSC_OVERLAY_IMG, Texture.class);
         am.load(RSC_SS_GRASS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_SHADOW_IMG, Texture.class);
