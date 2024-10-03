@@ -12,6 +12,7 @@ public class Enemy extends GameObject {
 
     private Game game;
     private AnimationManager am;
+    private Stats stats;
     private ArrayList<Integer[]> enemySpawnLocations;
 
     private float imgX;
@@ -44,6 +45,8 @@ public class Enemy extends GameObject {
                 }}
                 , 0.08f, 32, 32
         );
+
+        stats = new Stats(50, 10, 400L);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -226,5 +229,9 @@ public class Enemy extends GameObject {
 
     public int getTileY() {
         return tileY;
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 }

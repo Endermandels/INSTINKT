@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
+import java.util.*;
 
 
 /**
@@ -299,5 +296,9 @@ public class HUD {
         for(HUDViewCommand c : hudData.values()) {
             c.vis = v;
         }
+    }
+
+    public HashMap<String, HUDViewCommand> getHudData() {
+        return hudData;
     }
 }

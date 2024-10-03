@@ -19,6 +19,7 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
     private ArrayList<Integer[]> enemySpawnLocations;
+    private ArrayList<GameObject> debugImages;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -36,6 +37,7 @@ public class PlayScreen extends ScreenAdapter {
     private boolean doStep; // Stepping through update cycles while paused
 
     private boolean showTileLocations;
+    private boolean showEnemyStats;
 
     public PlayScreen(Game game) {
         this.game = game;
@@ -44,6 +46,7 @@ public class PlayScreen extends ScreenAdapter {
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,6,10);
         gameObjects = new ArrayList<>();
+        debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
         enemySpawnLocations = new ArrayList<>(Arrays.asList(
                 new Integer[]{0,-1},
@@ -65,6 +68,7 @@ public class PlayScreen extends ScreenAdapter {
         doStep = false;
 
         showTileLocations = false;
+        showEnemyStats = false;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -135,6 +139,28 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // register build-in view commands...
+        hud.registerView("HP:", new HUDViewCommand(HUDViewCommand.Visibility.WHEN_OPEN) {
+            @Override
+            public String execute(boolean consoleIsOpen) {
+                return Integer.toString(player.getStats().getHp());
+            }
+        });
+
+
+        hud.registerAction("stats", new HUDActionCommand() {
+            @Override
+            public String execute(String[] cmd) {
+                HUDViewCommand.Visibility v = hud.getHudData().get("HP:").nextVisiblityState();
+                showEnemyStats = !showEnemyStats;
+                return "states visibility: " + v;
+            }
+
+            public String help(String[] cmd) {
+                return "toggle player stats visibility always <-> in console";
+            }
+        });
+
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
         // the HUD's input controls. Do that by using an InputMultiplexer
@@ -193,15 +219,6 @@ public class PlayScreen extends ScreenAdapter {
                 }
             }
         }
-
-        // Shows the algorithm at work
-//        for (int y = TILE_ROWS-1; y >= 0; y--) {
-//            for (int x = 0; x < TILE_COLS; x++) {
-//                System.out.print(tileMap[y][x].getDistance(dt));
-//                System.out.print(',');
-//            }
-//            System.out.println();
-//        }
     }
 
     private void spawnEnemy(int spawnLocationIdx) {
@@ -220,7 +237,7 @@ public class PlayScreen extends ScreenAdapter {
         if (!paused || doStep) {
             switch (state) {
                 case PLAYING:
-                    if (player.update(tileMap)) {
+                    if (player.update(tileMap, enemies)) {
                         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
                     }
 
@@ -326,7 +343,20 @@ public class PlayScreen extends ScreenAdapter {
                     }
                     game.batch.draw(img, obs.getImgX(), obs.getImgY()
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                    if (showEnemyStats) {
+                        if (obs instanceof Enemy) {
+                            debugImages.add(obs);
+                        }
+                    }
                 }
+                for (GameObject d : debugImages) {
+                    if (d instanceof Enemy) {
+                        Enemy e = (Enemy) d;
+                        debugFont.draw(game.batch, "HP: " + e.getStats().getHp(),
+                                e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2);
+                    }
+                }
+                debugImages.clear();
                 break;
         }
         hud.draw(game.batch);
