@@ -34,6 +34,8 @@ public class PlayScreen extends ScreenAdapter {
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
 
+    private boolean showTileLocations;
+
     public PlayScreen(Game game) {
         this.game = game;
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
@@ -59,6 +61,8 @@ public class PlayScreen extends ScreenAdapter {
         timer = 0f;
         paused = false;
         doStep = false;
+
+        showTileLocations = false;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -114,18 +118,14 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
-        // Animation - Change the animation of the player to specified state
-        hud.registerAction("anim", new HUDActionCommand() {
-            static final String help = "usage: anim <state>";
+        // Tile Locations - Show the tile location of each moving entity
+        hud.registerAction("tl", new HUDActionCommand() {
+            static final String help = "Show tile location of each moving entity";
 
             @Override
             public String execute(String[] cmd) {
-                try {
-                    player.getAm().switchAnimState(cmd[1].toUpperCase());
-                    return "ok!";
-                } catch (Exception e) {
-                    return "available states: IDLE, RUN, SPRAY, HURT, DEAD";
-                }
+                showTileLocations = !showTileLocations;
+                return "ok!";
             }
 
             public String help(String[] cmd) {
@@ -295,6 +295,18 @@ public class PlayScreen extends ScreenAdapter {
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
                 for (GameObject obs : gameObjects) {
                     TextureRegion img = obs.getImg();
+                    if (showTileLocations) {
+                        if (obs instanceof Enemy) {
+                            Enemy e = (Enemy) obs;
+                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG), e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE,
+                                    TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                        }
+                        else if (obs instanceof Player) {
+                            Player p = (Player) obs;
+                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG), p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE,
+                                    TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                        }
+                    }
                     game.batch.draw(img, obs.getImgX(), obs.getImgY()
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
                 }
