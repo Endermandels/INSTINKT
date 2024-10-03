@@ -207,8 +207,12 @@ public class Enemy extends GameObject {
     }
 
     public boolean update(Tile[][] tileMap) {
+        boolean toRemove = false;
+
         am.update();
-        return move(tileMap);
+        if (move(tileMap)) toRemove = true;
+        if (stats.getHp() <= 0) toRemove = true;
+        return toRemove;
     }
 
     public TextureRegion getImg() {

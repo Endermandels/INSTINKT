@@ -246,6 +246,7 @@ public class PlayScreen extends ScreenAdapter {
                     }
                     for (Enemy enemy : enemiesToRemove) {
                         enemies.remove(enemy);
+                        gameObjects.remove(enemy);
                     }
                     enemiesToRemove.clear();
 
