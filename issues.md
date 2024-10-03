@@ -24,20 +24,23 @@
 
 ## Open Issues ##
 
+- **[22]** Add melee damage and HP system
+- **[23]** Create BASIC enemy spawn formations
+- **[24]** Create Squirrel enemy
+- **[25]** Create Cobra enemy
 
 ## Backlog ##
 
-- **[]** Change Entity Tile locations to center of Tile, instead of bottom left?
-- **[]** Add melee damage and HP system
+- **[]** 
+- **[]** 
+- **[]** 
+- **[]** 
 - **[]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[]** Create Spray class and allow player to use the spray ability
-- **[]** Create Squirrel enemy
-- **[]** Create Cobra enemy
-- **[]** Create enemy spawn formations
 - **[]** 
 - **[]** 
-- **[]** 
-- **[]** Fix player movement stickiness
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
+- **[]** Fix player movement stickiness
+- **[]** Change Entity Tile locations to center of Tile, instead of bottom left?
