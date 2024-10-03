@@ -20,10 +20,10 @@
 - **[18]** Add enemy pathfinding using Dijkstra's Algorithm
 - **[19]** Stop enemy when attacking the player
 - **[20]** Visually debug Entity Tile Locations (HUD)
+- **[21]** Visually debug enemy pathfinding (HUD)
 
 ## Open Issues ##
 
-- **[21]** Visually debug enemy pathfinding (HUD)
 
 ## Backlog ##
 
