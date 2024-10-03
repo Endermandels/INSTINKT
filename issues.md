@@ -21,10 +21,10 @@
 - **[19]** Stop enemy when attacking the player
 - **[20]** Visually debug Entity Tile Locations (HUD)
 - **[21]** Visually debug enemy pathfinding (HUD)
+- **[22]** Add melee damage and HP system
 
 ## Open Issues ##
 
-- **[22]** Add melee damage and HP system
 - **[23]** Create BASIC enemy spawn formations
 - **[24]** Create Squirrel enemy
 - **[25]** Create Cobra enemy

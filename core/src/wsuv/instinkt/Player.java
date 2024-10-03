@@ -14,6 +14,7 @@ public class Player extends GameObject {
 
     private Game game;
     private AnimationManager am;
+    private Stats stats;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -48,6 +49,8 @@ public class Player extends GameObject {
                     }}
                 , 0.08f, 32, 32
         );
+
+        stats = new Stats(100, 20, 400L);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -254,12 +257,26 @@ public class Player extends GameObject {
         return onNewTile;
     }
 
+    public void collision(ArrayList<Enemy> enemies) {
+        for (Enemy e : enemies) {
+            if (e.getTileX() == tileX && e.getTileY() == tileY) {
+                // Collision!  Perform attack
+                stats.getAttacked(e.getStats());
+                e.getStats().getAttacked(stats);
+                break;
+            }
+        }
+    }
+
     /**
      * @return Whether the player is on a new tile
      */
-    public boolean update(Tile[][] tileMap) {
+    public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies) {
+        boolean onNewTile;
         am.update();
-        return move(tileMap);
+        onNewTile = move(tileMap);
+        collision(enemies);
+        return onNewTile;
     }
 
     public void setTakeInput(boolean takeInput) {
@@ -288,5 +305,9 @@ public class Player extends GameObject {
 
     public int getTileY() {
         return tileY;
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 }
