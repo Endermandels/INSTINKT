@@ -239,6 +239,8 @@ public class PlayScreen extends ScreenAdapter {
                     }
                     enemiesToRemove.clear();
 
+                    enemySpawner.update();
+
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
