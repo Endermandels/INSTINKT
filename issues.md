@@ -25,10 +25,10 @@
 - **[23]** Create BASIC enemy spawn formations
 - **[24]** Create Squirrel enemy
 - **[25]** Create Cobra enemy
+- **[26]** Handle Player death (Game Over and restart)
 
 ## Open Issues ##
 
-- **[26]** Handle Player death (Game Over and restart)
 - **[27]** Entity death animation
 - **[28]** Create Player HP display
 - **[29]** Create Enemies HP display 
