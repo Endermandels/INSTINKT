@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.*;
 
 public class Enemy extends GameObject {
+    private enum SubState {
+        AGRO, // Target Player
+        DEAD  // Play death animation
+    }
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
@@ -48,6 +53,9 @@ public class Enemy extends GameObject {
     private boolean movingVertical;
     private boolean flipped;
     private Direction dir;
+
+    private boolean finishedDeathAnimation;
+    private long timeFinishedDeathAnimation;
 
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations) {
@@ -119,6 +127,9 @@ public class Enemy extends GameObject {
 
         movingHorizontal = false;
         movingVertical = false;
+
+        finishedDeathAnimation = false;
+        timeFinishedDeathAnimation = -1L;
 
         this.dir = dir;
         flipped = false;
@@ -230,6 +241,7 @@ public class Enemy extends GameObject {
                         tileX = targetPos[0];
 
                         movingHorizontal = false;
+                        if (isSpawnTile(tileX, tileY)) return true;
                     }
                     break;
                 case RIGHT:
@@ -253,6 +265,7 @@ public class Enemy extends GameObject {
                         tileY = targetPos[1];
 
                         movingVertical = false;
+                        if (isSpawnTile(tileX, tileY)) return true;
                     }
                     break;
                 case DOWN:
@@ -264,6 +277,7 @@ public class Enemy extends GameObject {
                         tileY = (int) targetPos[1];
 
                         movingVertical = false;
+                        if (isSpawnTile(tileX, tileY)) return true;
                     }
                     break;
             }
@@ -275,8 +289,20 @@ public class Enemy extends GameObject {
         boolean toRemove = false;
 
         am.update();
-        if (move(tileMap)) toRemove = true;
-        if (stats.getHp() <= 0) toRemove = true;
+
+        if (stats.isDead()) {
+            am.switchAnimState("DEAD");
+            am.setOneShot(true);
+            if (am.isFinished()) {
+                if(!finishedDeathAnimation) {
+                    finishedDeathAnimation = true;
+                    timeFinishedDeathAnimation = System.currentTimeMillis();
+                }
+                if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
+            }
+        } else {
+            if (move(tileMap)) toRemove = true;
+        }
         return toRemove;
     }
 
