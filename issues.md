@@ -28,14 +28,17 @@
 
 ## Open Issues ##
 
+- **[26]** Handle Player death (Game Over and restart)
+- **[27]** Entity death animation
+- **[28]** Create Player HP display
+- **[29]** Create Enemies HP display 
+- **[30]** Add HUD command for setting player stats (HP, atk, etc.)
+- **[31]** Create visual feedback for taking damage
 
 ## Backlog ##
 
 - **[]** 
 - **[]** 
-- **[]** Create HP display 
-- **[]** Create Visual feedback for getting hit by melee damage
-- **[]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[]** Create Spray class and allow player to use the spray ability
 - **[]** 
 - **[]** 
