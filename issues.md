@@ -22,10 +22,10 @@
 - **[20]** Visually debug Entity Tile Locations (HUD)
 - **[21]** Visually debug enemy pathfinding (HUD)
 - **[22]** Add melee damage and HP system
+- **[23]** Create BASIC enemy spawn formations
 
 ## Open Issues ##
 
-- **[23]** Create BASIC enemy spawn formations
 - **[24]** Create Squirrel enemy
 - **[25]** Create Cobra enemy
 
@@ -33,8 +33,8 @@
 
 - **[]** 
 - **[]** 
-- **[]** 
-- **[]** 
+- **[]** Create HP display 
+- **[]** Create Visual feedback for getting hit by melee damage
 - **[]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[]** Create Spray class and allow player to use the spray ability
 - **[]** 

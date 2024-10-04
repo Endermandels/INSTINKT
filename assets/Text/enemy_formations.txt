@@ -1,0 +1,15 @@
+1000
+fox bleft
+fox bleft
+fox bright
+fox top
+
+500
+fox bright
+fox bleft
+fox bright
+fox bright
+fox top
+fox bright
+fox bright
+fox bleft

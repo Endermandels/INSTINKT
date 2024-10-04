@@ -1,7 +1,13 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.Gdx;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Spawns enemies during each wave.
@@ -10,13 +16,29 @@ import java.util.Arrays;
  */
 public class EnemySpawner {
 
-    private enum SpawnLocation {BLEFT, BRIGHT, TOP}
+    private enum SpawnLocation {
+        BLEFT, BRIGHT, TOP;
+
+        public static SpawnLocation fromString(String location) {
+            switch (location.toLowerCase()) {
+                case "bleft":
+                    return BLEFT;
+                case "bright":
+                    return BRIGHT;
+                case "top":
+                    return TOP;
+                default:
+                    throw new IllegalArgumentException("Unknown spawn location: " + location);
+            }
+        }
+    }
 
     private Game game;
     private ArrayList<Enemy> enemies;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Integer[]> enemySpawnLocations;
     private EnemyFormation formation;
+    private Map<Integer, EnemyFormation> formationsMap = new HashMap<>();
 
     private long lastSpawn;
 
@@ -30,19 +52,70 @@ public class EnemySpawner {
                 new Integer[]{PlayScreen.TILE_ROWS,PlayScreen.TILE_COLS-1}
         ));
 
-        formation = new EnemyFormation(1000L, new ArrayList<>(Arrays.asList(
-                newEnemyAtLocation(SpawnLocation.BLEFT),
-                newEnemyAtLocation(SpawnLocation.BLEFT),
-                newEnemyAtLocation(SpawnLocation.BLEFT),
-                newEnemyAtLocation(SpawnLocation.BRIGHT)
-        )));
+        readFormationsFile();
+        formation = formationsMap.get(1);
 
         lastSpawn = 0L;
     }
 
+    private void readFormationsFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Text/enemy_formations.txt"))) {
+            String line;
+            Integer currentFrequency = null;
+            ArrayList<Enemy> currentEnemiesToSpawn = new ArrayList<>();
+
+            int idx = 0;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+
+                // If the line contains only digits, it's a frequency
+                if (line.matches("\\d+")) {
+                    if (currentFrequency != null) {
+                        // Store the previous formation before starting a new one
+                        formationsMap.put(idx++, new EnemyFormation(currentFrequency, new ArrayList<>(currentEnemiesToSpawn)));
+                    }
+                    // Start a new formation
+                    currentFrequency = Integer.parseInt(line);
+                    currentEnemiesToSpawn.clear();
+                } else {
+                    // Split the line and extract the spawn location (ignoring the enemy type for now)
+                    String[] parts = line.split(" ");
+                    if (parts.length > 1) {
+                        String spawnLocationStr = parts[1];
+                        SpawnLocation spawnLocation = SpawnLocation.fromString(spawnLocationStr);
+                        currentEnemiesToSpawn.add(newEnemyAtLocation(spawnLocation));
+                    }
+                }
+            }
+
+            // Store the last formation
+            if (currentFrequency != null) {
+                formationsMap.put(idx, new EnemyFormation(currentFrequency, currentEnemiesToSpawn));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Gdx.app.exit();
+            System.exit(-1);
+        }
+    }
+
     private Enemy newEnemyAtLocation(SpawnLocation sl) {
+        Enemy.Direction dir = Enemy.Direction.RIGHT;
+        switch (sl) {
+            case BLEFT:
+                dir = Enemy.Direction.RIGHT;
+                break;
+            case BRIGHT:
+                dir = Enemy.Direction.LEFT;
+                break;
+            case TOP:
+                dir = Enemy.Direction.DOWN;
+                break;
+        }
         return new Enemy(game, enemySpawnLocations.get(sl.ordinal())[1]
-                ,enemySpawnLocations.get(sl.ordinal())[0], enemySpawnLocations);
+                ,enemySpawnLocations.get(sl.ordinal())[0], dir, enemySpawnLocations);
     }
 
     private void spawnEnemy(Enemy enemy) {
