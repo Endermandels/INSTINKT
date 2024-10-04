@@ -28,6 +28,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_BERRIES_IMG = "Images/TX Berries.png";
     public static final String RSC_SS_SKUNK_IMG = "Images/Sprite Sheet Skunk.png";
     public static final String RSC_SS_FOX_IMG = "Images/Fox Sprite Sheet.png";
+    public static final String RSC_SS_SQUIRREL_IMG = "Images/Squirrel Sprite Sheet.png";
 
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
@@ -84,6 +85,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_BERRIES_IMG, Texture.class);
         am.load(RSC_SS_SKUNK_IMG, Texture.class);
         am.load(RSC_SS_FOX_IMG, Texture.class);
+        am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));

@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Tile {
 
-    public enum DistanceType {PLAYER}
+    public enum DistanceType {
+        PLAYER,
+        BERRIES
+    }
 
     public static final float INF = 10000f;
 
@@ -29,8 +32,9 @@ public class Tile {
         this.y = y;
 
         containsObstacle = false;
-        distances = new float[1];
+        distances = new float[2];
         setDistance(DistanceType.PLAYER, INF);
+        setDistance(DistanceType.BERRIES, INF);
 
         Texture spriteSheetImg = game.am.get(Game.RSC_SS_GRASS_IMG);
         img = new TextureRegion(spriteSheetImg

@@ -16,12 +16,14 @@ public class AssetsSpawner {
     Tile[][] tileMap;
     ArrayList<GameObject> gameObjects;
     HashMap<String, HashMap<Integer, ArrayList<Integer[]>>> ssMaps;
+    ArrayList<Integer[]> importantLocations;
 
     public AssetsSpawner(Game game, Tile[][] tileMap, ArrayList<GameObject> gameObjects) {
         this.game = game;
         this.tileMap = tileMap;
         this.gameObjects = gameObjects;
         ssMaps = new HashMap<>();
+        importantLocations = new ArrayList<>();
     }
 
 
@@ -180,6 +182,12 @@ public class AssetsSpawner {
                     substr = line.substring(x,x+2);
                     obsType = Integer.parseInt(substr);
 
+                    // This is the berry pile
+                    if (obsType == 5) {
+                        System.out.println("It should work");
+                        importantLocations.add(new Integer[]{x/3, y});
+                    }
+
                     if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_BERRIES_IMG);
                 }
                 y--;
@@ -191,9 +199,10 @@ public class AssetsSpawner {
         }
     }
 
-    public void spawnAllAssets() {
+    public ArrayList<Integer[]> spawnAllAssets() {
         populateTileMap();
         berryObstacles();
         plantObstacles();
+        return importantLocations;
     }
 }

@@ -54,9 +54,11 @@ public class PlayScreen extends ScreenAdapter {
         gameObjects.add(player);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
-        assetsSpawner.spawnAllAssets();
+        ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
+        Integer[] berryPile = importantLocations.get(0);
 
         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+        fillDijkstraFromTile(Tile.DistanceType.BERRIES, berryPile[0], berryPile[1]);
 
         timer = 0f;
         paused = false;
@@ -198,7 +200,7 @@ public class PlayScreen extends ScreenAdapter {
         for (Tile[] tiles : tileMap) {
             for (Tile tile : tiles) {
                 if (!tile.equals(source)) tile.setDistance(dt, Tile.INF);
-                if (!tile.isObstacle()) queue.add(tile);
+                if (!tile.isObstacle() || tile.equals(source)) queue.add(tile);
             }
         }
 
@@ -303,9 +305,17 @@ public class PlayScreen extends ScreenAdapter {
                                 , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         if (showTileLocations) {
                             float dist = tile.getDistance(Tile.DistanceType.PLAYER);
+                            float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
                             String num;
-                            if (dist == Tile.INF) num = "~";
-                            else num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
+                            String berryNum;
+                            if (dist == Tile.INF) {
+                                num = "~";
+                                berryNum = "~";
+                            }
+                            else {
+                                num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
+                                berryNum = Float.toString(berryDist);
+                            }
 
                             float clampedDist = Math.min(Math.max(dist, 0), 12);
                             float redIntensity = clampedDist / 12.0f;
@@ -313,6 +323,7 @@ public class PlayScreen extends ScreenAdapter {
                             debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
                             debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE);
                             debugFont.setColor(1, 1, 1, 1);  // Reset to white
+                            debugFont.draw(game.batch, berryNum, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE/2f);
                         }
                     }
                 // Draw Game Objects
