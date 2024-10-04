@@ -1,7 +1,7 @@
 1000
 fox bleft
 fox bleft
-fox bright
+cbr bright
 sql top
 
 500
