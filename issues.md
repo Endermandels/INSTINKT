@@ -24,10 +24,10 @@
 - **[22]** Add melee damage and HP system
 - **[23]** Create BASIC enemy spawn formations
 - **[24]** Create Squirrel enemy
+- **[25]** Create Cobra enemy
 
 ## Open Issues ##
 
-- **[25]** Create Cobra enemy
 
 ## Backlog ##
 

@@ -11,8 +11,9 @@ public class Enemy extends GameObject {
     }
 
     public enum Type {
-        FOX,
-        SQL; // Squirrel
+        FOX, // Fox
+        SQL, // Squirrel
+        CBR; // Cobra
 
         public static Enemy.Type fromString(String type) {
             switch (type.toLowerCase()) {
@@ -20,6 +21,8 @@ public class Enemy extends GameObject {
                     return FOX;
                 case "sql":
                     return SQL;
+                case "cbr":
+                    return CBR;
                 default:
                     throw new IllegalArgumentException("Unknown enemy type: " + type);
             }
@@ -91,6 +94,23 @@ public class Enemy extends GameObject {
                 stats = new Stats(10, 0, 200L);
                 imgSpeed = 500f;
                 targetType = Tile.DistanceType.BERRIES;
+                break;
+            case CBR:
+                am = new AnimationManager(game.am.get(Game.RSC_SS_COBRA_IMG)
+                        , new ArrayList<>(Arrays.asList(8,8,6,4,6))
+                        , new HashMap<>() {{
+                    put("IDLE", 0);
+                    put("RUN", 1);
+                    put("ATTACK", 2);
+                    put("HURT", 3);
+                    put("DEAD", 4);
+                }}
+                        , 0.08f, 32, 32
+                );
+
+                stats = new Stats(70, 5, 400L);
+                imgSpeed = 100f;
+                targetType = Tile.DistanceType.PLAYER;
                 break;
         }
 
