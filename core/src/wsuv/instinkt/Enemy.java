@@ -30,6 +30,7 @@ public class Enemy extends GameObject {
     private AnimationManager am;
     private Stats stats;
     private Type type;
+    private Tile.DistanceType targetType;
     private ArrayList<Integer[]> enemySpawnLocations;
 
     private float imgX;
@@ -70,6 +71,7 @@ public class Enemy extends GameObject {
 
                 stats = new Stats(50, 10, 400L);
                 imgSpeed = 400f;
+                targetType = Tile.DistanceType.PLAYER;
                 break;
             case SQL:
                 am = new AnimationManager(game.am.get(Game.RSC_SS_SQUIRREL_IMG)
@@ -88,6 +90,7 @@ public class Enemy extends GameObject {
 
                 stats = new Stats(10, 0, 200L);
                 imgSpeed = 500f;
+                targetType = Tile.DistanceType.BERRIES;
                 break;
         }
 
@@ -139,7 +142,7 @@ public class Enemy extends GameObject {
             Tile currentTile = tileMap[tileY][tileX];
             Tile lowestTile = currentTile;
             for (Tile tile : getNeighbors(tileMap, currentTile)) {
-                if (tile.getDistance(Tile.DistanceType.PLAYER) < lowestTile.getDistance(Tile.DistanceType.PLAYER)) {
+                if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
                     if ((movingHorizontal && tileY == tile.getY())
                             || (movingVertical && tileX == tile.getX())
                             || (!movingHorizontal && !movingVertical)) {
