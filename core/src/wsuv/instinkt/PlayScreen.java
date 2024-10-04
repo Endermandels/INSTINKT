@@ -13,12 +13,12 @@ public class PlayScreen extends ScreenAdapter {
     private Game game;
     private HUD hud;
     private Player player;
+    private EnemySpawner enemySpawner;
     private SubState state;
     private BitmapFont debugFont;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
-    private ArrayList<Integer[]> enemySpawnLocations;
     private ArrayList<GameObject> debugImages;
 
     private Tile[][] tileMap;
@@ -48,15 +48,10 @@ public class PlayScreen extends ScreenAdapter {
         gameObjects = new ArrayList<>();
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
-        enemySpawnLocations = new ArrayList<>(Arrays.asList(
-                new Integer[]{0,-1},
-                new Integer[]{0,TILE_COLS},
-                new Integer[]{TILE_ROWS,TILE_COLS-1}
-        ));
         enemiesToRemove = new ArrayList<>();
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects);
 
         gameObjects.add(player);
-        spawnEnemy(0);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         assetsSpawner.spawnAllAssets();
@@ -221,12 +216,6 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
-    private void spawnEnemy(int spawnLocationIdx) {
-        enemies.add(new Enemy(game, enemySpawnLocations.get(spawnLocationIdx)[1]
-                ,enemySpawnLocations.get(spawnLocationIdx)[0], enemySpawnLocations));
-        gameObjects.add(enemies.get(0));
-    }
-
     @Override
     public void show() {
         Gdx.app.log("PlayScreen", "show");
@@ -249,6 +238,8 @@ public class PlayScreen extends ScreenAdapter {
                         gameObjects.remove(enemy);
                     }
                     enemiesToRemove.clear();
+
+                    enemySpawner.update();
 
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {

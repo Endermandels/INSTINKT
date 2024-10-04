@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.*;
 
 public class Enemy extends GameObject {
-    private enum Direction {
+    public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
@@ -28,7 +28,7 @@ public class Enemy extends GameObject {
     private boolean flipped;
     private Direction dir;
 
-    public Enemy(Game game, int tileX, int tileY, ArrayList<Integer[]> enemySpawnLocations) {
+    public Enemy(Game game, int tileX, int tileY, Direction dir, ArrayList<Integer[]> enemySpawnLocations) {
         super(null, 0, 0, 20);
         this.game = game;
         this.enemySpawnLocations = enemySpawnLocations;
@@ -55,7 +55,7 @@ public class Enemy extends GameObject {
         movingHorizontal = false;
         movingVertical = false;
 
-        dir = Direction.RIGHT;
+        this.dir = dir;
         flipped = false;
 
         this.tileX = tileX;
