@@ -303,4 +303,8 @@ public class Enemy extends GameObject {
     public Stats getStats() {
         return stats;
     }
+
+    public Enemy clone() {
+        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations);
+    }
 }

@@ -218,6 +218,19 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
+    private void reset() {
+        player.reset();
+        for (Enemy e : enemies) {
+            gameObjects.remove(e);
+        }
+        enemies.clear();
+        enemiesToRemove.clear();
+
+        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+        gameObjects.add(player);
+        enemySpawner.setFormation(0);
+    }
+
     @Override
     public void show() {
         Gdx.app.log("PlayScreen", "show");
@@ -230,6 +243,14 @@ public class PlayScreen extends ScreenAdapter {
                 case PLAYING:
                     if (player.update(tileMap, enemies)) {
                         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                    }
+
+                    if (player.getStats().isDead()) {
+                        state = SubState.GAME_OVER;
+                        timer = 0;
+                        game.battleMusic.stop();
+                        game.menuMusic.play();
+                        break;
                     }
 
                     for (Enemy enemy : enemies) {
@@ -262,6 +283,7 @@ public class PlayScreen extends ScreenAdapter {
                 case READY:
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
+                            reset();
                             state = SubState.PLAYING;
                             game.menuMusic.stop();
                             game.battleMusic.play();
@@ -328,27 +350,27 @@ public class PlayScreen extends ScreenAdapter {
                     }
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
-                for (GameObject obs : gameObjects) {
-                    TextureRegion img = obs.getImg();
+                for (GameObject ob : gameObjects) {
+                    TextureRegion img = ob.getImg();
                     if (showTileLocations) {
-                        if (obs instanceof Enemy) {
-                            Enemy e = (Enemy) obs;
+                        if (ob instanceof Enemy) {
+                            Enemy e = (Enemy) ob;
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
                                     , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
-                        else if (obs instanceof Player) {
-                            Player p = (Player) obs;
+                        else if (ob instanceof Player) {
+                            Player p = (Player) ob;
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
                                     , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
-                    game.batch.draw(img, obs.getImgX(), obs.getImgY()
+                    game.batch.draw(img, ob.getImgX(), ob.getImgY()
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
                     if (showEnemyStats) {
-                        if (obs instanceof Enemy) {
-                            debugImages.add(obs);
+                        if (ob instanceof Enemy) {
+                            debugImages.add(ob);
                         }
                     }
                 }

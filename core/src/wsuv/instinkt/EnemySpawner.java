@@ -134,6 +134,11 @@ public class EnemySpawner {
         }
     }
 
+    public void setFormation(int idx) {
+        lastSpawn = System.currentTimeMillis();
+        formation = formationsMap.get(idx).reset();
+    }
+
 }
 
 class EnemyFormation {
@@ -149,10 +154,15 @@ class EnemyFormation {
     }
 
     public Enemy getNextEnemy() {
-        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx++) : null;
+        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx++).clone() : null;
     }
 
     public long getFrequency() {
         return frequency;
+    }
+
+    public EnemyFormation reset() {
+        idx = 0;
+        return this;
     }
 }

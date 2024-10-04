@@ -22,6 +22,8 @@ public class Player extends GameObject {
     private float imgSpeed;
 
     // Tile coordinates
+    private int startTileX;
+    private int startTileY;
     private int tileX;
     private int tileY;
 
@@ -68,6 +70,8 @@ public class Player extends GameObject {
 
         takeInput = true;
 
+        this.startTileX = tileX;
+        this.startTileY = tileY;
         this.tileX = tileX;
         this.tileY = tileY;
         targetTile = null;
@@ -277,6 +281,23 @@ public class Player extends GameObject {
         onNewTile = move(tileMap);
         collision(enemies);
         return onNewTile;
+    }
+
+    public void reset() {
+        stats.reset();
+        tileX = startTileX;
+        tileY = startTileY;
+        imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
+        imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
+        targetTile = null;
+        dir = null;
+        movingVertical = false;
+        movingHorizontal = false;
+        pressedButtons.put(Direction.UP, -1L);
+        pressedButtons.put(Direction.DOWN, -1L);
+        pressedButtons.put(Direction.LEFT, -1L);
+        pressedButtons.put(Direction.RIGHT, -1L);
+        am.switchAnimState("IDLE");
     }
 
     public void setTakeInput(boolean takeInput) {
