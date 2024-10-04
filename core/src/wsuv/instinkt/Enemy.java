@@ -10,9 +10,26 @@ public class Enemy extends GameObject {
         UP, DOWN, LEFT, RIGHT
     }
 
+    public enum Type {
+        FOX,
+        SQL; // Squirrel
+
+        public static Enemy.Type fromString(String type) {
+            switch (type.toLowerCase()) {
+                case "fox":
+                    return FOX;
+                case "sql":
+                    return SQL;
+                default:
+                    throw new IllegalArgumentException("Unknown enemy type: " + type);
+            }
+        }
+    }
+
     private Game game;
     private AnimationManager am;
     private Stats stats;
+    private Type type;
     private ArrayList<Integer[]> enemySpawnLocations;
 
     private float imgX;
@@ -28,30 +45,55 @@ public class Enemy extends GameObject {
     private boolean flipped;
     private Direction dir;
 
-    public Enemy(Game game, int tileX, int tileY, Direction dir, ArrayList<Integer[]> enemySpawnLocations) {
+    public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
+                 ArrayList<Integer[]> enemySpawnLocations) {
         super(null, 0, 0, 20);
         this.game = game;
+        this.type = type;
         this.enemySpawnLocations = enemySpawnLocations;
-        am = new AnimationManager(game.am.get(Game.RSC_SS_FOX_IMG)
-                , new ArrayList<Integer>(Arrays.asList(5,14,8,11,5,6,7))
-                , new HashMap<String, Integer>() {{
+
+        switch (type) {
+            case FOX:
+                am = new AnimationManager(game.am.get(Game.RSC_SS_FOX_IMG)
+                        , new ArrayList<>(Arrays.asList(5,14,8,11,5,6,7))
+                        , new HashMap<>() {{
                     put("IDLE", 0);
                     put("LOOK", 1);
                     put("RUN", 2);
-                    put("POUNCE", 3);
+                    put("ATTACK", 3);
                     put("HURT", 4);
                     put("SLEEP", 5);
                     put("DEAD", 6);
                 }}
-                , 0.08f, 32, 32
-        );
+                        , 0.08f, 32, 32
+                );
 
-        stats = new Stats(50, 10, 400L);
+                stats = new Stats(50, 10, 400L);
+                imgSpeed = 400f;
+                break;
+            case SQL:
+                am = new AnimationManager(game.am.get(Game.RSC_SS_SQUIRREL_IMG)
+                        , new ArrayList<>(Arrays.asList(6,6,8,4,2,4,4))
+                        , new HashMap<>() {{
+                    put("IDLE", 0);
+                    put("LOOK", 1);
+                    put("RUN", 2);
+                    put("ATTACK", 3);
+                    put("EAT", 4);
+                    put("HURT", 5);
+                    put("DEAD", 6);
+                }}
+                        , 0.08f, 32, 32
+                );
+
+                stats = new Stats(10, 0, 200L);
+                imgSpeed = 500f;
+                break;
+        }
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
 
-        imgSpeed = 400f;
         movingHorizontal = false;
         movingVertical = false;
 

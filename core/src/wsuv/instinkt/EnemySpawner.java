@@ -53,7 +53,7 @@ public class EnemySpawner {
         ));
 
         readFormationsFile();
-        formation = formationsMap.get(1);
+        formation = formationsMap.get(0);
 
         lastSpawn = 0L;
     }
@@ -82,9 +82,11 @@ public class EnemySpawner {
                     // Split the line and extract the spawn location (ignoring the enemy type for now)
                     String[] parts = line.split(" ");
                     if (parts.length > 1) {
+                        String enemyType = parts[0];
                         String spawnLocationStr = parts[1];
                         SpawnLocation spawnLocation = SpawnLocation.fromString(spawnLocationStr);
-                        currentEnemiesToSpawn.add(newEnemyAtLocation(spawnLocation));
+                        Enemy.Type type = Enemy.Type.fromString(enemyType);
+                        currentEnemiesToSpawn.add(newEnemyAtLocation(spawnLocation, type));
                     }
                 }
             }
@@ -101,7 +103,7 @@ public class EnemySpawner {
         }
     }
 
-    private Enemy newEnemyAtLocation(SpawnLocation sl) {
+    private Enemy newEnemyAtLocation(SpawnLocation sl, Enemy.Type type) {
         Enemy.Direction dir = Enemy.Direction.RIGHT;
         switch (sl) {
             case BLEFT:
@@ -115,7 +117,7 @@ public class EnemySpawner {
                 break;
         }
         return new Enemy(game, enemySpawnLocations.get(sl.ordinal())[1]
-                ,enemySpawnLocations.get(sl.ordinal())[0], dir, enemySpawnLocations);
+                ,enemySpawnLocations.get(sl.ordinal())[0], dir, type, enemySpawnLocations);
     }
 
     private void spawnEnemy(Enemy enemy) {
