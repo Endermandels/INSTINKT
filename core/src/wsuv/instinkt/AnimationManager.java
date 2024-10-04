@@ -18,6 +18,8 @@ public class AnimationManager {
     private int currentFrame;
     private int currentRow;
     private float timer;
+    private boolean oneShot;
+    private boolean finishedAnimation;
 
     public AnimationManager(Texture spriteSheet, ArrayList<Integer> framesPerRow, HashMap<String, Integer> animSates
             , float speed, int frameWidth, int frameHeight) {
@@ -28,6 +30,8 @@ public class AnimationManager {
         currentFrame = 0;
         currentRow = 0;
         timer = 0;
+        oneShot = false;
+        finishedAnimation = false;
 
         frames = loadFrames(spriteSheet, frameWidth, frameHeight, false);
         flippedFrames = loadFrames(spriteSheet, frameWidth, frameHeight, true);
@@ -69,7 +73,13 @@ public class AnimationManager {
         if (timer > speed) {
             currentFrame += 1;
             timer = 0;
-            if (currentFrame >= framesPerRow.get(currentRow)) currentFrame = 0;
+            if (currentFrame >= framesPerRow.get(currentRow)) {
+                if (oneShot) {
+                    currentFrame -= 1;
+                    finishedAnimation = true;
+                }
+                else currentFrame = 0;
+            }
         }
     }
 
@@ -77,14 +87,13 @@ public class AnimationManager {
         if (state.compareTo(getCurrentAnimState()) != 0) {
             currentRow = animStates.get(state);
             currentFrame = 0;
+            finishedAnimation = false;
+            oneShot = false;
         }
     }
 
-    public void switchAnimState(int row) {
-        if (row != currentRow) {
-            currentRow = row;
-            currentFrame = 0;
-        }
+    public void setOneShot(boolean oneShot) {
+        this.oneShot = oneShot;
     }
 
     public TextureRegion getCurrentImage(boolean flipped) {
@@ -99,5 +108,9 @@ public class AnimationManager {
             }
         }
         return null;
+    }
+
+    public boolean isFinished() {
+        return finishedAnimation;
     }
 }

@@ -245,7 +245,7 @@ public class PlayScreen extends ScreenAdapter {
                         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
                     }
 
-                    if (player.getStats().isDead()) {
+                    if (player.getStats().isDead() && player.isFinishedDeathAnimation()) {
                         state = SubState.GAME_OVER;
                         timer = 0;
                         game.battleMusic.stop();

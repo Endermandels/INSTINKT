@@ -19,6 +19,7 @@ public class Stats {
     }
 
     public void getAttacked(Stats opponentStats) {
+        if (opponentStats.isDead() || isDead()) return;
         long curTime = System.currentTimeMillis();
         if (curTime - lastAttacked > atkInv) {
             lastAttacked = curTime;
