@@ -35,6 +35,8 @@ public class Player extends GameObject {
     private Map<Direction, Long> pressedButtons; // Direction key, timestamp value (-1 if not pressed)
 
     private boolean takeInput;
+    private boolean finishedDeathAnimation;
+    private long timeFinishedDeathAnimation;
 
     public Player(Game game, int tileX, int tileY) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
@@ -69,6 +71,8 @@ public class Player extends GameObject {
         dir = null;
 
         takeInput = true;
+        finishedDeathAnimation = false;
+        timeFinishedDeathAnimation = -1L;
 
         this.startTileX = tileX;
         this.startTileY = tileY;
@@ -276,10 +280,23 @@ public class Player extends GameObject {
      * @return Whether the player is on a new tile
      */
     public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies) {
-        boolean onNewTile;
+        boolean onNewTile = false;
         am.update();
-        onNewTile = move(tileMap);
-        collision(enemies);
+
+
+        // Death
+        if (stats.isDead()) {
+            am.switchAnimState("DEAD");
+            am.setOneShot(true);
+            if (am.isFinished() && !finishedDeathAnimation) {
+                finishedDeathAnimation = true;
+                timeFinishedDeathAnimation = System.currentTimeMillis();
+            }
+        } else {
+            onNewTile = move(tileMap);
+            collision(enemies);
+        }
+
         return onNewTile;
     }
 
@@ -298,6 +315,11 @@ public class Player extends GameObject {
         pressedButtons.put(Direction.LEFT, -1L);
         pressedButtons.put(Direction.RIGHT, -1L);
         am.switchAnimState("IDLE");
+        finishedDeathAnimation = false;
+    }
+
+    public boolean isFinishedDeathAnimation() {
+        return finishedDeathAnimation && System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L;
     }
 
     public void setTakeInput(boolean takeInput) {
