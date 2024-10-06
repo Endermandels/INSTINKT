@@ -23,23 +23,23 @@ public class GUI {
         if (lastPlayerHP != player.getStats().getHp()) {
             lastPlayerHP = player.getStats().getHp();
             int idx = (player.getStats().getMaxHP() - lastPlayerHP);
-            hb.getAm().switchAnimState(idx);
-            hb.getAm().setOneShot(true);
+            hb.getHit(idx);
         }
 
         hb.update();
     }
 
     public void draw(Batch batch) {
-        TextureRegion image = hb.getImage();
-        batch.draw(image, 8, 16, image.getRegionWidth()*PlayScreen.TILE_SCALE,
-                image.getRegionHeight()*PlayScreen.TILE_SCALE);
+        hb.draw(batch);
     }
 }
 
 class HealthBar {
 
     private AnimationManager am;
+    private int shakeY;
+    private long lastShaked;
+    private final long FREQUENCY = 10L;
 
     public HealthBar(Game game) {
         am = new AnimationManager(game.am.get(Game.RSC_SS_HEALTH_BAR_IMG)
@@ -58,14 +58,29 @@ class HealthBar {
                 , 0.3f, 64, 16, true
         );
         am.setOneShot(true);
+        shakeY = 0;
+        lastShaked = -1L;
     }
 
     public void update() {
+        long time = System.currentTimeMillis();
+        if (shakeY != 0 && time > lastShaked + FREQUENCY) {
+            shakeY = (Math.abs(shakeY) - 2) * -Integer.signum(shakeY);
+            lastShaked = time;
+        }
         am.update();
     }
 
-    public AnimationManager getAm() {
-        return am;
+    public void draw(Batch batch) {
+        TextureRegion image = getImage();
+        batch.draw(image, 8, 16+shakeY, image.getRegionWidth()*PlayScreen.TILE_SCALE,
+                image.getRegionHeight()*PlayScreen.TILE_SCALE);
+    }
+
+    public void getHit(int idx) {
+        am.switchAnimState(idx);
+        am.setOneShot(true);
+        shakeY = 10;
     }
 
     public TextureRegion getImage() {
