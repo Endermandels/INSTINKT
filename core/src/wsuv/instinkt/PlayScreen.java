@@ -12,6 +12,7 @@ public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
     private Game game;
     private HUD hud;
+    private GUI gui;
     private Player player;
     private EnemySpawner enemySpawner;
     private SubState state;
@@ -25,6 +26,7 @@ public class PlayScreen extends ScreenAdapter {
     public static final int TILE_ROWS = 12;
     public static final int TILE_COLS = 18;
 
+    private final int GUI_SPACE = 64;
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
     public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
@@ -45,6 +47,7 @@ public class PlayScreen extends ScreenAdapter {
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,6,10);
+        gui = new GUI(game, player);
         gameObjects = new ArrayList<>();
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -275,6 +278,7 @@ public class PlayScreen extends ScreenAdapter {
                     } else {
                         player.setTakeInput(false);
                     }
+                    gui.update();
                     break;
                 case GAME_OVER:
                     timer += delta;
@@ -323,7 +327,7 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
-                        game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()
+                        game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
                                 , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         if (showTileLocations) {
                             float dist = tile.getDistance(Tile.DistanceType.PLAYER);
@@ -343,9 +347,9 @@ public class PlayScreen extends ScreenAdapter {
                             float redIntensity = clampedDist / 12.0f;
 
                             debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
-                            debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE);
+                            debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
                             debugFont.setColor(1, 1, 1, 1);  // Reset to white
-                            debugFont.draw(game.batch, berryNum, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE/2f);
+                            debugFont.draw(game.batch, berryNum, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                         }
                     }
                 // Draw Game Objects
@@ -356,17 +360,17 @@ public class PlayScreen extends ScreenAdapter {
                         if (ob instanceof Enemy) {
                             Enemy e = (Enemy) ob;
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
-                                    , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE,
+                                    , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                         else if (ob instanceof Player) {
                             Player p = (Player) ob;
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
-                                    , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE,
+                                    , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
-                    game.batch.draw(img, ob.getImgX(), ob.getImgY()
+                    game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
                     if (showEnemyStats) {
                         if (ob instanceof Enemy) {
@@ -378,10 +382,11 @@ public class PlayScreen extends ScreenAdapter {
                     if (d instanceof Enemy) {
                         Enemy e = (Enemy) d;
                         debugFont.draw(game.batch, "HP: " + e.getStats().getHp(),
-                                e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2);
+                                e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                     }
                 }
                 debugImages.clear();
+                gui.draw(game.batch);
                 break;
         }
         hud.draw(game.batch);
