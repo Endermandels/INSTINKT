@@ -27,10 +27,10 @@
 - **[25]** Create Cobra enemy
 - **[26]** Handle Player death (Game Over and restart)
 - **[27]** Entity death animation
+- **[28]** Create Player HP display
 
 ## Open Issues ##
 
-- **[28]** Create Player HP display
 - **[29]** Create Enemies HP display 
 - **[30]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[31]** Create visual feedback for taking damage (hurt animation)
