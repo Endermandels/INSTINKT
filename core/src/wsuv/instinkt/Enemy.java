@@ -75,7 +75,7 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
-                stats = new Stats(3, 1, 400L);
+                stats = new Stats(3, 2, 400L);
                 imgSpeed = 400f;
                 targetType = Tile.DistanceType.PLAYER;
                 break;

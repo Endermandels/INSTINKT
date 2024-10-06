@@ -54,7 +54,7 @@ public class Player extends GameObject {
                 , 0.08f, 32, 32
         );
 
-        stats = new Stats(8, 2, 400L);
+        stats = new Stats(8, 1, 400L);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
