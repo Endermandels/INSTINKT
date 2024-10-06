@@ -24,6 +24,7 @@ public class Stats {
         if (curTime - lastAttacked > atkInv) {
             lastAttacked = curTime;
             hp -= opponentStats.getAtk();
+            if (hp < 0) hp = 0;
         }
     }
 
@@ -33,6 +34,10 @@ public class Stats {
 
     public int getHp() {
         return hp;
+    }
+
+    public int getMaxHP() {
+        return maxHP;
     }
 
     public int getAtk() {

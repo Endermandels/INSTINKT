@@ -109,6 +109,15 @@ public class AnimationManager {
         }
     }
 
+    public void switchAnimState(int idx) {
+        if (currentRow != idx) {
+            currentRow = idx;
+            currentFrame = 0;
+            finishedAnimation = false;
+            oneShot = false;
+        }
+    }
+
     public void setOneShot(boolean oneShot) {
         this.oneShot = oneShot;
     }

@@ -75,7 +75,7 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
-                stats = new Stats(50, 10, 400L);
+                stats = new Stats(3, 1, 400L);
                 imgSpeed = 400f;
                 targetType = Tile.DistanceType.PLAYER;
                 break;
@@ -94,7 +94,7 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
-                stats = new Stats(10, 0, 200L);
+                stats = new Stats(1, 0, 200L);
                 imgSpeed = 500f;
                 targetType = Tile.DistanceType.BERRIES;
                 break;
@@ -111,7 +111,7 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
-                stats = new Stats(70, 5, 400L);
+                stats = new Stats(4, 1, 400L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
                 break;

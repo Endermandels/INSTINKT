@@ -11,13 +11,22 @@ public class GUI {
 
     private HealthBar hb;
     private Player player;
+    private int lastPlayerHP;
 
     public GUI(Game game, Player player) {
         hb = new HealthBar(game);
         this.player = player;
+        lastPlayerHP = player.getStats().getHp();
     }
 
     public void update() {
+        if (lastPlayerHP != player.getStats().getHp()) {
+            lastPlayerHP = player.getStats().getHp();
+            int idx = (player.getStats().getMaxHP() - lastPlayerHP);
+            hb.getAm().switchAnimState(idx);
+            hb.getAm().setOneShot(true);
+        }
+
         hb.update();
     }
 
@@ -46,13 +55,17 @@ class HealthBar {
             put("HIT7", 7);
             put("HIT8", 8);
         }}
-                , 0.01f, 64, 16, true
+                , 0.3f, 64, 16, true
         );
         am.setOneShot(true);
     }
 
     public void update() {
         am.update();
+    }
+
+    public AnimationManager getAm() {
+        return am;
     }
 
     public TextureRegion getImage() {

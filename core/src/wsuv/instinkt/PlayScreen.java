@@ -42,11 +42,11 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(Game game) {
         this.game = game;
-        gui = new GUI(game, player);
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,6,10);
+        gui = new GUI(game, player);
         gameObjects = new ArrayList<>();
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
