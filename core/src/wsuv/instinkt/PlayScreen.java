@@ -12,6 +12,7 @@ public class PlayScreen extends ScreenAdapter {
     private enum SubState {READY, GAME_OVER, PLAYING}
     private Game game;
     private HUD hud;
+    private GUI gui;
     private Player player;
     private EnemySpawner enemySpawner;
     private SubState state;
@@ -41,6 +42,7 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(Game game) {
         this.game = game;
+        gui = new GUI(game, player);
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
@@ -275,6 +277,7 @@ public class PlayScreen extends ScreenAdapter {
                     } else {
                         player.setTakeInput(false);
                     }
+                    gui.update();
                     break;
                 case GAME_OVER:
                     timer += delta;
@@ -382,6 +385,7 @@ public class PlayScreen extends ScreenAdapter {
                     }
                 }
                 debugImages.clear();
+                gui.draw(game.batch);
                 break;
         }
         hud.draw(game.batch);

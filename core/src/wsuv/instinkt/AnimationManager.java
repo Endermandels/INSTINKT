@@ -23,6 +23,11 @@ public class AnimationManager {
 
     public AnimationManager(Texture spriteSheet, ArrayList<Integer> framesPerRow, HashMap<String, Integer> animSates
             , float speed, int frameWidth, int frameHeight) {
+        this(spriteSheet, framesPerRow, animSates, speed, frameWidth, frameHeight, false);
+    }
+
+    public AnimationManager(Texture spriteSheet, ArrayList<Integer> framesPerRow, HashMap<String, Integer> animSates
+            , float speed, int frameWidth, int frameHeight, boolean vertical) {
         this.framesPerRow = framesPerRow;
         this.animStates = animSates;
         this.speed = speed;
@@ -33,13 +38,16 @@ public class AnimationManager {
         oneShot = false;
         finishedAnimation = false;
 
-        frames = loadFrames(spriteSheet, frameWidth, frameHeight, false);
-        flippedFrames = loadFrames(spriteSheet, frameWidth, frameHeight, true);
+        frames = loadFrames(spriteSheet, frameWidth, frameHeight, false, vertical);
+        flippedFrames = loadFrames(spriteSheet, frameWidth, frameHeight, true, vertical);
     }
 
     /**
      * Initialize frames ArrayList with frames from given sprite sheet.
      * Uses (does not modify) framesPerRow.
+     *
+     * When vertical is true, the frames are all vertically stacked.
+     * Each "row" in frames per row is the number of frames down.
      *
      * @param ss sprite sheet
      * @param frameWidth width of every frame in ss
@@ -47,17 +55,26 @@ public class AnimationManager {
      *
      * @return 2D ArrayList of frames for every row
      */
-    private ArrayList<ArrayList<TextureRegion>> loadFrames(Texture ss, int frameWidth, int frameHeight, boolean flipped) {
+    private ArrayList<ArrayList<TextureRegion>> loadFrames(Texture ss, int frameWidth, int frameHeight, boolean flipped
+            , boolean vertical) {
         ArrayList<ArrayList<TextureRegion>> frames = new ArrayList<ArrayList<TextureRegion>>(framesPerRow.size());
+        int numCols = 0;
         for (int row = 0; row < framesPerRow.size(); row++) {
             ArrayList<TextureRegion> framesRow = new ArrayList<TextureRegion>(framesPerRow.get(row));
             for (int col = 0; col < framesPerRow.get(row); col++) {
-                framesRow.add(new TextureRegion(ss
-                        , col * frameWidth, row * frameHeight
-                        , frameWidth, frameHeight));
+                if (!vertical) {
+                    framesRow.add(new TextureRegion(ss
+                            , col * frameWidth, row * frameHeight
+                            , frameWidth, frameHeight));
+                } else {
+                    framesRow.add(new TextureRegion(ss
+                            , 0, numCols * frameHeight + col * frameHeight
+                            , frameWidth, frameHeight));
+                }
                 framesRow.get(col).flip(flipped, false);
             }
             frames.add(framesRow);
+            numCols += framesPerRow.get(row);
         }
         return frames;
     }

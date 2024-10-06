@@ -6,11 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.*;
 
 public class Enemy extends GameObject {
-    private enum SubState {
-        AGRO, // Target Player
-        DEAD  // Play death animation
-    }
-
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
