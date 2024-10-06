@@ -32,7 +32,7 @@ public class GUI {
 
     public void draw(Batch batch) {
         TextureRegion image = hb.getImage();
-        batch.draw(image, 100, 100, image.getRegionWidth()*PlayScreen.TILE_SCALE,
+        batch.draw(image, 8, 16, image.getRegionWidth()*PlayScreen.TILE_SCALE,
                 image.getRegionHeight()*PlayScreen.TILE_SCALE);
     }
 }
