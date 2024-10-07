@@ -36,12 +36,20 @@ public class Stats {
         return hp;
     }
 
+    public void setHp(int hp) {
+        this.hp = Math.max(0, Math.min(hp, maxHP));
+    }
+
     public int getMaxHP() {
         return maxHP;
     }
 
     public int getAtk() {
         return atk;
+    }
+
+    public void setAtk(int atk) {
+        this.atk = Math.max(0, atk);
     }
 
     public boolean isDead() { return hp <=0; }
