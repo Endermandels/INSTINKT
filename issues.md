@@ -31,9 +31,8 @@
 
 ## Open Issues ##
 
-- **[29]** Create Enemies HP display 
-- **[30]** Add HUD command for setting player stats (HP, atk, etc.)
-- **[31]** Create visual feedback for taking damage (hurt animation)
+- **[29]** Add HUD command for setting player stats (HP, atk, etc.)
+- **[30]** Create visual feedback for taking damage (hurt animation)
 
 ## Backlog ##
 
