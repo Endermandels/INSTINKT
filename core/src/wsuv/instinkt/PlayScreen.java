@@ -147,7 +147,7 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
-
+        // Stats - Show debug stat information for player and enemies
         hud.registerAction("stats", new HUDActionCommand() {
             @Override
             public String execute(String[] cmd) {
@@ -158,6 +158,26 @@ public class PlayScreen extends ScreenAdapter {
 
             public String help(String[] cmd) {
                 return "toggle player stats visibility always <-> in console";
+            }
+        });
+
+        // HP - Set player's hp to specified amount (Capped at maximum player HP)
+        hud.registerAction("hp", new HUDActionCommand() {
+            static final String help = "usage: hp <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int hp = Integer.parseInt(cmd[1]);
+                    player.getStats().setHp(hp);
+                    return "Set player's hp to " + player.getStats().getHp();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's HP to specified amount";
             }
         });
 
