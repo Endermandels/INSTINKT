@@ -181,6 +181,26 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // ATK - Set player's attack to specified amount (Lowest is 0)
+        hud.registerAction("atk", new HUDActionCommand() {
+            static final String help = "usage: atk <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int atk = Integer.parseInt(cmd[1]);
+                    player.getStats().setAtk(atk);
+                    return "Set player's atk to " + player.getStats().getAtk();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's attack to specified amount";
+            }
+        });
+
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
         // the HUD's input controls. Do that by using an InputMultiplexer

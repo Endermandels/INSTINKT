@@ -28,10 +28,10 @@
 - **[26]** Handle Player death (Game Over and restart)
 - **[27]** Entity death animation
 - **[28]** Create Player HP display
+- **[29]** Add HUD command for setting player stats (HP, atk, etc.)
 
 ## Open Issues ##
 
-- **[29]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[30]** Create visual feedback for taking damage (hurt animation)
 
 ## Backlog ##

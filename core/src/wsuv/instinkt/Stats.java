@@ -48,6 +48,10 @@ public class Stats {
         return atk;
     }
 
+    public void setAtk(int atk) {
+        this.atk = Math.max(0, atk);
+    }
+
     public boolean isDead() { return hp <=0; }
 
 }
