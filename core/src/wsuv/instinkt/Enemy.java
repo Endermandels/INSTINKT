@@ -192,7 +192,9 @@ public class Enemy extends GameObject {
         }
 
         if (dir != null) {
-            am.switchAnimState("RUN");
+            if (!am.getCurrentAnimState().equals("HURT")) {
+                am.switchAnimState("RUN");
+            }
             switch (dir) {
                 case LEFT:
                     if (game.validMove(tileMap, tileX - 1, tileY) || isSpawnTile(tileX-1, tileY)) {
@@ -222,7 +224,9 @@ public class Enemy extends GameObject {
                     break;
             }
         } else {
-            am.switchAnimState("IDLE");
+            if (!am.getCurrentAnimState().equals("HURT")) {
+                am.switchAnimState("IDLE");
+            }
         }
 
         if (dir != null) {
@@ -319,6 +323,10 @@ public class Enemy extends GameObject {
 
     public int getTileY() {
         return tileY;
+    }
+
+    public AnimationManager getAm() {
+        return am;
     }
 
     public Stats getStats() {

@@ -164,7 +164,9 @@ public class Player extends GameObject {
                 }
             }
             if (dir != null) {
-                am.switchAnimState("RUN");
+                if (!am.getCurrentAnimState().equals("HURT")) {
+                    am.switchAnimState("RUN");
+                }
                 switch (dir) {
                     case LEFT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
@@ -186,7 +188,9 @@ public class Player extends GameObject {
                         break;
                 }
             } else {
-                am.switchAnimState("IDLE");
+                if (!am.getCurrentAnimState().equals("HURT")) {
+                    am.switchAnimState("IDLE");
+                }
             }
         }
 
@@ -269,8 +273,14 @@ public class Player extends GameObject {
         for (Enemy e : enemies) {
             if (e.getTileX() == tileX && e.getTileY() == tileY) {
                 // Collision!  Perform attack
+                int playerHP = stats.getHp();
+                int enemyHP = stats.getHp();
                 stats.getAttacked(e.getStats());
                 e.getStats().getAttacked(stats);
+                if (!stats.isDead() && playerHP != stats.getHp())
+                    am.switchAnimState("HURT", "RUN");
+                if (!e.getStats().isDead() && enemyHP != e.getStats().getHp())
+                    e.getAm().switchAnimState("HURT", "RUN");
                 break;
             }
         }
