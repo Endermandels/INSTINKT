@@ -98,11 +98,7 @@ public class AnimationManager {
                         currentFrame -= 1;
                         finishedAnimation = true;
                     } else {
-                        currentRow = nextRow;
-                        nextRow = -1;
-                        currentFrame = 0;
-                        finishedAnimation = false;
-                        oneShot = false;
+                        switchAnimState(nextRow);
                     }
                 }
                 else currentFrame = 0;

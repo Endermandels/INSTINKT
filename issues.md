@@ -29,17 +29,18 @@
 - **[27]** Entity death animation
 - **[28]** Create Player HP display
 - **[29]** Add HUD command for setting player stats (HP, atk, etc.)
+- **[30]** Create visual feedback for taking damage (hurt animation)
 
 ## Open Issues ##
 
-- **[30]** Create visual feedback for taking damage (hurt animation)
 
 ## Backlog ##
 
 - **[]** 
 - **[]** 
 - **[]** Create Spray class and allow player to use the spray ability
-- **[]** 
+- **[]** Lower Opacity of foreground obstacle (obstacles with higher priority than the player) 
+when the player is behind them
 - **[]** 
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
