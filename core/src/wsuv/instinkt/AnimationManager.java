@@ -17,6 +17,7 @@ public class AnimationManager {
 
     private int currentFrame;
     private int currentRow;
+    private int nextRow;
     private float timer;
     private boolean oneShot;
     private boolean finishedAnimation;
@@ -34,6 +35,7 @@ public class AnimationManager {
 
         currentFrame = 0;
         currentRow = 0;
+        nextRow = -1;
         timer = 0;
         oneShot = false;
         finishedAnimation = false;
@@ -92,8 +94,12 @@ public class AnimationManager {
             timer = 0;
             if (currentFrame >= framesPerRow.get(currentRow)) {
                 if (oneShot) {
-                    currentFrame -= 1;
-                    finishedAnimation = true;
+                    if (nextRow < 0) {
+                        currentFrame -= 1;
+                        finishedAnimation = true;
+                    } else {
+                        switchAnimState(nextRow);
+                    }
                 }
                 else currentFrame = 0;
             }
@@ -106,6 +112,20 @@ public class AnimationManager {
             currentFrame = 0;
             finishedAnimation = false;
             oneShot = false;
+            nextRow = -1;
+        }
+    }
+
+    /**
+     * Animate state, then immediately switch to nextState
+     */
+    public void switchAnimState(String state, String nextState) {
+        if (state.compareTo(getCurrentAnimState()) != 0) {
+            currentRow = animStates.get(state);
+            nextRow = animStates.get(nextState);
+            currentFrame = 0;
+            finishedAnimation = false;
+            oneShot = true;
         }
     }
 
@@ -115,6 +135,7 @@ public class AnimationManager {
             currentFrame = 0;
             finishedAnimation = false;
             oneShot = false;
+            nextRow = -1;
         }
     }
 

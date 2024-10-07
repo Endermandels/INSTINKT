@@ -54,7 +54,7 @@ public class Player extends GameObject {
                 , 0.08f, 32, 32
         );
 
-        stats = new Stats(8, 1, 400L);
+        stats = new Stats(8, 1, 800L);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -164,7 +164,9 @@ public class Player extends GameObject {
                 }
             }
             if (dir != null) {
-                am.switchAnimState("RUN");
+                if (!am.getCurrentAnimState().equals("HURT")) {
+                    am.switchAnimState("RUN");
+                }
                 switch (dir) {
                     case LEFT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
@@ -186,11 +188,13 @@ public class Player extends GameObject {
                         break;
                 }
             } else {
-                am.switchAnimState("IDLE");
+                if (!am.getCurrentAnimState().equals("HURT")) {
+                    am.switchAnimState("IDLE");
+                }
             }
         }
 
-        if (dir != null) {
+        if (dir != null && !am.getCurrentAnimState().equals("HURT")) {
             switch (dir) {
                 case LEFT:
                     imgX -= imgSpeed * time;
@@ -269,8 +273,14 @@ public class Player extends GameObject {
         for (Enemy e : enemies) {
             if (e.getTileX() == tileX && e.getTileY() == tileY) {
                 // Collision!  Perform attack
+                int playerHP = stats.getHp();
+                int enemyHP = e.getStats().getHp();
                 stats.getAttacked(e.getStats());
                 e.getStats().getAttacked(stats);
+                if (!stats.isDead() && playerHP != stats.getHp())
+                    am.switchAnimState("HURT", "RUN");
+                if (!e.getStats().isDead() && enemyHP != e.getStats().getHp())
+                    e.getAm().switchAnimState("HURT", "RUN");
                 break;
             }
         }
