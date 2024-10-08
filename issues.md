@@ -33,17 +33,20 @@
 
 ## Open Issues ##
 
+- **[31]** Lower Opacity of foreground obstacles
+- **[32]** Change Entity Tile locations to center of Tile, instead of bottom left?
+- **[33]** Create Spray class
+- **[34]** Shoot spray in opposite direction of player's last moved direction
+- **[35]** Spray logistics (limited number, cooldown)
+- **[36]** Create AOE effect on a sprayed tile which repels enemies
+- **[37]** Create AOE effect on a sprayed enemy which repels enemies
 
 ## Backlog ##
 
 - **[]** 
 - **[]** 
-- **[]** Create Spray class and allow player to use the spray ability
-- **[]** Lower Opacity of foreground obstacle (obstacles with higher priority than the player) 
-when the player is behind them
 - **[]** 
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
 - **[]** Fix player movement stickiness
-- **[]** Change Entity Tile locations to center of Tile, instead of bottom left?
