@@ -30,10 +30,10 @@
 - **[28]** Create Player HP display
 - **[29]** Add HUD command for setting player stats (HP, atk, etc.)
 - **[30]** Create visual feedback for taking damage (hurt animation)
+- **[31]** Lower Opacity of foreground obstacles
 
 ## Open Issues ##
 
-- **[31]** Lower Opacity of foreground obstacles
 - **[32]** Change Entity Tile locations to center of Tile, instead of bottom left?
 - **[33]** Create Spray class
 - **[34]** Shoot spray in opposite direction of player's last moved direction
