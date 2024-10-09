@@ -99,6 +99,7 @@ public class Player extends GameObject {
             downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
         }
 
+        // TODO: Any movement requests 1 second old are stale and should be set to -1L
 
         if (leftInput && pressedButtons.get(Direction.LEFT) < 0) {
             pressedButtons.put(Direction.LEFT, System.currentTimeMillis());
@@ -113,24 +114,26 @@ public class Player extends GameObject {
             pressedButtons.put(Direction.DOWN, System.currentTimeMillis());
         }
 
+
         if (movingHorizontal) {
             // Horizontal movement only
             if (leftInput && rightInput) {
                 // Choose most recent
-                if (pressedButtons.get(Direction.LEFT) > pressedButtons.get(Direction.RIGHT)) {
+                if (pressedButtons.get(Direction.LEFT) > pressedButtons.get(Direction.RIGHT)
+                    && dir != Direction.LEFT) {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                     dir = Direction.LEFT;
                     flipped = true;
-                } else {
+                } else if (dir != Direction.RIGHT) {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                     dir = Direction.RIGHT;
                     flipped = false;
                 }
-            } else if (leftInput) {
+            } else if (leftInput && dir != Direction.LEFT) {
                 dir = Direction.LEFT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                 flipped = true;
-            } else if (rightInput) {
+            } else if (rightInput && dir != Direction.RIGHT) {
                 dir = Direction.RIGHT;
                 targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                 flipped = false;
@@ -139,17 +142,18 @@ public class Player extends GameObject {
             // Vertical movement only
             if (upInput && downInput) {
                 // Choose most recent
-                if (pressedButtons.get(Direction.UP) > pressedButtons.get(Direction.DOWN)) {
+                if (pressedButtons.get(Direction.UP) > pressedButtons.get(Direction.DOWN)
+                        && dir != Direction.UP) {
                     targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
                     dir = Direction.UP;
-                } else {
+                } else if (dir != Direction.DOWN) {
                     targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
                     dir = Direction.DOWN;
                 }
-            } else if (upInput) {
+            } else if (upInput && dir != Direction.UP) {
                 dir = Direction.UP;
                 targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
-            } else if (downInput) {
+            } else if (downInput && dir != Direction.DOWN) {
                 dir = Direction.DOWN;
                 targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
             }
@@ -199,13 +203,17 @@ public class Player extends GameObject {
                 case LEFT:
                     imgX -= imgSpeed * time;
 
-                    if (imgX < targetTile.getImgX()) {
-                        // Moved passed the tile, center on the tile
-                        imgX = targetTile.getImgX();
+                    if (imgX < targetTile.getImgX() + PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileX != targetTile.getX()) {
                             onNewTile = true;
                             tileX = targetTile.getX();
                         }
+                    }
+
+                    if (imgX < targetTile.getImgX()) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetTile.getImgX();
+
 
                         targetTile = null;
                         movingHorizontal = false;
@@ -216,13 +224,17 @@ public class Player extends GameObject {
                 case RIGHT:
                     imgX += imgSpeed * time;
 
-                    if (imgX > targetTile.getImgX()) {
-                        // Moved passed the tile, center on the tile
-                        imgX = targetTile.getImgX();
+                    if (imgX > targetTile.getImgX() - PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileX != targetTile.getX()) {
                             onNewTile = true;
                             tileX = targetTile.getX();
                         }
+                    }
+
+                    if (imgX > targetTile.getImgX()) {
+                        // Moved passed the tile, center on the tile
+                        imgX = targetTile.getImgX();
+
 
                         targetTile = null;
                         movingHorizontal = false;
@@ -233,13 +245,18 @@ public class Player extends GameObject {
                 case UP:
                     imgY += imgSpeed * time;
 
-                    if (imgY > targetTile.getImgY()) {
-                        // Moved passed the tile, center on the tile
-                        imgY = targetTile.getImgY();
+                    if (imgY > targetTile.getImgY() - PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileY != targetTile.getY()) {
                             onNewTile = true;
                             tileY = targetTile.getY();
                         }
+                    }
+
+
+                    if (imgY > targetTile.getImgY()) {
+                        // Moved passed the tile, center on the tile
+                        imgY = targetTile.getImgY();
+
 
                         targetTile = null;
                         movingVertical = false;
@@ -250,13 +267,17 @@ public class Player extends GameObject {
                 case DOWN:
                     imgY -= imgSpeed * time;
 
+                    if (imgY < targetTile.getImgY() + PlayScreen.TILE_SCALED_SIZE / 2f) {
+                        // Player middle has crossed into new tile
+                        if (tileY != targetTile.getY()) {
+                            tileY = targetTile.getY();
+                            onNewTile = true;
+                        }
+                    }
+
                     if (imgY < targetTile.getImgY()) {
                         // Moved passed the tile, center on the tile
                         imgY = targetTile.getImgY();
-                        if (tileY != targetTile.getY()) {
-                            onNewTile = true;
-                            tileY = targetTile.getY();
-                        }
 
                         targetTile = null;
                         movingVertical = false;
@@ -295,6 +316,8 @@ public class Player extends GameObject {
 
 
         // Death
+//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
+
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
             am.setOneShot(true);

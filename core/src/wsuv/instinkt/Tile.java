@@ -44,6 +44,10 @@ public class Tile {
                 , PlayScreen.TILE_SIZE);
     }
 
+    public String toString() {
+        return "Tile @ [" + x + ", " + y + "]";
+    }
+
     public void setContainsObstacle(boolean containsObstacle) {
         this.containsObstacle = containsObstacle;
     }
