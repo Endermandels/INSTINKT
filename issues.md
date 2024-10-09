@@ -35,14 +35,19 @@
 
 ## Open Issues ##
 
-- **[33]** Create Spray class
-- **[34]** Shoot spray in opposite direction of player's last moved direction
-- **[35]** Spray logistics (limited number, cooldown)
-- **[36]** Create AOE effect on a sprayed tile which repels enemies
-- **[37]** Create AOE effect on a sprayed enemy which repels enemies
+- **[33]** Sound Effects
+- **[34]** Create Spray class
+- **[35]** Shoot spray in opposite direction of player's last moved direction
+- **[36]** Spray logistics (limited number, cooldown)
+- **[37]** Create AOE effect on a sprayed tile which repels enemies
+- **[38]** Create AOE effect on a sprayed enemy which repels enemies
 
 ## Backlog ##
 
+- **[]** Phase transitions (cooldown and enemy wave)
+- **[]** Shop UI
+- **[]** 
+- **[]** 
 - **[]** 
 - **[]** 
 - **[]** 
