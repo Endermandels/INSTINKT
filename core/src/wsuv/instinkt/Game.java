@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -37,6 +38,10 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_DPCOMIC_FONT = "DPComic.ttf";
     public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
+
+    // SFX
+    public static final String RSC_SQUIRREL_NOISE_SFX = "SFX/squirrel noise 1.mp3";
+    public static final String RSC_SNAKE_NOISE_SFX = "SFX/snake noise 1.mp3";
 
     public AssetManager am;  // AssetManager provides a single source for loaded resources
     public SpriteBatch batch;
@@ -90,6 +95,10 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
         am.load(RSC_SS_COBRA_IMG, Texture.class);
         am.load(RSC_SS_HEALTH_BAR_IMG, Texture.class);
+
+        // Load SFX
+        am.load(RSC_SQUIRREL_NOISE_SFX, Sound.class);
+        am.load(RSC_SNAKE_NOISE_SFX, Sound.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));

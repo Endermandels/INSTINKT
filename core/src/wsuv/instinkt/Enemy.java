@@ -1,6 +1,7 @@
 package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.*;
@@ -34,6 +35,7 @@ public class Enemy extends GameObject {
     private Stats stats;
     private Type type;
     private Tile.DistanceType targetType;
+    private Sound hurtSound;
     private ArrayList<Integer[]> enemySpawnLocations;
 
     private float imgX;
@@ -61,6 +63,8 @@ public class Enemy extends GameObject {
         this.type = type;
         this.enemySpawnLocations = enemySpawnLocations;
 
+        hurtSound = null;
+
         switch (type) {
             case FOX:
                 am = new AnimationManager(game.am.get(Game.RSC_SS_FOX_IMG)
@@ -77,6 +81,10 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+                hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
+
+                // Stats
                 stats = new Stats(3, 2, 800L);
                 imgSpeed = 400f;
                 targetType = Tile.DistanceType.PLAYER;
@@ -96,6 +104,9 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+
+                // Stats
                 stats = new Stats(1, 0, 0L);
                 imgSpeed = 500f;
                 targetType = Tile.DistanceType.BERRIES;
@@ -113,6 +124,10 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+                hurtSound = game.am.get(Game.RSC_SNAKE_NOISE_SFX);
+
+                // Stats
                 stats = new Stats(4, 1, 800L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
@@ -318,6 +333,22 @@ public class Enemy extends GameObject {
 
     public TextureRegion getImg() {
         return am.getCurrentImage(flipped);
+    }
+
+    public void playHurtSound() {
+        if (hurtSound != null) {
+            long id = hurtSound.play();
+            switch (type) {
+                case FOX:
+                    hurtSound.setVolume(id, 0.1f);
+                    hurtSound.setPitch(id, 0.6f);
+                    break;
+                case CBR:
+                    hurtSound.setVolume(id, 0.7f);
+                    hurtSound.setPitch(id, 4f);
+                    break;
+            }
+        }
     }
 
     public float getImgX() {
