@@ -167,7 +167,6 @@ public class Player extends GameObject {
                     mostRecentTime = pressedButtons.get(d);
                 }
             }
-            System.out.println(dir);
             if (dir != null) {
                 if (!am.getCurrentAnimState().equals("HURT")) {
                     am.switchAnimState("RUN");
@@ -317,6 +316,8 @@ public class Player extends GameObject {
 
 
         // Death
+//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
+
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
             am.setOneShot(true);

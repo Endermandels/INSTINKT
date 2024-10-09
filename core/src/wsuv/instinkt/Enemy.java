@@ -42,6 +42,8 @@ public class Enemy extends GameObject {
 
     private int tileX;
     private int tileY;
+    private int pathX;
+    private int pathY;
 
     private int[] targetPos;
     private boolean movingHorizontal;
@@ -131,6 +133,8 @@ public class Enemy extends GameObject {
 
         this.tileX = tileX;
         this.tileY = tileY;
+        pathX = tileX;
+        pathY = tileY;
         targetPos = new int[2];
     }
 
@@ -161,32 +165,34 @@ public class Enemy extends GameObject {
      * @return Whether the enemy should be removed
      */
     private boolean move(Tile[][] tileMap) {
+        boolean toRemove = false;
+
         float time = Gdx.graphics.getDeltaTime();
         if (time > 1f) time = 1f / 60f;
 
-        if (tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS) {
-            Tile currentTile = tileMap[tileY][tileX];
+        if (pathX >= 0 && pathX < PlayScreen.TILE_COLS && pathY >= 0 && pathY < PlayScreen.TILE_ROWS) {
+            Tile currentTile = tileMap[pathY][pathX];
             Tile lowestTile = currentTile;
             for (Tile tile : getNeighbors(tileMap, currentTile)) {
                 if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
-                    if ((movingHorizontal && tileY == tile.getY())
-                            || (movingVertical && tileX == tile.getX())
+                    if ((movingHorizontal && pathY == tile.getY())
+                            || (movingVertical && pathX == tile.getX())
                             || (!movingHorizontal && !movingVertical)) {
                         lowestTile = tile;
                     }
                 }
             }
-            if (movingHorizontal && tileY == lowestTile.getY()) {
-                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
+            if (movingHorizontal && pathY == lowestTile.getY()) {
+                if (lowestTile.getX() < pathX) dir = Direction.LEFT;
                 else dir = Direction.RIGHT;
-            } else if (movingVertical && tileX == lowestTile.getX()) {
-                if (lowestTile.getY() < tileY) dir = Direction.DOWN;
+            } else if (movingVertical && pathX == lowestTile.getX()) {
+                if (lowestTile.getY() < pathY) dir = Direction.DOWN;
                 else dir = Direction.UP;
             } else if (!movingHorizontal && !movingVertical) {
-                if (lowestTile.getX() < tileX) dir = Direction.LEFT;
-                else if (lowestTile.getX() > tileX) dir = Direction.RIGHT;
-                else if (lowestTile.getY() < tileY) dir = Direction.DOWN;
-                else if (lowestTile.getY() > tileY) dir = Direction.UP;
+                if (lowestTile.getX() < pathX) dir = Direction.LEFT;
+                else if (lowestTile.getX() > pathX) dir = Direction.RIGHT;
+                else if (lowestTile.getY() < pathY) dir = Direction.DOWN;
+                else if (lowestTile.getY() > pathY) dir = Direction.UP;
                 else dir = null;
             }
         }
@@ -197,28 +203,28 @@ public class Enemy extends GameObject {
             }
             switch (dir) {
                 case LEFT:
-                    if (game.validMove(tileMap, tileX - 1, tileY) || isSpawnTile(tileX-1, tileY)) {
-                        targetPos[0] = tileX - 1;
+                    if (game.validMove(tileMap, pathX - 1, pathY) || isSpawnTile(pathX-1, pathY)) {
+                        targetPos[0] = pathX - 1;
                         movingHorizontal = true;
                         flipped = true;
                     }
                     break;
                 case RIGHT:
-                    if (game.validMove(tileMap, tileX + 1, tileY) || isSpawnTile(tileX+1, tileY)) {
-                        targetPos[0] = tileX + 1;
+                    if (game.validMove(tileMap, pathX + 1, pathY) || isSpawnTile(pathX+1, pathY)) {
+                        targetPos[0] = pathX + 1;
                         movingHorizontal = true;
                         flipped = false;
                     }
                     break;
                 case UP:
-                    if (game.validMove(tileMap, tileX, tileY + 1) || isSpawnTile(tileX, tileY+1)) {
-                        targetPos[1] = tileY + 1;
+                    if (game.validMove(tileMap, pathX, pathY + 1) || isSpawnTile(pathX, pathY+1)) {
+                        targetPos[1] = pathY + 1;
                         movingVertical = true;
                     }
                     break;
                 case DOWN:
-                    if (game.validMove(tileMap, tileX, tileY - 1) || isSpawnTile(tileX, tileY-1)) {
-                        targetPos[1] = tileY - 1;
+                    if (game.validMove(tileMap, pathX, pathY - 1) || isSpawnTile(pathX, pathY-1)) {
+                        targetPos[1] = pathY - 1;
                         movingVertical = true;
                     }
                     break;
@@ -237,10 +243,10 @@ public class Enemy extends GameObject {
                     if (imgX < targetPos[0] * PlayScreen.TILE_SCALED_SIZE) {
                         // Moved passed the tile, center on the tile
                         imgX = targetPos[0] * PlayScreen.TILE_SCALED_SIZE;
-                        tileX = targetPos[0];
+                        pathX = targetPos[0];
 
                         movingHorizontal = false;
-                        if (isSpawnTile(tileX, tileY)) return true;
+                        if (isSpawnTile(pathX, pathY)) toRemove = true;
                     }
                     break;
                 case RIGHT:
@@ -249,10 +255,10 @@ public class Enemy extends GameObject {
                     if (imgX > targetPos[0]*PlayScreen.TILE_SCALED_SIZE) {
                         // Moved passed the tile, center on the tile
                         imgX = targetPos[0]*PlayScreen.TILE_SCALED_SIZE;
-                        tileX = targetPos[0];
+                        pathX = targetPos[0];
 
                         movingHorizontal = false;
-                        if (isSpawnTile(tileX, tileY)) return true;
+                        if (isSpawnTile(pathX, pathY)) toRemove = true;
                     }
                     break;
                 case UP:
@@ -261,10 +267,10 @@ public class Enemy extends GameObject {
                     if (imgY > targetPos[1] * PlayScreen.TILE_SCALED_SIZE) {
                         // Moved passed the tile, center on the tile
                         imgY = targetPos[1]*PlayScreen.TILE_SCALED_SIZE;
-                        tileY = targetPos[1];
+                        pathY = targetPos[1];
 
                         movingVertical = false;
-                        if (isSpawnTile(tileX, tileY)) return true;
+                        if (isSpawnTile(pathX, pathY)) toRemove = true;
                     }
                     break;
                 case DOWN:
@@ -273,21 +279,26 @@ public class Enemy extends GameObject {
                     if (imgY < targetPos[1] * PlayScreen.TILE_SCALED_SIZE) {
                         // Moved passed the tile, center on the tile
                         imgY = targetPos[1] * PlayScreen.TILE_SCALED_SIZE;
-                        tileY = (int) targetPos[1];
+                        pathY = targetPos[1];
 
                         movingVertical = false;
-                        if (isSpawnTile(tileX, tileY)) return true;
+                        if (isSpawnTile(pathX, pathY)) toRemove = true;
                     }
                     break;
             }
         }
-        return false;
+
+        tileX = (int) (imgX + PlayScreen.TILE_SCALED_SIZE / 2f) / PlayScreen.TILE_SCALED_SIZE;
+        tileY = (int) (imgY + PlayScreen.TILE_SCALED_SIZE / 2f) / PlayScreen.TILE_SCALED_SIZE;
+
+        return toRemove;
     }
 
     public boolean update(Tile[][] tileMap) {
         boolean toRemove = false;
 
         am.update();
+//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
