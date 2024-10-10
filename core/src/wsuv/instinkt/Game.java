@@ -29,6 +29,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_BERRIES_IMG = "Images/TX Berries.png";
     public static final String RSC_SS_SKUNK_IMG = "Images/Sprite Sheet Skunk.png";
     public static final String RSC_SS_FOX_IMG = "Images/Fox Sprite Sheet.png";
+    public static final String RSC_SS_SPRAY_IMG = "Images/Spray Sprite Sheet.png";
     public static final String RSC_SS_SQUIRREL_IMG = "Images/Squirrel Sprite Sheet.png";
     public static final String RSC_SS_COBRA_IMG = "Images/Cobra Sprite Sheet.png";
     public static final String RSC_SS_HEALTH_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/MinimumDamage-Sheet.png";
@@ -93,6 +94,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_PLANTS_SHADOW_IMG, Texture.class);
         am.load(RSC_SS_BERRIES_IMG, Texture.class);
         am.load(RSC_SS_SKUNK_IMG, Texture.class);
+        am.load(RSC_SS_SPRAY_IMG, Texture.class);
         am.load(RSC_SS_FOX_IMG, Texture.class);
         am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
         am.load(RSC_SS_COBRA_IMG, Texture.class);

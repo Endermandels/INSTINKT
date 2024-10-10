@@ -33,11 +33,11 @@
 - **[31]** Lower Opacity of foreground obstacles
 - **[32]** Change Entity Tile locations to center of Tile, instead of bottom left?
 - **[33]** Sound Effects
+- **[34]** Create Spray class
 
 ## Open Issues ##
 
-- **[34]** Create Spray class
-- **[35]** Shoot spray in opposite direction of player's last moved direction
+- **[35]** Shoot spray in opposite direction of player's last moved direction (variable length)
 - **[36]** Spray logistics (limited number, cooldown)
 - **[37]** Create AOE effect on a sprayed tile which repels enemies
 - **[38]** Create AOE effect on a sprayed enemy which repels enemies

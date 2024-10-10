@@ -1,12 +1,11 @@
 3000
 fox bleft
-cbr bright
-cbr bright
-cbr bright
-cbr bright
-cbr bright
-cbr bright
-cbr bright
+fox bleft
+fox bleft
+fox bleft
+fox bleft
+fox bleft
+fox bleft
 cbr bright
 sql top
 
