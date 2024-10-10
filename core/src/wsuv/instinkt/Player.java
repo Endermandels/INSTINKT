@@ -17,6 +17,7 @@ public class Player extends GameObject {
     private AnimationManager am;
     private Stats stats;
     private Sound hurtSound;
+    private Sound deathSound;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -59,6 +60,7 @@ public class Player extends GameObject {
         stats = new Stats(8, 1, 800L);
 
         hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
+        deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -307,6 +309,10 @@ public class Player extends GameObject {
                     long id = hurtSound.play();
                     hurtSound.setVolume(id, 0.1f);
                     hurtSound.setPitch(id, 0.8f);
+                } else if (stats.isDead()) {
+                    long id = deathSound.play();
+                    deathSound.setVolume(id, 0.1f);
+                    deathSound.setPitch(id, 0.6f);
                 }
                 if (!e.getStats().isDead() && enemyHP != e.getStats().getHp()) {
                     e.getAm().switchAnimState("HURT", "RUN");
@@ -337,7 +343,7 @@ public class Player extends GameObject {
             }
         } else {
             onNewTile = move(tileMap);
-            collision(enemies);
+            if (!stats.isDead()) collision(enemies);
         }
 
         return onNewTile;

@@ -32,10 +32,10 @@
 - **[30]** Create visual feedback for taking damage (hurt animation)
 - **[31]** Lower Opacity of foreground obstacles
 - **[32]** Change Entity Tile locations to center of Tile, instead of bottom left?
+- **[33]** Sound Effects
 
 ## Open Issues ##
 
-- **[33]** Sound Effects
 - **[34]** Create Spray class
 - **[35]** Shoot spray in opposite direction of player's last moved direction
 - **[36]** Spray logistics (limited number, cooldown)
