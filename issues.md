@@ -45,12 +45,13 @@
 ## Backlog ##
 
 - **[]** Phase transitions (cooldown and enemy wave)
+- **[]** Start with a berry bush in farmland area
+- **[]** Add berry counter mechanic
+- **[]** Farmland interaction to plant berries
+- **[]** Berry Bush growth after an enemy wave
+- **[]** 
+- **[]** 
 - **[]** Shop UI
-- **[]** 
-- **[]** 
-- **[]** 
-- **[]** 
-- **[]** 
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
