@@ -348,9 +348,10 @@ public class Player extends GameObject {
         // Death
 //        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
+            && !stats.isDead()) {
             // Show spray instance
-            spray.setShown(true, flipped);
+            spray.show(flipped, imgX, imgY);
             lastTimeSprayed = System.currentTimeMillis();
         }
 

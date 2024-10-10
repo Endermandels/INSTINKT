@@ -409,11 +409,25 @@ public class PlayScreen extends ScreenAdapter {
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
-                    TextureRegion img = ob.getImg();
-                    if (img != null) {
-                        game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
-                            , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                    if (ob instanceof Spray) {
+                        Spray spray = (Spray) ob;
+                        TextureRegion img = spray.getImg();
+                        if (img != null) {
+                            int dir = spray.isFlipped() ? 1 : -1;
+                            for (int i = 0; i < spray.getLength(); i++) {
+                                game.batch.draw(img, ob.getImgX() + dir * i * PlayScreen.TILE_SCALED_SIZE
+                                        , ob.getImgY() + GUI_SPACE
+                                        , img.getRegionWidth() * TILE_SCALE, img.getRegionHeight() * TILE_SCALE);
+                            }
+                        }
+                    } else {
+                        TextureRegion img = ob.getImg();
+                        if (img != null) {
+                            game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
+                                , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                        }
                     }
+
                     if (showEnemyStats) {
                         if (ob instanceof Enemy) {
                             debugImages.add(ob);
