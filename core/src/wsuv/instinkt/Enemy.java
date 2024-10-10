@@ -1,6 +1,7 @@
 package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.*;
@@ -36,6 +37,10 @@ public class Enemy extends GameObject {
     private Tile.DistanceType targetType;
     private ArrayList<Integer[]> enemySpawnLocations;
 
+    // SFX
+    private Sound hurtSound;
+    private Sound deathSound;
+
     private float imgX;
     private float imgY;
     private float imgSpeed;
@@ -53,6 +58,7 @@ public class Enemy extends GameObject {
 
     private boolean finishedDeathAnimation;
     private long timeFinishedDeathAnimation;
+    private boolean wasDead;
 
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations) {
@@ -60,6 +66,9 @@ public class Enemy extends GameObject {
         this.game = game;
         this.type = type;
         this.enemySpawnLocations = enemySpawnLocations;
+
+        hurtSound = null;
+        deathSound = null;
 
         switch (type) {
             case FOX:
@@ -77,6 +86,11 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+                hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
+                deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+
+                // Stats
                 stats = new Stats(3, 2, 800L);
                 imgSpeed = 400f;
                 targetType = Tile.DistanceType.PLAYER;
@@ -96,6 +110,10 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+                deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+
+                // Stats
                 stats = new Stats(1, 0, 0L);
                 imgSpeed = 500f;
                 targetType = Tile.DistanceType.BERRIES;
@@ -113,6 +131,11 @@ public class Enemy extends GameObject {
                         , 0.08f, 32, 32
                 );
 
+                // Sounds
+                hurtSound = game.am.get(Game.RSC_SNAKE_NOISE_SFX);
+                deathSound = game.am.get(Game.RSC_SNAKE_NOISE_2_SFX);
+
+                // Stats
                 stats = new Stats(4, 1, 800L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
@@ -127,6 +150,7 @@ public class Enemy extends GameObject {
 
         finishedDeathAnimation = false;
         timeFinishedDeathAnimation = -1L;
+        wasDead = false;
 
         this.dir = dir;
         flipped = false;
@@ -301,6 +325,10 @@ public class Enemy extends GameObject {
 //        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
         if (stats.isDead()) {
+            if (!wasDead) {
+                playDeathSound();
+                wasDead = true;
+            }
             am.switchAnimState("DEAD");
             am.setOneShot(true);
             if (am.isFinished()) {
@@ -318,6 +346,42 @@ public class Enemy extends GameObject {
 
     public TextureRegion getImg() {
         return am.getCurrentImage(flipped);
+    }
+
+    public void playHurtSound() {
+        if (hurtSound != null) {
+            long id = hurtSound.play();
+            switch (type) {
+                case FOX:
+                    hurtSound.setVolume(id, 0.1f);
+                    hurtSound.setPitch(id, 0.6f);
+                    break;
+                case CBR:
+                    hurtSound.setVolume(id, 0.7f);
+                    hurtSound.setPitch(id, 4f);
+                    break;
+            }
+        }
+    }
+
+    public void playDeathSound() {
+        if (deathSound != null) {
+            long id = deathSound.play();
+            switch (type) {
+                case FOX:
+                    deathSound.setVolume(id, 0.1f);
+                    deathSound.setPitch(id, 0.9f);
+                    break;
+                case SQL:
+                    deathSound.setVolume(id, 0.1f);
+                    deathSound.setPitch(id, 1f);
+                    break;
+                case CBR:
+                    deathSound.setVolume(id, 1f);
+                    deathSound.setPitch(id, 1f);
+                    break;
+            }
+        }
     }
 
     public float getImgX() {
