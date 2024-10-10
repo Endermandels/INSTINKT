@@ -46,6 +46,8 @@ public class Player extends GameObject {
     private Spray spray;
     private long lastTimeSprayed;
     private long sprayCooldown;
+    private int maxSprays;
+    private int spraysLeft;
 
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
@@ -88,6 +90,9 @@ public class Player extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayCooldown = 1000L;
+        maxSprays = 2;
+        spraysLeft = maxSprays;
+
         spray = new Spray(game);
         gameObjects.add(spray);
 
@@ -348,11 +353,15 @@ public class Player extends GameObject {
         // Death
 //        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
-            && !stats.isDead()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
+                && !stats.isDead()
+                && spraysLeft > 0
+            ) {
             // Show spray instance
             spray.show(flipped, imgX, imgY);
             lastTimeSprayed = System.currentTimeMillis();
+            spraysLeft--;
         }
 
         spray.update();
@@ -378,20 +387,27 @@ public class Player extends GameObject {
 
     public void reset() {
         stats.reset();
+
         tileX = startTileX;
         tileY = startTileY;
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
+
         targetTile = null;
         dir = null;
         movingVertical = false;
         movingHorizontal = false;
+
         pressedButtons.put(Direction.UP, -1L);
         pressedButtons.put(Direction.DOWN, -1L);
         pressedButtons.put(Direction.LEFT, -1L);
         pressedButtons.put(Direction.RIGHT, -1L);
+
         am.switchAnimState("IDLE");
         finishedDeathAnimation = false;
+
+        spraysLeft = maxSprays;
+        lastTimeSprayed = System.currentTimeMillis();
     }
 
     public boolean isFinishedDeathAnimation() {
