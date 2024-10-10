@@ -157,6 +157,13 @@ public class AnimationManager {
         return null;
     }
 
+    public void restartOneShotAnimation() {
+        oneShot = true;
+        nextRow = -1;
+        currentFrame = 0;
+        finishedAnimation = false;
+    }
+
     public boolean isFinished() {
         return finishedAnimation;
     }

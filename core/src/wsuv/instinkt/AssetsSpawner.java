@@ -184,7 +184,6 @@ public class AssetsSpawner {
 
                     // This is the berry pile
                     if (obsType == 5) {
-                        System.out.println("It should work");
                         importantLocations.add(new Integer[]{x/3, y});
                     }
 

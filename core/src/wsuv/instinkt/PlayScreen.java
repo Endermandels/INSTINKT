@@ -46,9 +46,9 @@ public class PlayScreen extends ScreenAdapter {
         hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
-        player = new Player(game,6,10);
-        gui = new GUI(game, player);
         gameObjects = new ArrayList<>();
+        player = new Player(game,6,10, gameObjects);
+        gui = new GUI(game, player);
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesToRemove = new ArrayList<>();
@@ -395,7 +395,6 @@ public class PlayScreen extends ScreenAdapter {
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
                 for (GameObject ob : gameObjects) {
-                    TextureRegion img = ob.getImg();
                     if (showTileLocations) {
                         if (ob instanceof Enemy) {
                             Enemy e = (Enemy) ob;
@@ -410,8 +409,11 @@ public class PlayScreen extends ScreenAdapter {
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
-                    game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
+                    TextureRegion img = ob.getImg();
+                    if (img != null) {
+                        game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                    }
                     if (showEnemyStats) {
                         if (ob instanceof Enemy) {
                             debugImages.add(ob);

@@ -3,6 +3,7 @@ package wsuv.instinkt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.*;
@@ -41,7 +42,12 @@ public class Player extends GameObject {
     private boolean finishedDeathAnimation;
     private long timeFinishedDeathAnimation;
 
-    public Player(Game game, int tileX, int tileY) {
+    // Spray Stats
+    private Spray spray;
+    private long lastTimeSprayed;
+    private long sprayCooldown;
+
+    public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
                 , tileY * PlayScreen.TILE_SCALED_SIZE, 10);
         this.game = game;
@@ -79,6 +85,11 @@ public class Player extends GameObject {
         takeInput = true;
         finishedDeathAnimation = false;
         timeFinishedDeathAnimation = -1L;
+
+        lastTimeSprayed = -1L;
+        sprayCooldown = 1000L;
+        spray = new Spray(game);
+        gameObjects.add(spray);
 
         this.startTileX = tileX;
         this.startTileY = tileY;
@@ -302,8 +313,10 @@ public class Player extends GameObject {
                 // Collision!  Perform attack
                 int playerHP = stats.getHp();
                 int enemyHP = e.getStats().getHp();
+
                 stats.getAttacked(e.getStats());
                 e.getStats().getAttacked(stats);
+
                 if (!stats.isDead() && playerHP != stats.getHp()) {
                     am.switchAnimState("HURT", "RUN");
                     long id = hurtSound.play();
@@ -314,6 +327,7 @@ public class Player extends GameObject {
                     deathSound.setVolume(id, 0.1f);
                     deathSound.setPitch(id, 0.6f);
                 }
+
                 if (!e.getStats().isDead() && enemyHP != e.getStats().getHp()) {
                     e.getAm().switchAnimState("HURT", "RUN");
                     e.playHurtSound();
@@ -334,6 +348,14 @@ public class Player extends GameObject {
         // Death
 //        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown) {
+            // Show spray instance
+            spray.setShown(true, flipped);
+            lastTimeSprayed = System.currentTimeMillis();
+        }
+
+        spray.update();
+
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
             am.setOneShot(true);
@@ -347,6 +369,10 @@ public class Player extends GameObject {
         }
 
         return onNewTile;
+    }
+
+    public void drawSpray(Batch batch) {
+
     }
 
     public void reset() {
