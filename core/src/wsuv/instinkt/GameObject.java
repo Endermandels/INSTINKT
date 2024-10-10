@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class GameObject {
     private TextureRegion img;
 
-    private float imgX;
-    private float imgY;
+    protected float imgX;
+    protected float imgY;
 
     private int priority; // Determines depth of drawing this sprite (higher = background; 0 = foreground)
 

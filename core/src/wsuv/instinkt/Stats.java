@@ -55,3 +55,4 @@ public class Stats {
     public boolean isDead() { return hp <=0; }
 
 }
+

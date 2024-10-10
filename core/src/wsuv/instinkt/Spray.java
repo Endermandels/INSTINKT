@@ -1,5 +1,7 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
@@ -7,9 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Spray extends GameObject {
-
-    private int tileX;
-    private int tileY;
 
     private int length;
 
@@ -39,14 +38,29 @@ public class Spray extends GameObject {
         }
     }
 
-    public void setShown(boolean shown, boolean flipped) {
-        this.shown = shown;
+    public void show(boolean flipped, float imgX, float imgY) {
+        shown = true;
         this.flipped = flipped;
+        if (flipped) {
+            this.imgX = imgX + PlayScreen.TILE_SCALED_SIZE / 2f;
+        } else {
+            this.imgX = imgX - PlayScreen.TILE_SCALED_SIZE / 2f;
+        }
+        this.imgY = imgY;
+
         am.restartOneShotAnimation();
     }
 
     public TextureRegion getImg() {
         if (!shown) return null;
         return am.getCurrentImage(flipped);
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public boolean isFlipped() {
+        return flipped;
     }
 }
