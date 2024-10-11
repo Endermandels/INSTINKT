@@ -3,6 +3,8 @@ package wsuv.instinkt;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 public class Tile {
 
     public enum DistanceType {
@@ -24,6 +26,12 @@ public class Tile {
     private float[] distances; // For Dijkstra's Algorithm
 
     private boolean containsObstacle;
+    private boolean stinky;
+
+    private long timeStinked;
+    private long stinkDuration;
+
+    private ArrayList<Enemy> enemies;
 
     public Tile(Game game, int x, int y, float imgX, float imgY, int ssRow, int ssCol) {
         this.imgX = imgX;
@@ -31,7 +39,12 @@ public class Tile {
         this.x = x;
         this.y = y;
 
+        enemies = new ArrayList<>();
+
         containsObstacle = false;
+        stinky = false;
+        timeStinked = -1L;
+        stinkDuration = 1000L;
         distances = new float[2];
         setDistance(DistanceType.PLAYER, INF);
         setDistance(DistanceType.BERRIES, INF);
@@ -44,6 +57,18 @@ public class Tile {
                 , PlayScreen.TILE_SIZE);
     }
 
+    /**
+     * @return Whether the tile changed from stinky to not
+     */
+    public boolean update() {
+        if (stinky && System.currentTimeMillis() > timeStinked + stinkDuration) {
+            stinky = false;
+            return true;
+        }
+
+        return false;
+    }
+
     public String toString() {
         return "Tile @ [" + x + ", " + y + "]";
     }
@@ -54,6 +79,22 @@ public class Tile {
 
     public boolean isObstacle() {
         return containsObstacle;
+    }
+
+    public void setStinky(boolean stinky, long duration) {
+        this.stinky = stinky;
+        if (stinky) {
+            timeStinked = System.currentTimeMillis();
+            stinkDuration = duration;
+        }
+    }
+
+    public boolean isStinky() {
+        return stinky;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
 
     public TextureRegion getImg() {

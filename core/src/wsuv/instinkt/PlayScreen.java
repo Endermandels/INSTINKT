@@ -21,6 +21,8 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
     private ArrayList<GameObject> debugImages;
+    private Set<Tile> aoeEffectTiles;
+    private Texture aoeEffectImg;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -43,18 +45,22 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(Game game) {
         this.game = game;
-        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
-        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
-        tileMap = new Tile[TILE_ROWS][TILE_COLS];
+
         gameObjects = new ArrayList<>();
-        player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player);
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesToRemove = new ArrayList<>();
-        enemySpawner = new EnemySpawner(game, enemies, gameObjects);
+        aoeEffectTiles = new HashSet<>();
+
+        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
+        tileMap = new Tile[TILE_ROWS][TILE_COLS];
+        player = new Player(game,6,10, gameObjects);
+        gui = new GUI(game, player);
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
+        aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
@@ -307,6 +313,12 @@ public class PlayScreen extends ScreenAdapter {
 
                     enemySpawner.update();
 
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            if (tile.update()) aoeEffectTiles.remove(tile);
+                        }
+                    }
+
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
@@ -367,6 +379,7 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
+                        if (tile.isStinky()) aoeEffectTiles.add(tile);
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
                                 , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         if (showTileLocations) {
@@ -409,6 +422,7 @@ public class PlayScreen extends ScreenAdapter {
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
+
                     if (ob instanceof Spray) {
                         Spray spray = (Spray) ob;
                         TextureRegion img = spray.getImg();
@@ -441,6 +455,10 @@ public class PlayScreen extends ScreenAdapter {
                                 e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                     }
                 }
+                for (Tile tile : aoeEffectTiles) {
+                    game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                }
+
                 debugImages.clear();
                 gui.draw(game.batch);
                 break;

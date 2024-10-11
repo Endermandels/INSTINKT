@@ -36,11 +36,10 @@
 - **[34]** Create Spray class
 - **[35]** Shoot spray in opposite direction of player's last moved direction (variable length)
 - **[36]** Spray logistics (limited number, cooldown)
+- **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
 
 ## Open Issues ##
 
-- **[37]** Create AOE effect on a sprayed tile which repels enemies
-- **[38]** Create AOE effect on a sprayed enemy which repels enemies
 
 ## Backlog ##
 

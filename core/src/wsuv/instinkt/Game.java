@@ -21,6 +21,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_GAMEOVER_IMG = "Images/gameover.png";
     public static final String RSC_PRESSAKEY_IMG = "Images/pressakey.png";
     public static final String RSC_OVERLAY_IMG = "Images/Overlay Image.png";
+    public static final String RSC_AOE_EFFECT_IMG = "Images/AOE Effect.png";
 
     // Sprite Sheets
     public static final String RSC_SS_GRASS_IMG = "Images/Tileset Grass.png";
@@ -89,6 +90,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_GAMEOVER_IMG, Texture.class);
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
         am.load(RSC_OVERLAY_IMG, Texture.class);
+        am.load(RSC_AOE_EFFECT_IMG, Texture.class);
         am.load(RSC_SS_GRASS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_SHADOW_IMG, Texture.class);
@@ -140,6 +142,11 @@ public class Game extends com.badlogic.gdx.Game {
     /**
      * Returns whether the given tile position is a valid move from the current tile position of the enemy
      */
+
+    public boolean validMove(int tileX, int tileY) {
+        return tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS;
+    }
+
     public boolean validMove(Tile[][] tileMap, int tileX, int tileY) {
         return tileX >= 0 && tileX < PlayScreen.TILE_COLS && tileY >= 0 && tileY < PlayScreen.TILE_ROWS
                 && !tileMap[tileY][tileX].isObstacle();
