@@ -9,7 +9,8 @@ public class Tile {
 
     public enum DistanceType {
         PLAYER,
-        BERRIES
+        BERRIES,
+        EXIT
     }
 
     public static final float INF = 10000f;
@@ -45,7 +46,7 @@ public class Tile {
         stinky = false;
         timeStinked = -1L;
         stinkDuration = 1000L;
-        distances = new float[2];
+        distances = new float[DistanceType.values().length];
         setDistance(DistanceType.PLAYER, INF);
         setDistance(DistanceType.BERRIES, INF);
 

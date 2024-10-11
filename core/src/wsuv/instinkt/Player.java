@@ -403,7 +403,6 @@ public class Player extends GameObject {
 
 
         // Death
-//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
         updateSpray(tileMap);
 
         if (stats.isDead()) {

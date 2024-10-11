@@ -69,6 +69,16 @@ public class PlayScreen extends ScreenAdapter {
         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
         fillDijkstraFromTile(Tile.DistanceType.BERRIES, berryPile[0], berryPile[1]);
 
+        ArrayList<Integer[]> enemySpawnLocations = enemySpawner.getEnemySpawnLocations();
+        boolean first = true;
+        for (Integer[] location : enemySpawnLocations) {
+            fillDijkstraFromTile(Tile.DistanceType.EXIT
+                    , location[1]
+                    , location[0]
+                    , first);
+            first = false;
+        }
+
         timer = 0f;
         paused = false;
         doStep = false;
@@ -236,19 +246,64 @@ public class PlayScreen extends ScreenAdapter {
         return neighbors;
     }
 
+    private ArrayList<Tile> getNeighbors(int tileX, int tileY, PriorityQueue<Tile> queue) {
+        ArrayList<Tile> neighbors = new ArrayList<>();
+
+        if (game.validMove(tileMap,tileX-1, tileY)
+                && queue.contains(tileMap[tileY][tileX-1]))
+            neighbors.add(tileMap[tileY][tileX-1]);
+        if (game.validMove(tileMap,tileX+1, tileY)
+                && queue.contains(tileMap[tileY][tileX+1]))
+            neighbors.add(tileMap[tileY][tileX+1]);
+        if (game.validMove(tileMap, tileX, tileY-1)
+                && queue.contains(tileMap[tileY-1][tileX]))
+            neighbors.add(tileMap[tileY-1][tileX]);
+        if (game.validMove(tileMap, tileX, tileY+1)
+                && queue.contains(tileMap[tileY+1][tileX]))
+            neighbors.add(tileMap[tileY+1][tileX]);
+
+        return neighbors;
+    }
+
+    private Tile getEnemyStartTile(int tileX, int tileY) {
+
+        if (game.validMove(tileMap,tileX-1, tileY))
+            return tileMap[tileY][tileX-1];
+        if (game.validMove(tileMap,tileX+1, tileY))
+            return tileMap[tileY][tileX+1];
+        if (game.validMove(tileMap, tileX, tileY-1))
+            return tileMap[tileY-1][tileX];
+        if (game.validMove(tileMap, tileX, tileY+1))
+            return tileMap[tileY+1][tileX];
+
+        return null;
+    }
+
+    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
+        fillDijkstraFromTile(dt, tileX, tileY, true);
+    }
+
     /**
      * Fill each tile in tileMap with values from tileX and tileY location using Dijkstra's Algorithm
      * Ignore obstacle tiles
      */
-    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
-        Tile source = tileMap[tileY][tileX];
-        source.setDistance(dt, 0f);
+    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY, boolean newFill) {
+        Tile source;
         Comparator<Tile> comparator = new DistanceComparator(dt);
         PriorityQueue<Tile> queue = new PriorityQueue<>(comparator);
 
+        if (dt != Tile.DistanceType.EXIT)  {
+            source = tileMap[tileY][tileX];
+            source.setDistance(dt, 0f);
+        }
+        else  {
+            source = getEnemyStartTile(tileX, tileY);
+            source.setDistance(dt, 1f);
+        }
+
         for (Tile[] tiles : tileMap) {
             for (Tile tile : tiles) {
-                if (!tile.equals(source)) tile.setDistance(dt, Tile.INF);
+                if (!tile.equals(source) && newFill) tile.setDistance(dt, Tile.INF);
                 if (!tile.isObstacle() || tile.equals(source)) queue.add(tile);
             }
         }
@@ -385,24 +440,33 @@ public class PlayScreen extends ScreenAdapter {
                         if (showTileLocations) {
                             float dist = tile.getDistance(Tile.DistanceType.PLAYER);
                             float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
+                            float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
                             String num;
                             String berryNum;
+                            String exitNum;
                             if (dist == Tile.INF) {
                                 num = "~";
                                 berryNum = "~";
+                                exitNum = "~";
                             }
                             else {
                                 num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
                                 berryNum = Float.toString(berryDist);
+                                exitNum = Float.toString(exitDist);
                             }
 
                             float clampedDist = Math.min(Math.max(dist, 0), 12);
                             float redIntensity = clampedDist / 12.0f;
 
                             debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
-                            debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                            debugFont.draw(game.batch, num, tile.getImgX(),
+                                    tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                            debugFont.setColor(0, 0, 0, 1);  // Reset to white
+                            debugFont.draw(game.batch, berryNum, tile.getImgX(),
+                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                             debugFont.setColor(1, 1, 1, 1);  // Reset to white
-                            debugFont.draw(game.batch, berryNum, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+                            debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
+                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                         }
                     }
                 // Draw Game Objects

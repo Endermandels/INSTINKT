@@ -141,6 +141,9 @@ public class EnemySpawner {
         formation = formationsMap.get(idx).reset();
     }
 
+    public ArrayList<Integer[]> getEnemySpawnLocations() {
+        return enemySpawnLocations;
+    }
 }
 
 class EnemyFormation {

@@ -339,7 +339,6 @@ public class Enemy extends GameObject {
         boolean toRemove = false;
 
         am.update();
-//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
 
         // Update stinky tiles
         if (sprayed) {
@@ -350,6 +349,10 @@ public class Enemy extends GameObject {
                     }
                 }
             }
+        }
+
+        if (game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
+            targetType = Tile.DistanceType.EXIT;
         }
 
         if (stats.isDead()) {

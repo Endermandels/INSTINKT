@@ -36,10 +36,11 @@
 - **[34]** Create Spray class
 - **[35]** Shoot spray in opposite direction of player's last moved direction (variable length)
 - **[36]** Spray logistics (limited number, cooldown)
-- **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
 
 ## Open Issues ##
 
+- **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
+- **[38]** Add Spray HUD commands
 
 ## Backlog ##
 
@@ -48,6 +49,9 @@
 - **[]** Add berry counter mechanic
 - **[]** Farmland interaction to plant berries
 - **[]** Berry Bush growth after an enemy wave
+- **[]** 
+- **[]** 
+- **[]** 
 - **[]** 
 - **[]** 
 - **[]** Shop UI
