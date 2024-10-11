@@ -34,6 +34,7 @@ public class EnemySpawner {
     }
 
     private Game game;
+    private Player player;
     private ArrayList<Enemy> enemies;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Integer[]> enemySpawnLocations;
@@ -42,8 +43,9 @@ public class EnemySpawner {
 
     private long lastSpawn;
 
-    public EnemySpawner(Game game, ArrayList<Enemy> enemies, ArrayList<GameObject> gameObjects) {
+    public EnemySpawner(Game game, ArrayList<Enemy> enemies, ArrayList<GameObject> gameObjects, Player player) {
         this.game = game;
+        this.player = player;
         this.enemies = enemies;
         this.gameObjects = gameObjects;
         enemySpawnLocations = new ArrayList<>(Arrays.asList(
@@ -117,7 +119,7 @@ public class EnemySpawner {
                 break;
         }
         return new Enemy(game, enemySpawnLocations.get(sl.ordinal())[1]
-                ,enemySpawnLocations.get(sl.ordinal())[0], dir, type, enemySpawnLocations);
+                ,enemySpawnLocations.get(sl.ordinal())[0], dir, type, enemySpawnLocations, player);
     }
 
     private void spawnEnemy(Enemy enemy) {
@@ -139,6 +141,9 @@ public class EnemySpawner {
         formation = formationsMap.get(idx).reset();
     }
 
+    public ArrayList<Integer[]> getEnemySpawnLocations() {
+        return enemySpawnLocations;
+    }
 }
 
 class EnemyFormation {

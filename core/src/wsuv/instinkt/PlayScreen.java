@@ -21,6 +21,8 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
     private ArrayList<GameObject> debugImages;
+    private Set<Tile> aoeEffectTiles;
+    private Texture aoeEffectImg;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -43,18 +45,22 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(Game game) {
         this.game = game;
-        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
-        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
-        tileMap = new Tile[TILE_ROWS][TILE_COLS];
+
         gameObjects = new ArrayList<>();
-        player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player);
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesToRemove = new ArrayList<>();
-        enemySpawner = new EnemySpawner(game, enemies, gameObjects);
+        aoeEffectTiles = new HashSet<>();
+
+        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
+        tileMap = new Tile[TILE_ROWS][TILE_COLS];
+        player = new Player(game,6,10, gameObjects);
+        gui = new GUI(game, player);
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
+        aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
@@ -62,6 +68,16 @@ public class PlayScreen extends ScreenAdapter {
 
         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
         fillDijkstraFromTile(Tile.DistanceType.BERRIES, berryPile[0], berryPile[1]);
+
+        ArrayList<Integer[]> enemySpawnLocations = enemySpawner.getEnemySpawnLocations();
+        boolean first = true;
+        for (Integer[] location : enemySpawnLocations) {
+            fillDijkstraFromTile(Tile.DistanceType.EXIT
+                    , location[1]
+                    , location[0]
+                    , first);
+            first = false;
+        }
 
         timer = 0f;
         paused = false;
@@ -230,19 +246,64 @@ public class PlayScreen extends ScreenAdapter {
         return neighbors;
     }
 
+    private ArrayList<Tile> getNeighbors(int tileX, int tileY, PriorityQueue<Tile> queue) {
+        ArrayList<Tile> neighbors = new ArrayList<>();
+
+        if (game.validMove(tileMap,tileX-1, tileY)
+                && queue.contains(tileMap[tileY][tileX-1]))
+            neighbors.add(tileMap[tileY][tileX-1]);
+        if (game.validMove(tileMap,tileX+1, tileY)
+                && queue.contains(tileMap[tileY][tileX+1]))
+            neighbors.add(tileMap[tileY][tileX+1]);
+        if (game.validMove(tileMap, tileX, tileY-1)
+                && queue.contains(tileMap[tileY-1][tileX]))
+            neighbors.add(tileMap[tileY-1][tileX]);
+        if (game.validMove(tileMap, tileX, tileY+1)
+                && queue.contains(tileMap[tileY+1][tileX]))
+            neighbors.add(tileMap[tileY+1][tileX]);
+
+        return neighbors;
+    }
+
+    private Tile getEnemyStartTile(int tileX, int tileY) {
+
+        if (game.validMove(tileMap,tileX-1, tileY))
+            return tileMap[tileY][tileX-1];
+        if (game.validMove(tileMap,tileX+1, tileY))
+            return tileMap[tileY][tileX+1];
+        if (game.validMove(tileMap, tileX, tileY-1))
+            return tileMap[tileY-1][tileX];
+        if (game.validMove(tileMap, tileX, tileY+1))
+            return tileMap[tileY+1][tileX];
+
+        return null;
+    }
+
+    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
+        fillDijkstraFromTile(dt, tileX, tileY, true);
+    }
+
     /**
      * Fill each tile in tileMap with values from tileX and tileY location using Dijkstra's Algorithm
      * Ignore obstacle tiles
      */
-    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
-        Tile source = tileMap[tileY][tileX];
-        source.setDistance(dt, 0f);
+    private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY, boolean newFill) {
+        Tile source;
         Comparator<Tile> comparator = new DistanceComparator(dt);
         PriorityQueue<Tile> queue = new PriorityQueue<>(comparator);
 
+        if (dt != Tile.DistanceType.EXIT)  {
+            source = tileMap[tileY][tileX];
+            source.setDistance(dt, 0f);
+        }
+        else  {
+            source = getEnemyStartTile(tileX, tileY);
+            source.setDistance(dt, 1f);
+        }
+
         for (Tile[] tiles : tileMap) {
             for (Tile tile : tiles) {
-                if (!tile.equals(source)) tile.setDistance(dt, Tile.INF);
+                if (!tile.equals(source) && newFill) tile.setDistance(dt, Tile.INF);
                 if (!tile.isObstacle() || tile.equals(source)) queue.add(tile);
             }
         }
@@ -307,6 +368,12 @@ public class PlayScreen extends ScreenAdapter {
 
                     enemySpawner.update();
 
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            if (tile.update()) aoeEffectTiles.remove(tile);
+                        }
+                    }
+
                     if (!hud.isOpen()) {
                         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                             state = SubState.GAME_OVER;
@@ -367,29 +434,39 @@ public class PlayScreen extends ScreenAdapter {
                 for (int row = 0; row < TILE_ROWS; row++)
                     for (int col = 0; col < TILE_COLS; col++) {
                         Tile tile = tileMap[row][col];
+                        if (tile.isStinky()) aoeEffectTiles.add(tile);
                         game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
                                 , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         if (showTileLocations) {
                             float dist = tile.getDistance(Tile.DistanceType.PLAYER);
                             float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
+                            float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
                             String num;
                             String berryNum;
+                            String exitNum;
                             if (dist == Tile.INF) {
                                 num = "~";
                                 berryNum = "~";
+                                exitNum = "~";
                             }
                             else {
-                                num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
-                                berryNum = Float.toString(berryDist);
+                                num = Integer.toString((int) tile.getDistance(Tile.DistanceType.PLAYER));
+                                berryNum = Integer.toString((int) berryDist);
+                                exitNum = Integer.toString((int) exitDist);
                             }
 
                             float clampedDist = Math.min(Math.max(dist, 0), 12);
                             float redIntensity = clampedDist / 12.0f;
 
                             debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
-                            debugFont.draw(game.batch, num, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                            debugFont.draw(game.batch, num, tile.getImgX(),
+                                    tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                            debugFont.setColor(0, 0, 0, 1);  // Reset to white
+                            debugFont.draw(game.batch, berryNum, tile.getImgX(),
+                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                             debugFont.setColor(1, 1, 1, 1);  // Reset to white
-                            debugFont.draw(game.batch, berryNum, tile.getImgX(), tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+                            debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
+                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                         }
                     }
                 // Draw Game Objects
@@ -409,6 +486,7 @@ public class PlayScreen extends ScreenAdapter {
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
+
                     if (ob instanceof Spray) {
                         Spray spray = (Spray) ob;
                         TextureRegion img = spray.getImg();
@@ -441,6 +519,10 @@ public class PlayScreen extends ScreenAdapter {
                                 e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                     }
                 }
+                for (Tile tile : aoeEffectTiles) {
+                    game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                }
+
                 debugImages.clear();
                 gui.draw(game.batch);
                 break;

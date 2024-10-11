@@ -19,6 +19,7 @@ public class Player extends GameObject {
     private Stats stats;
     private Sound hurtSound;
     private Sound deathSound;
+    private Sound spraySound;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -48,6 +49,8 @@ public class Player extends GameObject {
     private long sprayCooldown;
     private int maxSprays;
     private int spraysLeft;
+    private int sprayRadius;
+    private long sprayDuration;
 
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
@@ -69,6 +72,7 @@ public class Player extends GameObject {
 
         hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
         deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+        spraySound = game.am.get(Game.RSC_SPRAY_SFX);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -90,8 +94,10 @@ public class Player extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayCooldown = 1000L;
-        maxSprays = 2;
+        maxSprays = 8;
         spraysLeft = maxSprays;
+        sprayRadius = 1;
+        sprayDuration = 1000L;
 
         spray = new Spray(game);
         gameObjects.add(spray);
@@ -342,6 +348,52 @@ public class Player extends GameObject {
         }
     }
 
+    private void updateSpray(Tile[][] tileMap) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
+                && !stats.isDead()
+                && spraysLeft > 0
+        ) {
+            long id = spraySound.play();
+            spraySound.setPitch(id, 2f);
+
+            // Show spray instance
+            spray.show(flipped, imgX, imgY);
+            lastTimeSprayed = System.currentTimeMillis();
+            spraysLeft--;
+
+            // Search for enemies along path
+            int dir = flipped ? 1 : -1;
+            boolean foundEnemy = false;
+            int x;
+            for (x = dir; Math.abs(x) <= spray.getLength() && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
+                ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
+                if (!enemiesInTile.isEmpty()) {
+                    for (Enemy e : enemiesInTile) {
+                        // Mark enemies as sprayed
+                        e.setSprayed(true);
+                    }
+                    foundEnemy = true;
+                    break;
+                }
+            }
+            if (!foundEnemy) {
+                x += -dir;
+                tileMap[tileY][tileX+x].setStinky(true, sprayDuration);
+
+                for (int i = x - sprayRadius; i <= x + sprayRadius; i++) {
+                    for (int j = -sprayRadius; j <= sprayRadius; j++) {
+                        if (game.validMove(tileX+i, tileY+j)) {
+                            tileMap[tileY+j][tileX+i].setStinky(true, sprayDuration);
+                        }
+                    }
+                }
+            }
+        }
+
+        spray.update();
+    }
+
     /**
      * @return Whether the player is on a new tile
      */
@@ -351,20 +403,7 @@ public class Player extends GameObject {
 
 
         // Death
-//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)
-                && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
-                && !stats.isDead()
-                && spraysLeft > 0
-            ) {
-            // Show spray instance
-            spray.show(flipped, imgX, imgY);
-            lastTimeSprayed = System.currentTimeMillis();
-            spraysLeft--;
-        }
-
-        spray.update();
+        updateSpray(tileMap);
 
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
@@ -444,5 +483,13 @@ public class Player extends GameObject {
 
     public Stats getStats() {
         return stats;
+    }
+
+    public int getSprayRadius() {
+        return sprayRadius;
+    }
+
+    public long getSprayDuration() {
+        return sprayDuration;
     }
 }

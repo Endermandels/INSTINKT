@@ -31,6 +31,7 @@ public class Enemy extends GameObject {
     }
 
     private Game game;
+    private Player player;
     private AnimationManager am;
     private Stats stats;
     private Type type;
@@ -60,11 +61,14 @@ public class Enemy extends GameObject {
     private long timeFinishedDeathAnimation;
     private boolean wasDead;
 
+    private boolean sprayed;
+
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
-                 ArrayList<Integer[]> enemySpawnLocations) {
+                 ArrayList<Integer[]> enemySpawnLocations, Player player) {
         super(null, 0, 0, 20);
         this.game = game;
         this.type = type;
+        this.player = player;
         this.enemySpawnLocations = enemySpawnLocations;
 
         hurtSound = null;
@@ -152,6 +156,8 @@ public class Enemy extends GameObject {
         timeFinishedDeathAnimation = -1L;
         wasDead = false;
 
+        sprayed = false;
+
         this.dir = dir;
         flipped = false;
 
@@ -198,11 +204,23 @@ public class Enemy extends GameObject {
             Tile currentTile = tileMap[pathY][pathX];
             Tile lowestTile = currentTile;
             for (Tile tile : getNeighbors(tileMap, currentTile)) {
-                if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
-                    if ((movingHorizontal && pathY == tile.getY())
-                            || (movingVertical && pathX == tile.getX())
-                            || (!movingHorizontal && !movingVertical)) {
-                        lowestTile = tile;
+                if ((movingHorizontal && pathY == tile.getY())
+                        || (movingVertical && pathX == tile.getX())
+                        || (!movingHorizontal && !movingVertical)) {
+                    if (targetType != Tile.DistanceType.EXIT) {
+                        if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
+                            lowestTile = tile;
+                        }
+                    } else {
+                        // Avoid player
+                        float exitDist1 = tile.getDistance(targetType);
+                        float playerDist1 = tile.getDistance(Tile.DistanceType.PLAYER);
+                        float exitDist2 = lowestTile.getDistance(targetType);
+                        float playerDist2 = lowestTile.getDistance(Tile.DistanceType.PLAYER);
+                        float alpha = 0.75f;
+                        if (exitDist1*alpha - playerDist1*(1-alpha) < exitDist2*alpha - playerDist2*(1-alpha)) {
+                            lowestTile = tile;
+                        }
                     }
                 }
             }
@@ -219,6 +237,14 @@ public class Enemy extends GameObject {
                 else if (lowestTile.getY() > pathY) dir = Direction.UP;
                 else dir = null;
             }
+        }
+
+        if (targetType == Tile.DistanceType.EXIT && game.validMove(tileX, tileY)
+                && tileMap[tileY][tileX].getDistance(targetType) == 1f) {
+            if (isSpawnTile(tileX, tileY+1)) dir = Direction.UP;
+            if (isSpawnTile(tileX, tileY-1)) dir = Direction.DOWN;
+            if (isSpawnTile(tileX-1, tileY)) dir = Direction.LEFT;
+            if (isSpawnTile(tileX+1, tileY)) dir = Direction.RIGHT;
         }
 
         if (dir != null) {
@@ -312,8 +338,19 @@ public class Enemy extends GameObject {
             }
         }
 
+        int prevTileX = tileX;
+        int prevTileY = tileY;
+
         tileX = (int) (imgX + PlayScreen.TILE_SCALED_SIZE / 2f) / PlayScreen.TILE_SCALED_SIZE;
         tileY = (int) (imgY + PlayScreen.TILE_SCALED_SIZE / 2f) / PlayScreen.TILE_SCALED_SIZE;
+
+        // Each tile keeps track of which enemies are in it.
+        if (prevTileX != tileX || prevTileY != tileY) {
+            if (game.validMove(tileMap, prevTileX, prevTileY))
+                tileMap[prevTileY][prevTileX].getEnemies().remove(this);
+            if (game.validMove(tileMap, tileX, tileY))
+                tileMap[tileY][tileX].getEnemies().add(this);
+        }
 
         return toRemove;
     }
@@ -322,7 +359,21 @@ public class Enemy extends GameObject {
         boolean toRemove = false;
 
         am.update();
-//        if (stats.isDead()) stats.setHp(8); // TODO: Delete
+
+        // Update stinky tiles
+        if (sprayed) {
+            for (int i = -player.getSprayRadius(); i <= player.getSprayRadius(); i++) {
+                for (int j = -player.getSprayRadius(); j <= player.getSprayRadius(); j++) {
+                    if (game.validMove(tileX+i, tileY+j)) {
+                        tileMap[tileY+j][tileX+i].setStinky(true, player.getSprayDuration());
+                    }
+                }
+            }
+        }
+
+        if (type != Type.CBR && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
+            targetType = Tile.DistanceType.EXIT;
+        }
 
         if (stats.isDead()) {
             if (!wasDead) {
@@ -339,7 +390,9 @@ public class Enemy extends GameObject {
                 if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
             }
         } else {
-            if (move(tileMap)) toRemove = true;
+            if (move(tileMap)) {
+                toRemove = true;
+            }
         }
         return toRemove;
     }
@@ -408,7 +461,15 @@ public class Enemy extends GameObject {
         return stats;
     }
 
+    public boolean isSprayed() {
+        return sprayed;
+    }
+
+    public void setSprayed(boolean sprayed) {
+        this.sprayed = sprayed;
+    }
+
     public Enemy clone() {
-        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations);
+        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player);
     }
 }
