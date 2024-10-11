@@ -19,6 +19,7 @@ public class Player extends GameObject {
     private Stats stats;
     private Sound hurtSound;
     private Sound deathSound;
+    private Sound spraySound;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -71,6 +72,7 @@ public class Player extends GameObject {
 
         hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
         deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+        spraySound = game.am.get(Game.RSC_SPRAY_SFX);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -352,6 +354,9 @@ public class Player extends GameObject {
                 && !stats.isDead()
                 && spraysLeft > 0
         ) {
+            long id = spraySound.play();
+            spraySound.setPitch(id, 2f);
+
             // Show spray instance
             spray.show(flipped, imgX, imgY);
             lastTimeSprayed = System.currentTimeMillis();
