@@ -227,6 +227,14 @@ public class Enemy extends GameObject {
             }
         }
 
+        if (targetType == Tile.DistanceType.EXIT && game.validMove(tileX, tileY)
+                && tileMap[tileY][tileX].getDistance(targetType) == 1f) {
+            if (isSpawnTile(tileX, tileY+1)) dir = Direction.UP;
+            if (isSpawnTile(tileX, tileY-1)) dir = Direction.DOWN;
+            if (isSpawnTile(tileX-1, tileY)) dir = Direction.LEFT;
+            if (isSpawnTile(tileX+1, tileY)) dir = Direction.RIGHT;
+        }
+
         if (dir != null) {
             if (!am.getCurrentAnimState().equals("HURT")) {
                 am.switchAnimState("RUN");
@@ -351,7 +359,7 @@ public class Enemy extends GameObject {
             }
         }
 
-        if (game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
+        if (type != Type.CBR && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
             targetType = Tile.DistanceType.EXIT;
         }
 
@@ -370,7 +378,9 @@ public class Enemy extends GameObject {
                 if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
             }
         } else {
-            if (move(tileMap)) toRemove = true;
+            if (move(tileMap)) {
+                toRemove = true;
+            }
         }
         return toRemove;
     }

@@ -361,6 +361,7 @@ public class PlayScreen extends ScreenAdapter {
                         if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
                     }
                     for (Enemy enemy : enemiesToRemove) {
+                        System.out.println("Removed");
                         enemies.remove(enemy);
                         gameObjects.remove(enemy);
                     }
@@ -450,9 +451,9 @@ public class PlayScreen extends ScreenAdapter {
                                 exitNum = "~";
                             }
                             else {
-                                num = Float.toString(tile.getDistance(Tile.DistanceType.PLAYER));
-                                berryNum = Float.toString(berryDist);
-                                exitNum = Float.toString(exitDist);
+                                num = Integer.toString((int) tile.getDistance(Tile.DistanceType.PLAYER));
+                                berryNum = Integer.toString((int) berryDist);
+                                exitNum = Integer.toString((int) exitDist);
                             }
 
                             float clampedDist = Math.min(Math.max(dist, 0), 12);
