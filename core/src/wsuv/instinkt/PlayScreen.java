@@ -361,7 +361,6 @@ public class PlayScreen extends ScreenAdapter {
                         if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
                     }
                     for (Enemy enemy : enemiesToRemove) {
-                        System.out.println("Removed");
                         enemies.remove(enemy);
                         gameObjects.remove(enemy);
                     }

@@ -204,11 +204,23 @@ public class Enemy extends GameObject {
             Tile currentTile = tileMap[pathY][pathX];
             Tile lowestTile = currentTile;
             for (Tile tile : getNeighbors(tileMap, currentTile)) {
-                if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
-                    if ((movingHorizontal && pathY == tile.getY())
-                            || (movingVertical && pathX == tile.getX())
-                            || (!movingHorizontal && !movingVertical)) {
-                        lowestTile = tile;
+                if ((movingHorizontal && pathY == tile.getY())
+                        || (movingVertical && pathX == tile.getX())
+                        || (!movingHorizontal && !movingVertical)) {
+                    if (targetType != Tile.DistanceType.EXIT) {
+                        if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
+                            lowestTile = tile;
+                        }
+                    } else {
+                        // Avoid player
+                        float exitDist1 = tile.getDistance(targetType);
+                        float playerDist1 = tile.getDistance(Tile.DistanceType.PLAYER);
+                        float exitDist2 = lowestTile.getDistance(targetType);
+                        float playerDist2 = lowestTile.getDistance(Tile.DistanceType.PLAYER);
+                        float alpha = 0.75f;
+                        if (exitDist1*alpha - playerDist1*(1-alpha) < exitDist2*alpha - playerDist2*(1-alpha)) {
+                            lowestTile = tile;
+                        }
                     }
                 }
             }
