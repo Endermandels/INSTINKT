@@ -38,9 +38,10 @@ public class Spray extends GameObject {
         }
     }
 
-    public void show(boolean flipped, float imgX, float imgY) {
+    public void show(boolean flipped, float imgX, float imgY, int length) {
         shown = true;
         this.flipped = flipped;
+        this.length = length;
         if (flipped) {
             this.imgX = imgX + PlayScreen.TILE_SCALED_SIZE / 2f;
         } else {

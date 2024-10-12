@@ -41,6 +41,8 @@
 ## Open Issues ##
 
 - **[38]** Add Spray HUD commands
+- **[39]** Play player spray animation, stop player movement
+- **[40]** Add enemy SFX reaction to spray
 
 ## Backlog ##
 
@@ -49,7 +51,6 @@
 - **[]** Add berry counter mechanic
 - **[]** Farmland interaction to plant berries
 - **[]** Berry Bush growth after an enemy wave
-- **[]** 
 - **[]** 
 - **[]** 
 - **[]** 
