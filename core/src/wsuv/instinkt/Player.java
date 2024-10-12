@@ -204,9 +204,7 @@ public class Player extends GameObject {
                 }
             }
             if (dir != null) {
-                if (!am.getCurrentAnimState().equals("HURT")) {
-                    am.switchAnimState("RUN");
-                }
+                am.switchAnimState("RUN");
                 switch (dir) {
                     case LEFT:
                         targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
@@ -228,13 +226,11 @@ public class Player extends GameObject {
                         break;
                 }
             } else {
-                if (!am.getCurrentAnimState().equals("HURT")) {
-                    am.switchAnimState("IDLE");
-                }
+                am.switchAnimState("IDLE");
             }
         }
 
-        if (dir != null && !am.getCurrentAnimState().equals("HURT")) {
+        if (dir != null) {
             switch (dir) {
                 case LEFT:
                     imgX -= imgSpeed * time;

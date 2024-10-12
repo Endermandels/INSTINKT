@@ -38,10 +38,10 @@
 - **[36]** Spray logistics (limited number, cooldown)
 - **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
 - **[38]** Add Spray HUD commands
+- **[39]** Play player spray animation, stop player movement
 
 ## Open Issues ##
 
-- **[39]** Play player spray animation, stop player movement
 - **[40]** Add enemy SFX reaction to spray
 
 ## Backlog ##
