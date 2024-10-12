@@ -158,7 +158,8 @@ public class Player extends GameObject {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, -1);
                     dir = Direction.LEFT;
                     flipped = true;
-                } else if (dir != Direction.RIGHT) {
+                } else if (pressedButtons.get(Direction.RIGHT) > pressedButtons.get(Direction.LEFT)
+                        && dir != Direction.RIGHT) {
                     targetTile = game.findTile(tileMap,tileX,tileY,0, 1);
                     dir = Direction.RIGHT;
                     flipped = false;
@@ -180,7 +181,8 @@ public class Player extends GameObject {
                         && dir != Direction.UP) {
                     targetTile = game.findTile(tileMap,tileX,tileY,1, 0);
                     dir = Direction.UP;
-                } else if (dir != Direction.DOWN) {
+                } else if (pressedButtons.get(Direction.DOWN) > pressedButtons.get(Direction.UP)
+                        && dir != Direction.DOWN) {
                     targetTile = game.findTile(tileMap,tileX,tileY,-1, 0);
                     dir = Direction.DOWN;
                 }
