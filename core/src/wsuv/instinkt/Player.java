@@ -51,6 +51,7 @@ public class Player extends GameObject {
     private int spraysLeft;
     private int sprayRadius;
     private long sprayDuration;
+    private int sprayLength;
 
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
@@ -94,10 +95,11 @@ public class Player extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayCooldown = 1000L;
-        maxSprays = 8;
+        maxSprays = 88;
         spraysLeft = maxSprays;
         sprayRadius = 1;
         sprayDuration = 1000L;
+        sprayLength = 2;
 
         spray = new Spray(game);
         gameObjects.add(spray);
@@ -349,7 +351,7 @@ public class Player extends GameObject {
     }
 
     private void updateSpray(Tile[][] tileMap) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)
+        if (takeInput && Gdx.input.isKeyPressed(Input.Keys.SPACE)
                 && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
                 && !stats.isDead()
                 && spraysLeft > 0
@@ -358,7 +360,6 @@ public class Player extends GameObject {
             spraySound.setPitch(id, 2f);
 
             // Show spray instance
-            spray.show(flipped, imgX, imgY);
             lastTimeSprayed = System.currentTimeMillis();
             spraysLeft--;
 
@@ -366,7 +367,7 @@ public class Player extends GameObject {
             int dir = flipped ? 1 : -1;
             boolean foundEnemy = false;
             int x;
-            for (x = dir; Math.abs(x) <= spray.getLength() && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
+            for (x = dir; Math.abs(x) <= sprayLength && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
                 ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
                 if (!enemiesInTile.isEmpty()) {
                     for (Enemy e : enemiesInTile) {
@@ -377,6 +378,7 @@ public class Player extends GameObject {
                     break;
                 }
             }
+            spray.show(flipped, imgX, imgY, Math.abs(x));
             if (!foundEnemy) {
                 x += -dir;
                 tileMap[tileY][tileX+x].setStinky(true, sprayDuration);
@@ -491,5 +493,38 @@ public class Player extends GameObject {
 
     public long getSprayDuration() {
         return sprayDuration;
+    }
+
+    public void setSprayLength(int sprayLength) {
+        this.sprayLength = Math.max(1, sprayLength);
+    }
+
+    public int getSprayLength() {
+        return sprayLength;
+    }
+
+    public int getMaxSprays() {
+        return maxSprays;
+    }
+
+    public void setSprayRadius(int sprayRadius) {
+        this.sprayRadius = Math.max(1, sprayRadius);
+    }
+
+    public void setSprayDuration(long sprayDuration) {
+        this.sprayDuration = Math.max(0L, sprayDuration);
+    }
+
+    public void setSprayCooldown(long sprayCooldown) {
+        this.sprayCooldown = Math.max(0L, sprayCooldown);
+    }
+
+    public long getSprayCooldown() {
+        return sprayCooldown;
+    }
+
+    public void setMaxSprays(int maxSprays) {
+        this.maxSprays = Math.max(0, maxSprays);
+        this.spraysLeft = maxSprays;
     }
 }

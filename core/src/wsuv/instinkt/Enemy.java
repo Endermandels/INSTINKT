@@ -217,7 +217,7 @@ public class Enemy extends GameObject {
                         float playerDist1 = tile.getDistance(Tile.DistanceType.PLAYER);
                         float exitDist2 = lowestTile.getDistance(targetType);
                         float playerDist2 = lowestTile.getDistance(Tile.DistanceType.PLAYER);
-                        float alpha = 0.75f;
+                        float alpha = 0.6f;
                         if (exitDist1*alpha - playerDist1*(1-alpha) < exitDist2*alpha - playerDist2*(1-alpha)) {
                             lowestTile = tile;
                         }

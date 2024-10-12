@@ -155,13 +155,6 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
-        // register build-in view commands...
-        hud.registerView("HP:", new HUDViewCommand(HUDViewCommand.Visibility.WHEN_OPEN) {
-            @Override
-            public String execute(boolean consoleIsOpen) {
-                return Integer.toString(player.getStats().getHp());
-            }
-        });
 
         // Stats - Show debug stat information for player and enemies
         hud.registerAction("stats", new HUDActionCommand() {
@@ -177,45 +170,10 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
-        // HP - Set player's hp to specified amount (Capped at maximum player HP)
-        hud.registerAction("hp", new HUDActionCommand() {
-            static final String help = "usage: hp <amount>";
+        PlayerHUDCommands hudSetup = new PlayerHUDCommands(hud, player);
+        hudSetup.initHUDCommands();
 
-            @Override
-            public String execute(String[] cmd) {
-                try {
-                    int hp = Integer.parseInt(cmd[1]);
-                    player.getStats().setHp(hp);
-                    return "Set player's hp to " + player.getStats().getHp();
-                } catch (Exception e) {
-                    return help;
-                }
-            }
 
-            public String help(String[] cmd) {
-                return "set the player's HP to specified amount";
-            }
-        });
-
-        // ATK - Set player's attack to specified amount (Lowest is 0)
-        hud.registerAction("atk", new HUDActionCommand() {
-            static final String help = "usage: atk <amount>";
-
-            @Override
-            public String execute(String[] cmd) {
-                try {
-                    int atk = Integer.parseInt(cmd[1]);
-                    player.getStats().setAtk(atk);
-                    return "Set player's atk to " + player.getStats().getAtk();
-                } catch (Exception e) {
-                    return help;
-                }
-            }
-
-            public String help(String[] cmd) {
-                return "set the player's attack to specified amount";
-            }
-        });
 
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
@@ -361,6 +319,9 @@ public class PlayScreen extends ScreenAdapter {
                         if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
                     }
                     for (Enemy enemy : enemiesToRemove) {
+                        if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
+                            tileMap[enemy.getTileY()][enemy.getTileX()].getEnemies().remove(enemy);
+                        }
                         enemies.remove(enemy);
                         gameObjects.remove(enemy);
                     }
@@ -467,19 +428,19 @@ public class PlayScreen extends ScreenAdapter {
                             debugFont.setColor(1, 1, 1, 1);  // Reset to white
                             debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
                                     tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+
+                            for (Enemy e : tile.getEnemies()) {
+                                game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
+                                        , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
+                                        TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                            }
                         }
                     }
                 // Draw Game Objects
                 gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
                 for (GameObject ob : gameObjects) {
                     if (showTileLocations) {
-                        if (ob instanceof Enemy) {
-                            Enemy e = (Enemy) ob;
-                            game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
-                                    , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
-                                    TILE_SCALED_SIZE, TILE_SCALED_SIZE);
-                        }
-                        else if (ob instanceof Player) {
+                        if (ob instanceof Player) {
                             Player p = (Player) ob;
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
                                     , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
@@ -546,3 +507,163 @@ class DistanceComparator implements Comparator<Tile> {
     }
 }
 
+class PlayerHUDCommands {
+    private HUD hud;
+    private Player player;
+
+    public PlayerHUDCommands(HUD hud, Player player) {
+        this.hud = hud;
+        this.player = player;
+    }
+
+    public void initHUDCommands() {
+        // register build-in view commands...
+        hud.registerView("HP:", new HUDViewCommand(HUDViewCommand.Visibility.WHEN_OPEN) {
+            @Override
+            public String execute(boolean consoleIsOpen) {
+                return Integer.toString(player.getStats().getHp());
+            }
+        });
+
+
+        // HP - Set player's hp to specified amount (Capped at maximum player HP)
+        hud.registerAction("hp", new HUDActionCommand() {
+            static final String help = "usage: hp <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int hp = Integer.parseInt(cmd[1]);
+                    player.getStats().setHp(hp);
+                    return "Set player's hp to " + player.getStats().getHp();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's HP to specified amount";
+            }
+        });
+
+        // ATK - Set player's attack to specified amount (Lowest is 0)
+        hud.registerAction("atk", new HUDActionCommand() {
+            static final String help = "usage: atk <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int atk = Integer.parseInt(cmd[1]);
+                    player.getStats().setAtk(atk);
+                    return "Set player's atk to " + player.getStats().getAtk();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's attack to specified amount";
+            }
+        });
+
+        // Spray Length - Set player's spray length to specified amount
+        hud.registerAction("slen", new HUDActionCommand() {
+            static final String help = "usage: slen <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int slen = Integer.parseInt(cmd[1]);
+                    player.setSprayLength(slen);
+                    return "Set player's spray length to " + player.getSprayLength();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's spray length to specified amount";
+            }
+        });
+
+        // Spray Radius - Set player's spray radius to specified amount
+        hud.registerAction("srad", new HUDActionCommand() {
+            static final String help = "usage: srad <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int srad = Integer.parseInt(cmd[1]);
+                    player.setSprayRadius(srad);
+                    return "Set player's spray radius to " + player.getSprayRadius();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's spray radius to specified amount";
+            }
+        });
+
+        // Spray Duration - Set player's spray duration to specified amount (in seconds)
+        hud.registerAction("sdur", new HUDActionCommand() {
+            static final String help = "usage: sdur <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    float sdur = Float.parseFloat(cmd[1]);
+                    player.setSprayDuration((long)(sdur*1000f));
+                    return "Set player's spray duration to " + player.getSprayDuration();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's spray duration to specified amount (in seconds)";
+            }
+        });
+
+        // Spray Cooldown - Set player's spray cooldown to specified amount (in seconds)
+        hud.registerAction("scld", new HUDActionCommand() {
+            static final String help = "usage: scld <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    float scld = Float.parseFloat(cmd[1]);
+                    player.setSprayCooldown((long)(scld*1000f));
+                    return "Set player's spray cooldown to " + player.getSprayCooldown();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's spray cooldown to specified amount (in seconds)";
+            }
+        });
+
+        // Spray Max - Set player's max spray count to specified amount
+        hud.registerAction("smax", new HUDActionCommand() {
+            static final String help = "usage: smax <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int smax = Integer.parseInt(cmd[1]);
+                    player.setMaxSprays(smax);
+                    return "Set player's max spray count to " + player.getMaxSprays();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's max spray count to specified amount";
+            }
+        });
+    }
+}

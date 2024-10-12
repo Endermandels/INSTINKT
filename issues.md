@@ -37,10 +37,12 @@
 - **[35]** Shoot spray in opposite direction of player's last moved direction (variable length)
 - **[36]** Spray logistics (limited number, cooldown)
 - **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
+- **[38]** Add Spray HUD commands
 
 ## Open Issues ##
 
-- **[38]** Add Spray HUD commands
+- **[39]** Play player spray animation, stop player movement
+- **[40]** Add enemy SFX reaction to spray
 
 ## Backlog ##
 
@@ -53,9 +55,12 @@
 - **[]** 
 - **[]** 
 - **[]** 
-- **[]** 
 - **[]** Shop UI
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** 
 - **[]** 
+- **[]** Fade out AOE effect
+- **[]** Improve AOE effect texture
 - **[]** Fix player movement stickiness
+- **[]** Once the spray cooldown drops below 0.1 seconds,
+Change SFX to be a constant spray sound while spraying
