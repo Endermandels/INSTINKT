@@ -519,6 +519,10 @@ public class Player extends GameObject {
         this.sprayCooldown = Math.max(0L, sprayCooldown);
     }
 
+    public long getSprayCooldown() {
+        return sprayCooldown;
+    }
+
     public void setMaxSprays(int maxSprays) {
         this.maxSprays = Math.max(0, maxSprays);
         this.spraysLeft = maxSprays;
