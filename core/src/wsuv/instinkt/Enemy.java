@@ -346,9 +346,9 @@ public class Enemy extends GameObject {
 
         // Each tile keeps track of which enemies are in it.
         if (prevTileX != tileX || prevTileY != tileY) {
-            if (game.validMove(tileMap, prevTileX, prevTileY))
+            if (game.validMove(prevTileX, prevTileY))
                 tileMap[prevTileY][prevTileX].getEnemies().remove(this);
-            if (game.validMove(tileMap, tileX, tileY))
+            if (game.validMove(tileX, tileY))
                 tileMap[tileY][tileX].getEnemies().add(this);
         }
 

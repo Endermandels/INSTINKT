@@ -44,7 +44,9 @@ public class Player extends GameObject {
     private long timeFinishedDeathAnimation;
 
     // Spray Stats
+    private boolean toSpray;
     private Spray spray;
+    private final long SPRAY_DELAY = 200L;
     private long lastTimeSprayed;
     private long sprayCooldown;
     private int maxSprays;
@@ -100,6 +102,8 @@ public class Player extends GameObject {
         sprayRadius = 1;
         sprayDuration = 1000L;
         sprayLength = 2;
+
+        toSpray = false;
 
         spray = new Spray(game);
         gameObjects.add(spray);
@@ -351,16 +355,23 @@ public class Player extends GameObject {
     }
 
     private void updateSpray(Tile[][] tileMap) {
-        if (takeInput && Gdx.input.isKeyPressed(Input.Keys.SPACE)
+        if (!toSpray && !am.getCurrentAnimState().equals("SPRAY")
+                && takeInput && Gdx.input.isKeyPressed(Input.Keys.SPACE)
                 && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
                 && !stats.isDead()
                 && spraysLeft > 0
         ) {
+            toSpray = true;
+            lastTimeSprayed = System.currentTimeMillis();
+            am.switchAnimState("SPRAY", "RUN");
+        }
+        if (toSpray && System.currentTimeMillis() > lastTimeSprayed+SPRAY_DELAY) {
+            toSpray = false;
+
             long id = spraySound.play();
             spraySound.setPitch(id, 2f);
 
-            // Show spray instance
-            lastTimeSprayed = System.currentTimeMillis();
+            // Show spray instance;
             spraysLeft--;
 
             // Search for enemies along path
@@ -404,9 +415,6 @@ public class Player extends GameObject {
         am.update();
 
 
-        // Death
-        updateSpray(tileMap);
-
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
             am.setOneShot(true);
@@ -414,16 +422,14 @@ public class Player extends GameObject {
                 finishedDeathAnimation = true;
                 timeFinishedDeathAnimation = System.currentTimeMillis();
             }
-        } else {
+        } else if (!am.getCurrentAnimState().equals("SPRAY") && !am.getCurrentAnimState().equals("HURT")) {
             onNewTile = move(tileMap);
             if (!stats.isDead()) collision(enemies);
         }
 
+        updateSpray(tileMap);
+
         return onNewTile;
-    }
-
-    public void drawSpray(Batch batch) {
-
     }
 
     public void reset() {
