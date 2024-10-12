@@ -217,6 +217,26 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // Spray Length - Set player's spray length to specified amount
+        hud.registerAction("slen", new HUDActionCommand() {
+            static final String help = "usage: slen <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int slen = Integer.parseInt(cmd[1]);
+                    player.setSprayLength(slen);
+                    return "Set player's spray length to " + player.getSprayLength();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's spray length to specified amount";
+            }
+        });
+
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
         // the HUD's input controls. Do that by using an InputMultiplexer
@@ -361,6 +381,9 @@ public class PlayScreen extends ScreenAdapter {
                         if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
                     }
                     for (Enemy enemy : enemiesToRemove) {
+                        if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
+                            tileMap[enemy.getTileY()][enemy.getTileX()].getEnemies().remove(enemy);
+                        }
                         enemies.remove(enemy);
                         gameObjects.remove(enemy);
                     }

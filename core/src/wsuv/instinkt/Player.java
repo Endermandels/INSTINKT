@@ -95,7 +95,7 @@ public class Player extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayCooldown = 1000L;
-        maxSprays = 8;
+        maxSprays = 88;
         spraysLeft = maxSprays;
         sprayRadius = 1;
         sprayDuration = 1000L;
@@ -351,7 +351,7 @@ public class Player extends GameObject {
     }
 
     private void updateSpray(Tile[][] tileMap) {
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)
+        if (takeInput && Gdx.input.isKeyPressed(Input.Keys.SPACE)
                 && System.currentTimeMillis() > lastTimeSprayed + sprayCooldown
                 && !stats.isDead()
                 && spraysLeft > 0
@@ -493,5 +493,34 @@ public class Player extends GameObject {
 
     public long getSprayDuration() {
         return sprayDuration;
+    }
+
+    public void setSprayLength(int sprayLength) {
+        this.sprayLength = Math.max(1, sprayLength);
+    }
+
+    public int getSprayLength() {
+        return sprayLength;
+    }
+
+    public int getMaxSprays() {
+        return maxSprays;
+    }
+
+    public void setSprayRadius(int sprayRadius) {
+        this.sprayRadius = Math.max(1, sprayRadius);
+    }
+
+    public void setSprayDuration(long sprayDuration) {
+        this.sprayDuration = Math.max(0L, sprayDuration);
+    }
+
+    public void setSprayCooldown(long sprayCooldown) {
+        this.sprayCooldown = Math.max(0L, sprayCooldown);
+    }
+
+    public void setMaxSprays(int maxSprays) {
+        this.maxSprays = Math.max(0, maxSprays);
+        this.spraysLeft = maxSprays;
     }
 }
