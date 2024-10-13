@@ -204,25 +204,6 @@ public class PlayScreen extends ScreenAdapter {
         return neighbors;
     }
 
-    private ArrayList<Tile> getNeighbors(int tileX, int tileY, PriorityQueue<Tile> queue) {
-        ArrayList<Tile> neighbors = new ArrayList<>();
-
-        if (game.validMove(tileMap,tileX-1, tileY)
-                && queue.contains(tileMap[tileY][tileX-1]))
-            neighbors.add(tileMap[tileY][tileX-1]);
-        if (game.validMove(tileMap,tileX+1, tileY)
-                && queue.contains(tileMap[tileY][tileX+1]))
-            neighbors.add(tileMap[tileY][tileX+1]);
-        if (game.validMove(tileMap, tileX, tileY-1)
-                && queue.contains(tileMap[tileY-1][tileX]))
-            neighbors.add(tileMap[tileY-1][tileX]);
-        if (game.validMove(tileMap, tileX, tileY+1)
-                && queue.contains(tileMap[tileY+1][tileX]))
-            neighbors.add(tileMap[tileY+1][tileX]);
-
-        return neighbors;
-    }
-
     private Tile getEnemyStartTile(int tileX, int tileY) {
 
         if (game.validMove(tileMap,tileX-1, tileY))
@@ -285,6 +266,12 @@ public class PlayScreen extends ScreenAdapter {
         for (Enemy e : enemies) {
             gameObjects.remove(e);
         }
+        for (Tile[] tiles : tileMap) {
+            for (Tile tile : tiles) {
+                tile.getEnemies().clear();
+            }
+        }
+
         enemies.clear();
         enemiesToRemove.clear();
 

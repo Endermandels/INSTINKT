@@ -41,6 +41,7 @@ public class Enemy extends GameObject {
     // SFX
     private Sound hurtSound;
     private Sound deathSound;
+    private Sound sprayedSound;
 
     private float imgX;
     private float imgY;
@@ -73,6 +74,7 @@ public class Enemy extends GameObject {
 
         hurtSound = null;
         deathSound = null;
+        sprayedSound = null;
 
         switch (type) {
             case FOX:
@@ -93,6 +95,7 @@ public class Enemy extends GameObject {
                 // Sounds
                 hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
                 deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+                sprayedSound = game.am.get(Game.RSC_SQUIRREL_NOISE_3_SFX);
 
                 // Stats
                 stats = new Stats(3, 2, 800L);
@@ -116,6 +119,7 @@ public class Enemy extends GameObject {
 
                 // Sounds
                 deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
+                sprayedSound = game.am.get(Game.RSC_SQUIRREL_NOISE_3_SFX);
 
                 // Stats
                 stats = new Stats(1, 0, 0L);
@@ -461,12 +465,21 @@ public class Enemy extends GameObject {
         return stats;
     }
 
-    public boolean isSprayed() {
-        return sprayed;
-    }
-
     public void setSprayed(boolean sprayed) {
         this.sprayed = sprayed;
+        if (sprayedSound != null && sprayed && !stats.isDead()) {
+            long id = sprayedSound.play();
+            switch (type) {
+                case FOX:
+                    sprayedSound.setVolume(id, 2f);
+                    sprayedSound.setPitch(id, 2f);
+                    break;
+                case SQL:
+                    sprayedSound.setVolume(id, 2f);
+                    sprayedSound.setPitch(id, 3f);
+                    break;
+            }
+        }
     }
 
     public Enemy clone() {
