@@ -44,6 +44,7 @@ public class Game extends com.badlogic.gdx.Game {
     // SFX
     public static final String RSC_SQUIRREL_NOISE_SFX = "SFX/squirrel noise 1.mp3";
     public static final String RSC_SQUIRREL_NOISE_2_SFX = "SFX/squirrel noise 2.mp3";
+    public static final String RSC_SQUIRREL_NOISE_3_SFX = "SFX/squirrel noise 4.mp3";
     public static final String RSC_SNAKE_NOISE_SFX = "SFX/snake noise 1.mp3";
     public static final String RSC_SNAKE_NOISE_2_SFX = "SFX/snake noise 2.mp3";
     public static final String RSC_SPRAY_SFX = "SFX/spray.mp3";
@@ -106,6 +107,7 @@ public class Game extends com.badlogic.gdx.Game {
         // Load SFX
         am.load(RSC_SQUIRREL_NOISE_SFX, Sound.class);
         am.load(RSC_SQUIRREL_NOISE_2_SFX, Sound.class);
+        am.load(RSC_SQUIRREL_NOISE_3_SFX, Sound.class);
         am.load(RSC_SNAKE_NOISE_SFX, Sound.class);
         am.load(RSC_SNAKE_NOISE_2_SFX, Sound.class);
         am.load(RSC_SPRAY_SFX, Sound.class);

@@ -39,10 +39,10 @@
 - **[37]** Create AOE effect on a sprayed tile and enemy which repels enemies
 - **[38]** Add Spray HUD commands
 - **[39]** Play player spray animation, stop player movement
+- **[40]** Add enemy SFX reaction to spray
 
 ## Open Issues ##
 
-- **[40]** Add enemy SFX reaction to spray
 
 ## Backlog ##
 

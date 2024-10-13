@@ -80,7 +80,7 @@ public class Player extends GameObject {
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
 
-        imgSpeed = 400f;
+        imgSpeed = 250f;
         movingHorizontal = false;
         movingVertical = false;
 
