@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.*;
 
 public class PlayScreen extends ScreenAdapter {
-    private enum SubState {READY, GAME_OVER, PLAYING}
+    public enum SubState {READY, GAME_OVER, ENEMY_WAVE, COOLDOWN}
     private Game game;
     private HUD hud;
     private GUI gui;
@@ -288,68 +288,85 @@ public class PlayScreen extends ScreenAdapter {
 
     public void update(float delta) {
         if (!paused || doStep) {
-            switch (state) {
-                case PLAYING:
-                    if (player.update(tileMap, enemies)) {
-                        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
-                    }
+            if (state == SubState.ENEMY_WAVE) {
+                if (player.update(tileMap, enemies, state)) {
+                    fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                }
 
-                    if (player.getStats().isDead() && player.isFinishedDeathAnimation()) {
+                if (player.getStats().isDead() && player.isFinishedDeathAnimation()) {
+                    state = SubState.GAME_OVER;
+                    timer = 0;
+                    game.battleMusic.stop();
+                    game.menuMusic.play();
+                }
+
+                for (Enemy enemy : enemies) {
+                    if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
+                }
+                for (Enemy enemy : enemiesToRemove) {
+                    if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
+                        tileMap[enemy.getTileY()][enemy.getTileX()].getEnemies().remove(enemy);
+                    }
+                    enemies.remove(enemy);
+                    gameObjects.remove(enemy);
+                }
+                enemiesToRemove.clear();
+
+                enemySpawner.update();
+
+                if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
+                    state = SubState.COOLDOWN;
+                    timer = 0;
+                    game.battleMusic.stop();
+                    game.cooldownMusic.play();
+                }
+
+                for (Tile[] tiles : tileMap) {
+                    for (Tile tile : tiles) {
+                        if (tile.update()) aoeEffectTiles.remove(tile);
+                    }
+                }
+
+                if (!hud.isOpen()) {
+                    if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                         state = SubState.GAME_OVER;
                         timer = 0;
                         game.battleMusic.stop();
                         game.menuMusic.play();
-                        break;
                     }
+                    player.setTakeInput(true);
+                } else {
+                    player.setTakeInput(false);
+                }
+                gui.update();
+            } else if (state == SubState.COOLDOWN) {
+                player.update(tileMap, enemies, state);
 
-                    for (Enemy enemy : enemies) {
-                        if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
+                if (!hud.isOpen()) {
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        state = SubState.ENEMY_WAVE;
+                        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                        enemySpawner.setFormation(0);
+                        game.cooldownMusic.stop();
+                        game.battleMusic.play();
                     }
-                    for (Enemy enemy : enemiesToRemove) {
-                        if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
-                            tileMap[enemy.getTileY()][enemy.getTileX()].getEnemies().remove(enemy);
-                        }
-                        enemies.remove(enemy);
-                        gameObjects.remove(enemy);
+                    player.setTakeInput(true);
+                } else {
+                    player.setTakeInput(false);
+                }
+                gui.update();
+            } else if (state == SubState.GAME_OVER) {
+                timer += delta;
+                if (timer > TIMER_MAX) state = SubState.READY;
+            } else if (state == SubState.READY) {
+                if (!hud.isOpen()) {
+                    if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
+                        reset();
+                        state = SubState.ENEMY_WAVE;
+                        game.menuMusic.stop();
+                        game.battleMusic.play();
                     }
-                    enemiesToRemove.clear();
-
-                    enemySpawner.update();
-
-                    for (Tile[] tiles : tileMap) {
-                        for (Tile tile : tiles) {
-                            if (tile.update()) aoeEffectTiles.remove(tile);
-                        }
-                    }
-
-                    if (!hud.isOpen()) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                            state = SubState.GAME_OVER;
-                            timer = 0;
-                            game.battleMusic.stop();
-                            game.menuMusic.play();
-                        }
-                        player.setTakeInput(true);
-                    } else {
-                        player.setTakeInput(false);
-                    }
-                    gui.update();
-                    break;
-                case GAME_OVER:
-                    timer += delta;
-                    if (timer > TIMER_MAX) state = SubState.READY;
-                    break;
-                case READY:
-                    if (!hud.isOpen()) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
-                            reset();
-                            state = SubState.PLAYING;
-                            game.menuMusic.stop();
-                            game.battleMusic.play();
-                        }
-                    }
-                default:
-                    break;
+                }
             }
             doStep = false;
         }
@@ -362,118 +379,114 @@ public class PlayScreen extends ScreenAdapter {
         ScreenUtils.clear(0, 0, 0, 1);
         game.batch.begin();
         // this logic could also be pushed into a method on SubState enum
-        switch (state) {
-            case GAME_OVER:
-                // Draw Game Over image
-                Texture gameover_img = game.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
-                game.batch.draw(gameover_img
-                        , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
-                        , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
-                break;
-            case READY:
-                // Draw Press A Key image
-                Texture pressakey_img = game.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
-                game.batch.draw(pressakey_img
-                        , Gdx.graphics.getWidth() / 2f - pressakey_img.getWidth() / 2f
-                        , Gdx.graphics.getHeight() / 2f - pressakey_img.getHeight() / 2f + 200f);
-                break;
-            case PLAYING:
-                // Draw Tiles
-                for (int row = 0; row < TILE_ROWS; row++)
-                    for (int col = 0; col < TILE_COLS; col++) {
-                        Tile tile = tileMap[row][col];
-                        if (tile.isStinky()) aoeEffectTiles.add(tile);
-                        game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
-                                , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
-                        if (showTileLocations) {
-                            float dist = tile.getDistance(Tile.DistanceType.PLAYER);
-                            float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
-                            float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
-                            String num;
-                            String berryNum;
-                            String exitNum;
-                            if (dist == Tile.INF) {
-                                num = "~";
-                                berryNum = "~";
-                                exitNum = "~";
-                            }
-                            else {
-                                num = Integer.toString((int) tile.getDistance(Tile.DistanceType.PLAYER));
-                                berryNum = Integer.toString((int) berryDist);
-                                exitNum = Integer.toString((int) exitDist);
-                            }
-
-                            float clampedDist = Math.min(Math.max(dist, 0), 12);
-                            float redIntensity = clampedDist / 12.0f;
-
-                            debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
-                            debugFont.draw(game.batch, num, tile.getImgX(),
-                                    tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
-                            debugFont.setColor(0, 0, 0, 1);  // Reset to white
-                            debugFont.draw(game.batch, berryNum, tile.getImgX(),
-                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
-                            debugFont.setColor(1, 1, 1, 1);  // Reset to white
-                            debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
-                                    tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
-
-                            for (Enemy e : tile.getEnemies()) {
-                                game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
-                                        , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
-                                        TILE_SCALED_SIZE, TILE_SCALED_SIZE);
-                            }
-                        }
-                    }
-                // Draw Game Objects
-                gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
-                for (GameObject ob : gameObjects) {
+        if (state == SubState.GAME_OVER) {
+            // Draw Game Over image
+            Texture gameover_img = game.am.get(Game.RSC_GAMEOVER_IMG, Texture.class);
+            game.batch.draw(gameover_img
+                    , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
+                    , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
+        } else if (state == SubState.READY) {
+            // Draw Press A Key image
+            Texture pressakey_img = game.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
+            game.batch.draw(pressakey_img
+                    , Gdx.graphics.getWidth() / 2f - pressakey_img.getWidth() / 2f
+                    , Gdx.graphics.getHeight() / 2f - pressakey_img.getHeight() / 2f + 200f);
+        } else if (state == SubState.ENEMY_WAVE || state == SubState.COOLDOWN) {
+            // Draw Tiles
+            for (int row = 0; row < TILE_ROWS; row++)
+                for (int col = 0; col < TILE_COLS; col++) {
+                    Tile tile = tileMap[row][col];
+                    if (tile.isStinky()) aoeEffectTiles.add(tile);
+                    game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
+                            , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                     if (showTileLocations) {
-                        if (ob instanceof Player) {
-                            Player p = (Player) ob;
+                        float dist = tile.getDistance(Tile.DistanceType.PLAYER);
+                        float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
+                        float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
+                        String num;
+                        String berryNum;
+                        String exitNum;
+                        if (dist == Tile.INF) {
+                            num = "~";
+                            berryNum = "~";
+                            exitNum = "~";
+                        }
+                        else {
+                            num = Integer.toString((int) tile.getDistance(Tile.DistanceType.PLAYER));
+                            berryNum = Integer.toString((int) berryDist);
+                            exitNum = Integer.toString((int) exitDist);
+                        }
+
+                        float clampedDist = Math.min(Math.max(dist, 0), 12);
+                        float redIntensity = clampedDist / 12.0f;
+
+                        debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
+                        debugFont.draw(game.batch, num, tile.getImgX(),
+                                tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                        debugFont.setColor(0, 0, 0, 1);  // Reset to white
+                        debugFont.draw(game.batch, berryNum, tile.getImgX(),
+                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+                        debugFont.setColor(1, 1, 1, 1);  // Reset to white
+                        debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
+                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+
+                        for (Enemy e : tile.getEnemies()) {
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
-                                    , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
+                                    , e.getTileX()*TILE_SCALED_SIZE, e.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
                                     TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         }
                     }
-
-                    if (ob instanceof Spray) {
-                        Spray spray = (Spray) ob;
-                        TextureRegion img = spray.getImg();
-                        if (img != null) {
-                            int dir = spray.isFlipped() ? 1 : -1;
-                            for (int i = 0; i < spray.getLength(); i++) {
-                                game.batch.draw(img, ob.getImgX() + dir * i * PlayScreen.TILE_SCALED_SIZE
-                                        , ob.getImgY() + GUI_SPACE
-                                        , img.getRegionWidth() * TILE_SCALE, img.getRegionHeight() * TILE_SCALE);
-                            }
-                        }
-                    } else {
-                        TextureRegion img = ob.getImg();
-                        if (img != null) {
-                            game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
-                                , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
-                        }
-                    }
-
-                    if (showEnemyStats) {
-                        if (ob instanceof Enemy) {
-                            debugImages.add(ob);
-                        }
+                }
+            // Draw Game Objects
+            gameObjects.sort(Comparator.comparingInt(GameObject::getPriority).reversed());
+            for (GameObject ob : gameObjects) {
+                if (showTileLocations) {
+                    if (ob instanceof Player) {
+                        Player p = (Player) ob;
+                        game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
+                                , p.getTileX()*TILE_SCALED_SIZE, p.getTileY()*TILE_SCALED_SIZE+GUI_SPACE,
+                                TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                     }
                 }
-                for (GameObject d : debugImages) {
-                    if (d instanceof Enemy) {
-                        Enemy e = (Enemy) d;
-                        debugFont.draw(game.batch, "HP: " + e.getStats().getHp(),
-                                e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
+
+                if (ob instanceof Spray) {
+                    Spray spray = (Spray) ob;
+                    TextureRegion img = spray.getImg();
+                    if (img != null) {
+                        int dir = spray.isFlipped() ? 1 : -1;
+                        for (int i = 0; i < spray.getLength(); i++) {
+                            game.batch.draw(img, ob.getImgX() + dir * i * PlayScreen.TILE_SCALED_SIZE
+                                    , ob.getImgY() + GUI_SPACE
+                                    , img.getRegionWidth() * TILE_SCALE, img.getRegionHeight() * TILE_SCALE);
+                        }
+                    }
+                } else {
+                    TextureRegion img = ob.getImg();
+                    if (img != null) {
+                        game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
+                            , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
                     }
                 }
-                for (Tile tile : aoeEffectTiles) {
-                    game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
-                }
 
-                debugImages.clear();
-                gui.draw(game.batch);
-                break;
+                if (showEnemyStats) {
+                    if (ob instanceof Enemy) {
+                        debugImages.add(ob);
+                    }
+                }
+            }
+            for (GameObject d : debugImages) {
+                if (d instanceof Enemy) {
+                    Enemy e = (Enemy) d;
+                    debugFont.draw(game.batch, "HP: " + e.getStats().getHp(),
+                            e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
+                }
+            }
+            for (Tile tile : aoeEffectTiles) {
+                game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+            }
+
+            debugImages.clear();
+            gui.draw(game.batch);
         }
         hud.draw(game.batch);
         game.batch.end();

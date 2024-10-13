@@ -42,6 +42,7 @@ public class EnemySpawner {
     private Map<Integer, EnemyFormation> formationsMap = new HashMap<>();
 
     private long lastSpawn;
+    private boolean noMoreEnemiesToSpawn;
 
     public EnemySpawner(Game game, ArrayList<Enemy> enemies, ArrayList<GameObject> gameObjects, Player player) {
         this.game = game;
@@ -58,6 +59,7 @@ public class EnemySpawner {
         formation = formationsMap.get(0);
 
         lastSpawn = 0L;
+        noMoreEnemiesToSpawn = false;
     }
 
     private void readFormationsFile() {
@@ -133,16 +135,22 @@ public class EnemySpawner {
             lastSpawn = curTime;
             Enemy enemy = formation.getNextEnemy();
             if (enemy != null) spawnEnemy(enemy);
+            else noMoreEnemiesToSpawn = true;
         }
     }
 
     public void setFormation(int idx) {
         lastSpawn = System.currentTimeMillis();
         formation = formationsMap.get(idx).reset();
+        noMoreEnemiesToSpawn = false;
     }
 
     public ArrayList<Integer[]> getEnemySpawnLocations() {
         return enemySpawnLocations;
+    }
+
+    public boolean areNoMoreEnemiesToSpawn() {
+        return noMoreEnemiesToSpawn;
     }
 }
 

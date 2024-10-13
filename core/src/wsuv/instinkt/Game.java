@@ -56,6 +56,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     public Music battleMusic;
     public Music menuMusic;
+    public Music cooldownMusic;
 
     @Override
     public void create() {
@@ -118,6 +119,10 @@ public class Game extends com.badlogic.gdx.Game {
         battleMusic = Gdx.audio.newMusic(Gdx.files.internal("SFX/Essence of Battle.mp3"));
         battleMusic.setLooping(true);
         battleMusic.setVolume(0.05f);
+
+        cooldownMusic = Gdx.audio.newMusic(Gdx.files.internal("SFX/Going Somewhere Slow.mp3"));
+        cooldownMusic.setLooping(true);
+        cooldownMusic.setVolume(0.1f);
 
         menuMusic = Gdx.audio.newMusic(Gdx.files.internal("SFX/Jizzy Jazz.mp3"));
         menuMusic.setLooping(true);
