@@ -333,7 +333,6 @@ public class PlayScreen extends ScreenAdapter {
                     escPressed = false;
                 } else if (!escPressed && !hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                        System.out.println("Switch 1");
                         paused = true;
                         escPressed = true;
                     }
@@ -344,6 +343,12 @@ public class PlayScreen extends ScreenAdapter {
                 gui.update();
             } else if (state == SubState.COOLDOWN) {
                 player.update(tileMap, enemies, state);
+
+                for (Tile[] tiles : tileMap) {
+                    for (Tile tile : tiles) {
+                        if (tile.update()) aoeEffectTiles.remove(tile);
+                    }
+                }
 
                 if (!hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -377,7 +382,6 @@ public class PlayScreen extends ScreenAdapter {
                 escPressed = false;
             } else if (!escPressed && !hud.isOpen()) {
                 if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                    System.out.println("Switch 2");
                     paused = false;
                     escPressed = true;
                 }
