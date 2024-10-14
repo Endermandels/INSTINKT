@@ -15,6 +15,7 @@ public class PlayScreen extends ScreenAdapter {
     private GUI gui;
     private Player player;
     private EnemySpawner enemySpawner;
+    private BerryManager berryManager;
     private SubState state;
     private BitmapFont debugFont;
     private ArrayList<GameObject> gameObjects;
@@ -62,6 +63,8 @@ public class PlayScreen extends ScreenAdapter {
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
+
+        berryManager = new BerryManager(game, gameObjects);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
