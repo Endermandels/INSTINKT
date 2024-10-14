@@ -45,8 +45,6 @@
 ## Open Issues ##
 
 - **[42]** Add berry mechanic after every enemy wave
-- **[43]** Farmland interaction to plant berries
-- **[44]** Berry Bush growth after an enemy wave
 
 ## Backlog ##
 

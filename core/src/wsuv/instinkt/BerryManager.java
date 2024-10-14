@@ -27,6 +27,8 @@ public class BerryManager {
 
         bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 0, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
         gameObjects.add(bushes.get(0));
+        bushes.get(0).grow();
+        bushes.get(0).grow();
         bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 1, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
         gameObjects.add(bushes.get(1));
         bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 2, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
@@ -68,6 +70,10 @@ public class BerryManager {
 
     public int getBerriesCollected() {
         return berriesCollected;
+    }
+
+    public void setBerriesCollected(int berriesCollected) {
+        this.berriesCollected = Math.max(0,berriesCollected);
     }
 }
 

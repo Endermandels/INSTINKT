@@ -55,7 +55,7 @@ public class PlayScreen extends ScreenAdapter {
         enemiesToRemove = new ArrayList<>();
         aoeEffectTiles = new HashSet<>();
 
-        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         player = new Player(game,6,10, gameObjects);
@@ -174,6 +174,26 @@ public class PlayScreen extends ScreenAdapter {
 
             public String help(String[] cmd) {
                 return "toggle player stats visibility always <-> in console";
+            }
+        });
+
+        // Berries - Set berries to specified amount
+        hud.registerAction("berries", new HUDActionCommand() {
+            static final String help = "usage: berries <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int berries = Integer.parseInt(cmd[1]);
+                    berryManager.setBerriesCollected(berries);
+                    return "Set player's berry count to " + berryManager.getBerriesCollected();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's berry count to specified amount";
             }
         });
 
