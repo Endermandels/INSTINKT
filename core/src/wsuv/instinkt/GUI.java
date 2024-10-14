@@ -1,8 +1,11 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,11 +14,13 @@ public class GUI {
 
     private HealthBar hb;
     private Player player;
+    private BerryCounter berryCounter;
     private int lastPlayerHP;
 
-    public GUI(Game game, Player player) {
+    public GUI(Game game, Player player, BerryManager berryManager) {
         hb = new HealthBar(game);
         this.player = player;
+        this.berryCounter = new BerryCounter(game, berryManager);
         lastPlayerHP = player.getStats().getHp();
     }
 
@@ -31,6 +36,7 @@ public class GUI {
 
     public void draw(Batch batch) {
         hb.draw(batch);
+        berryCounter.draw(batch);
     }
 }
 
@@ -85,5 +91,29 @@ class HealthBar {
 
     public TextureRegion getImage() {
         return am.getCurrentImage(false);
+    }
+}
+
+
+class BerryCounter {
+    private TextureRegion berryIcon;
+    private BerryManager berryManager;
+    private BitmapFont font;
+
+    public BerryCounter(Game game, BerryManager berryManager) {
+        this.berryManager = berryManager;
+        font = game.am.get(Game.RSC_DPCOMIC_FONT);
+
+        ArrayList<Integer[]> berryIconLocation = new ArrayList<>(Arrays.asList(
+                new Integer[]{1,0},
+                new Integer[]{1,0}
+        ));
+
+        berryIcon = GameObject.getImgRegion(game, berryIconLocation, Game.RSC_SS_BERRIES_IMG);
+    }
+
+    public void draw(Batch batch) {
+        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), 300f, 40f);
+        batch.draw(berryIcon, 210f, -35f, berryIcon.getRegionWidth()*4, berryIcon.getRegionHeight()*4);
     }
 }

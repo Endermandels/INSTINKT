@@ -58,14 +58,14 @@ public class PlayScreen extends ScreenAdapter {
         hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
+        berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player);
+        gui = new GUI(game, player, berryManager);
         enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
 
-        berryManager = new BerryManager(game, gameObjects);
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
@@ -534,6 +534,7 @@ public class PlayScreen extends ScreenAdapter {
                             e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                 }
             }
+
             for (Tile tile : aoeEffectTiles) {
                 game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
             }
