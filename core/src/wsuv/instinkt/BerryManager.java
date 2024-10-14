@@ -1,11 +1,9 @@
 package wsuv.instinkt;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 public class BerryManager {
 
@@ -13,29 +11,48 @@ public class BerryManager {
     private ArrayList<BerryBush> bushes;
 
     public BerryManager(Game game, ArrayList<GameObject> gameObjects) {
-        berriesCollected = 0;
+        berriesCollected = 2;
         bushes = new ArrayList<>();
 
-        ArrayList<Integer[]> bushSpriteLocation = new ArrayList<>(Arrays.asList(
+        ArrayList<Integer[]> blueBushSpriteLocation = new ArrayList<>(Arrays.asList(
                 new Integer[]{0,2},
                 new Integer[]{0,2}
         ));
+        ArrayList<Integer[]> pinkBushSpriteLocation = new ArrayList<>(Arrays.asList(
+                new Integer[]{0,3},
+                new Integer[]{0,3}
+        ));
 
-        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 0, bushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 0, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
         gameObjects.add(bushes.get(0));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 1, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(1));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 2, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(2));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 3, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(3));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-1, 4, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(4));
+
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 0, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(5));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 1, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(6));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 2, blueBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(7));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 3, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(8));
+        bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 4, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
+        gameObjects.add(bushes.get(9));
     }
 
-    /**
-     * @return Whether a new berry bush was planted
-     */
-    public boolean plantNewBerryBush() {
+    public void plantNewBerryBush() {
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.UNPLANTED) {
                 bb.grow();
-                return true;
+                berriesCollected-=2;
             }
         }
-        return false;
     }
 
     public void growBerryBushes() {
@@ -67,7 +84,7 @@ class BerryBush extends GameObject {
 
         seedlingTexture = GameObject.getImgRegion(game, seedlingSpriteLocation, Game.RSC_SS_BERRIES_IMG);
 
-        state = State.PLANTED;
+        state = State.UNPLANTED;
     }
 
     public void grow() {

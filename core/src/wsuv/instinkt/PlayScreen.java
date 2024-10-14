@@ -41,6 +41,7 @@ public class PlayScreen extends ScreenAdapter {
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
     private boolean escPressed;
+    private boolean interactPressed; // For planting berry bushes
 
     private boolean showTileLocations;
     private boolean showEnemyStats;
@@ -87,6 +88,7 @@ public class PlayScreen extends ScreenAdapter {
         paused = false;
         doStep = false;
         escPressed = false;
+        interactPressed = false;
 
         showTileLocations = false;
         showEnemyStats = false;
@@ -361,6 +363,11 @@ public class PlayScreen extends ScreenAdapter {
                         enemySpawner.setFormation(0);
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                        interactPressed = true;
+                        berryManager.plantNewBerryBush();
+                    } else if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                        interactPressed = false;
                     }
                     player.setTakeInput(true);
                 } else {
