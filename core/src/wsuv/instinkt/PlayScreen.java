@@ -352,6 +352,13 @@ public class PlayScreen extends ScreenAdapter {
                     timer = 0;
                     game.battleMusic.stop();
                     game.cooldownMusic.play();
+
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            tile.setStinky(false, 0L);
+                            aoeEffectTiles.remove(tile);
+                        }
+                    }
                 }
 
                 for (Tile[] tiles : tileMap) {
