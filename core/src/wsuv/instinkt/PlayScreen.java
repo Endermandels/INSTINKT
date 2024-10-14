@@ -39,6 +39,7 @@ public class PlayScreen extends ScreenAdapter {
 
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
+    private boolean escPressed;
 
     private boolean showTileLocations;
     private boolean showEnemyStats;
@@ -82,6 +83,7 @@ public class PlayScreen extends ScreenAdapter {
         timer = 0f;
         paused = false;
         doStep = false;
+        escPressed = false;
 
         showTileLocations = false;
         showEnemyStats = false;
@@ -327,15 +329,16 @@ public class PlayScreen extends ScreenAdapter {
                     }
                 }
 
-                if (!hud.isOpen()) {
+                if (escPressed && !Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                    escPressed = false;
+                } else if (!escPressed && !hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                        state = SubState.GAME_OVER;
-                        timer = 0;
-                        game.battleMusic.stop();
-                        game.menuMusic.play();
+                        System.out.println("Switch 1");
+                        paused = true;
+                        escPressed = true;
                     }
                     player.setTakeInput(true);
-                } else {
+                } else if (!escPressed) {
                     player.setTakeInput(false);
                 }
                 gui.update();
@@ -369,6 +372,16 @@ public class PlayScreen extends ScreenAdapter {
                 }
             }
             doStep = false;
+        } else {
+            if (escPressed && !Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                escPressed = false;
+            } else if (!escPressed && !hud.isOpen()) {
+                if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                    System.out.println("Switch 2");
+                    paused = false;
+                    escPressed = true;
+                }
+            }
         }
     }
 
