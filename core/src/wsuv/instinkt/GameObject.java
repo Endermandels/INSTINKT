@@ -39,6 +39,18 @@ public class GameObject {
         this.imgY = (row - yDown) * PlayScreen.TILE_SCALED_SIZE;
     }
 
+    public static TextureRegion getImgRegion(Game game, ArrayList<Integer[]> ssTiles, String fileName) {
+        Integer[] ssTopLeft = ssTiles.get(0);
+        Integer[] ssBottomRight = ssTiles.get(1);
+
+        int x = ssTopLeft[1]*PlayScreen.TILE_SIZE;
+        int y = ssTopLeft[0]*PlayScreen.TILE_SIZE;
+        int width = ssBottomRight[1]*PlayScreen.TILE_SIZE - x + PlayScreen.TILE_SIZE;
+        int height = ssBottomRight[0]*PlayScreen.TILE_SIZE - y + PlayScreen.TILE_SIZE;
+
+        return new TextureRegion((Texture) game.am.get(fileName), x, y, width, height);
+    }
+
     public TextureRegion getImg() {
         return img;
     }

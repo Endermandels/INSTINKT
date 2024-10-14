@@ -41,17 +41,15 @@
 - **[39]** Play player spray animation, stop player movement
 - **[40]** Add enemy SFX reaction to spray
 - **[41]** Phase transitions (cooldown and enemy wave)
+- **[42]** Add berry mechanic after every enemy wave
 
 ## Open Issues ##
 
-- **[42]** Add berry mechanic after every enemy wave
-- **[43]** Farmland interaction to plant berries
-- **[44]** Berry Bush growth after an enemy wave
 
 ## Backlog ##
 
-- **[]** 
-- **[]** 
+- **[]** Implement Goal: survive 10 waves.
+- **[]** HUD command for complete enemy wave.
 - **[]** 
 - **[]** 
 - **[]** Shop UI

@@ -15,6 +15,7 @@ public class PlayScreen extends ScreenAdapter {
     private GUI gui;
     private Player player;
     private EnemySpawner enemySpawner;
+    private BerryManager berryManager;
     private SubState state;
     private BitmapFont debugFont;
     private ArrayList<GameObject> gameObjects;
@@ -40,6 +41,7 @@ public class PlayScreen extends ScreenAdapter {
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
     private boolean escPressed;
+    private boolean interactPressed; // For planting berry bushes
 
     private boolean showTileLocations;
     private boolean showEnemyStats;
@@ -53,15 +55,17 @@ public class PlayScreen extends ScreenAdapter {
         enemiesToRemove = new ArrayList<>();
         aoeEffectTiles = new HashSet<>();
 
-        hud = new HUD(12, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
+        berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player);
+        gui = new GUI(game, player, berryManager);
         enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
+
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
@@ -84,6 +88,7 @@ public class PlayScreen extends ScreenAdapter {
         paused = false;
         doStep = false;
         escPressed = false;
+        interactPressed = false;
 
         showTileLocations = false;
         showEnemyStats = false;
@@ -172,10 +177,35 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // Berries - Set berries to specified amount
+        hud.registerAction("berries", new HUDActionCommand() {
+            static final String help = "usage: berries <amount>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int berries = Integer.parseInt(cmd[1]);
+                    berryManager.setBerriesCollected(berries);
+                    return "Set player's berry count to " + berryManager.getBerriesCollected();
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the player's berry count to specified amount";
+            }
+        });
+
         PlayerHUDCommands hudSetup = new PlayerHUDCommands(hud, player);
         hudSetup.initHUDCommands();
 
-
+        hud.registerView("Berries:", new HUDViewCommand(HUDViewCommand.Visibility.WHEN_OPEN) {
+            @Override
+            public String execute(boolean consoleIsOpen) {
+                return Integer.toString(berryManager.getBerriesCollected());
+            }
+        });
 
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
@@ -318,9 +348,17 @@ public class PlayScreen extends ScreenAdapter {
 
                 if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
                     state = SubState.COOLDOWN;
+                    berryManager.startOfCooldown();
                     timer = 0;
                     game.battleMusic.stop();
                     game.cooldownMusic.play();
+
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            tile.setStinky(false, 0L);
+                            aoeEffectTiles.remove(tile);
+                        }
+                    }
                 }
 
                 for (Tile[] tiles : tileMap) {
@@ -357,6 +395,11 @@ public class PlayScreen extends ScreenAdapter {
                         enemySpawner.setFormation(0);
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                        interactPressed = true;
+                        berryManager.plantNewBerryBush();
+                    } else if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                        interactPressed = false;
                     }
                     player.setTakeInput(true);
                 } else {
@@ -498,6 +541,7 @@ public class PlayScreen extends ScreenAdapter {
                             e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                 }
             }
+
             for (Tile tile : aoeEffectTiles) {
                 game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
             }

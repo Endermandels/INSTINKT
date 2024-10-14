@@ -134,7 +134,7 @@ public class AssetsSpawner {
     }
 
     private void spawnObstacleAt(int row, int col, int obsType, String ssID) {
-        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID, 0);
+        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID, 1);
         gameObjects.add(obs);
         tileMap[row][col].setContainsObstacle(true);
     }
