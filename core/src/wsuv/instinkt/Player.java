@@ -408,7 +408,7 @@ public class Player extends GameObject {
     /**
      * @return Whether the player is on a new tile
      */
-    public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies) {
+    public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies, PlayScreen.SubState state) {
         boolean onNewTile = false;
         am.update();
 
@@ -425,6 +425,9 @@ public class Player extends GameObject {
             if (!stats.isDead()) collision(enemies);
         }
 
+        if (state == PlayScreen.SubState.COOLDOWN) {
+            lastTimeSprayed = System.currentTimeMillis();
+        }
         updateSpray(tileMap);
 
         return onNewTile;
