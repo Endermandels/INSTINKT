@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public class BerryManager {
 
+    private final int BUSH_PRICE = 2;
+
     private int berriesCollected;
     private ArrayList<BerryBush> bushes;
 
@@ -47,18 +49,25 @@ public class BerryManager {
     }
 
     public void plantNewBerryBush() {
+        if (berriesCollected < BUSH_PRICE) return;
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.UNPLANTED) {
                 bb.grow();
-                berriesCollected-=2;
+                berriesCollected-=BUSH_PRICE;
+                break;
             }
         }
     }
 
-    public void growBerryBushes() {
+    public void startOfCooldown() {
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
+            else if (bb.state == BerryBush.State.GROWN) berriesCollected += bb.collectBerries();
         }
+    }
+
+    public int getBerriesCollected() {
+        return berriesCollected;
     }
 }
 

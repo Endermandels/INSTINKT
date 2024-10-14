@@ -180,7 +180,12 @@ public class PlayScreen extends ScreenAdapter {
         PlayerHUDCommands hudSetup = new PlayerHUDCommands(hud, player);
         hudSetup.initHUDCommands();
 
-
+        hud.registerView("Berries:", new HUDViewCommand(HUDViewCommand.Visibility.WHEN_OPEN) {
+            @Override
+            public String execute(boolean consoleIsOpen) {
+                return Integer.toString(berryManager.getBerriesCollected());
+            }
+        });
 
         // we're adding an input processor AFTER the HUD has been created,
         // so we need to be a bit careful here and make sure not to clobber
@@ -323,7 +328,7 @@ public class PlayScreen extends ScreenAdapter {
 
                 if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
                     state = SubState.COOLDOWN;
-                    berryManager.growBerryBushes();
+                    berryManager.startOfCooldown();
                     timer = 0;
                     game.battleMusic.stop();
                     game.cooldownMusic.play();
