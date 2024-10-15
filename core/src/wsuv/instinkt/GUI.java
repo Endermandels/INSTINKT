@@ -37,7 +37,7 @@ public class GUI {
 
         if (lastPlayerSprayCount != player.getSpraysLeft()) {
             lastPlayerSprayCount = player.getSpraysLeft();
-            int idx = (player.getMaxSprays() - player.getSpraysLeft());
+            int idx = (player.getMaxSprays() - lastPlayerSprayCount);
             sb.useSpray(idx);
         }
 

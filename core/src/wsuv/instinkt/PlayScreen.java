@@ -349,6 +349,7 @@ public class PlayScreen extends ScreenAdapter {
                 if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
                     state = SubState.COOLDOWN;
                     berryManager.startOfCooldown();
+                    player.startCooldown();
                     timer = 0;
                     game.battleMusic.stop();
                     game.cooldownMusic.play();
