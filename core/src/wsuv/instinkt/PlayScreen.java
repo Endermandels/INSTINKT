@@ -295,6 +295,7 @@ public class PlayScreen extends ScreenAdapter {
 
     private void reset() {
         player.reset();
+        berryManager.reset();
         for (Enemy e : enemies) {
             gameObjects.remove(e);
         }
@@ -374,6 +375,15 @@ public class PlayScreen extends ScreenAdapter {
                     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                         paused = true;
                         escPressed = true;
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                        interactPressed = true;
+                        int amount = berryManager.getBerriesCollected();
+                        if (amount > 0) {
+                            berryManager.setBerriesCollected(amount-1);
+                            player.eatBerry();
+                        }
+                    } else if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                        interactPressed = false;
                     }
                     player.setTakeInput(true);
                 } else if (!escPressed) {

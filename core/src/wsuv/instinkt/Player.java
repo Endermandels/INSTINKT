@@ -458,6 +458,11 @@ public class Player extends GameObject {
         lastTimeSprayed = System.currentTimeMillis();
     }
 
+    public void eatBerry() {
+        spraysLeft = Math.min(spraysLeft+1, maxSprays);
+        stats.setHp(Math.min(stats.getHp()+1, stats.getMaxHP()));
+    }
+
     public void startCooldown() {
         spraysLeft = maxSprays;
         stats.setHp(stats.getMaxHP());
