@@ -31,13 +31,13 @@ public class GUI {
     public void update() {
         if (lastPlayerHP != player.getStats().getHp()) {
             lastPlayerHP = player.getStats().getHp();
-            int idx = (player.getStats().getMaxHP() - lastPlayerHP);
+            int idx = (int) (8f * (1f-((float)lastPlayerHP/(float)player.getStats().getMaxHP())));
             hb.getHit(idx);
         }
 
         if (lastPlayerSprayCount != player.getSpraysLeft()) {
             lastPlayerSprayCount = player.getSpraysLeft();
-            int idx = (player.getMaxSprays() - lastPlayerSprayCount);
+            int idx = (int) (8f * (1f-((float)lastPlayerSprayCount/(float)player.getMaxSprays())));
             sb.useSpray(idx);
         }
 

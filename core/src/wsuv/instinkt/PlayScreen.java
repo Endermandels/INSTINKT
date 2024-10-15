@@ -588,7 +588,7 @@ class PlayerHUDCommands {
         });
 
 
-        // HP - Set player's hp to specified amount (Capped at maximum player HP)
+        // HP - Set player's max hp to specified amount
         hud.registerAction("hp", new HUDActionCommand() {
             static final String help = "usage: hp <amount>";
 
@@ -596,15 +596,15 @@ class PlayerHUDCommands {
             public String execute(String[] cmd) {
                 try {
                     int hp = Integer.parseInt(cmd[1]);
-                    player.getStats().setHp(hp);
-                    return "Set player's hp to " + player.getStats().getHp();
+                    player.getStats().setMaxHP(hp);
+                    return "Set player's max hp to " + player.getStats().getMaxHP();
                 } catch (Exception e) {
                     return help;
                 }
             }
 
             public String help(String[] cmd) {
-                return "set the player's HP to specified amount";
+                return "set the player's max HP to specified amount";
             }
         });
 
