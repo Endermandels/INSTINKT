@@ -45,6 +45,9 @@
 
 ## Open Issues ##
 
+- **[43]** Spray count GUI
+- **[44]** Shop Mechanic and basic UI
+- **[45]** Refactor level design to have more horizontal enemy movement
 
 ## Backlog ##
 
@@ -52,10 +55,7 @@
 - **[]** HUD command for complete enemy wave.
 - **[]** 
 - **[]** 
-- **[]** Shop UI
 - **[]** Enemies run a certain amount of distance before fainting from smell
-- **[]** 
-- **[]** 
 - **[]** Fade out AOE effect
 - **[]** Improve AOE effect texture
 - **[]** Fix player movement stickiness
