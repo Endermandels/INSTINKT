@@ -458,6 +458,11 @@ public class Player extends GameObject {
         lastTimeSprayed = System.currentTimeMillis();
     }
 
+    public void startCooldown() {
+        spraysLeft = maxSprays;
+        stats.setHp(stats.getMaxHP());
+    }
+
     public boolean isFinishedDeathAnimation() {
         return finishedDeathAnimation && System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L;
     }
