@@ -45,17 +45,17 @@
 - **[43]** Spray count GUI
 - **[44]** Refill Spray and HP at start of cooldown phase
 - **[45]** Handle weird Spray and HP counts in GUI
+- **[46]** Regain Spray and HP by eating berries
 
 ## Open Issues ##
 
-- **[46]** Regain Spray and HP by eating berries
-- **[47]** Shop Mechanic and basic UI
-- **[48]** Refactor level design to have more horizontal enemy movement
+- **[47]** HUD command for complete enemy wave.
+- **[48]** Shop Mechanic and basic UI
+- **[49]** Refactor level design to have more horizontal enemy movement
 
 ## Backlog ##
 
 - **[]** Implement Goal: survive 10 waves.
-- **[]** HUD command for complete enemy wave.
 - **[]** Stop enemy when first smelling stink.
 - **[]** 
 - **[]** 

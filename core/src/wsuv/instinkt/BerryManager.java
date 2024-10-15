@@ -9,11 +9,13 @@ public class BerryManager {
 
     private final int BUSH_PRICE = 2;
 
+    private final int START_BERRY_COUNT = 2;
     private int berriesCollected;
+
     private ArrayList<BerryBush> bushes;
 
     public BerryManager(Game game, ArrayList<GameObject> gameObjects) {
-        berriesCollected = 2;
+        berriesCollected = START_BERRY_COUNT;
         bushes = new ArrayList<>();
 
         ArrayList<Integer[]> blueBushSpriteLocation = new ArrayList<>(Arrays.asList(
@@ -75,6 +77,19 @@ public class BerryManager {
     public void setBerriesCollected(int berriesCollected) {
         this.berriesCollected = Math.max(0,berriesCollected);
     }
+
+    public void reset() {
+        berriesCollected = START_BERRY_COUNT;
+        boolean first = true;
+        for (BerryBush bb : bushes) {
+            if (first) {
+                first = false;
+                continue;
+            }
+            bb.resetState();
+        }
+    }
+
 }
 
 class BerryBush extends GameObject {
@@ -105,6 +120,10 @@ class BerryBush extends GameObject {
     public void grow() {
         if (state == State.UNPLANTED) state = State.PLANTED;
         else state = State.GROWN;
+    }
+
+    public void resetState() {
+        state = State.UNPLANTED;
     }
 
     public int collectBerries() {
