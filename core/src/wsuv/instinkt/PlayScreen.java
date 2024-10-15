@@ -46,6 +46,8 @@ public class PlayScreen extends ScreenAdapter {
     private boolean showTileLocations;
     private boolean showEnemyStats;
 
+    private boolean skipToCooldownPhase;
+
     public PlayScreen(Game game) {
         this.game = game;
 
@@ -92,6 +94,8 @@ public class PlayScreen extends ScreenAdapter {
 
         showTileLocations = false;
         showEnemyStats = false;
+
+        skipToCooldownPhase = false;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -154,6 +158,22 @@ public class PlayScreen extends ScreenAdapter {
             @Override
             public String execute(String[] cmd) {
                 showTileLocations = !showTileLocations;
+                return "ok!";
+            }
+
+            public String help(String[] cmd) {
+                return help;
+            }
+        });
+
+        // Next - Move to next cooldown phase (skip current enemy wave)
+        hud.registerAction("next", new HUDActionCommand() {
+            static final String help = "Skip the current enemy wave and go to next cooldown phase";
+
+            @Override
+            public String execute(String[] cmd) {
+                skipToCooldownPhase = true;
+                enemySpawner.setNoMoreEnemiesToSpawn(true);
                 return "ok!";
             }
 
@@ -334,7 +354,7 @@ public class PlayScreen extends ScreenAdapter {
                 }
 
                 for (Enemy enemy : enemies) {
-                    if (enemy.update(tileMap)) enemiesToRemove.add(enemy);
+                    if (enemy.update(tileMap) || skipToCooldownPhase) enemiesToRemove.add(enemy);
                 }
                 for (Enemy enemy : enemiesToRemove) {
                     if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
@@ -402,6 +422,7 @@ public class PlayScreen extends ScreenAdapter {
                 if (!hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                         state = SubState.ENEMY_WAVE;
+                        skipToCooldownPhase = false;
                         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
                         enemySpawner.setFormation(0);
                         game.cooldownMusic.stop();

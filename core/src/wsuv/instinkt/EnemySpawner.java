@@ -152,6 +152,10 @@ public class EnemySpawner {
     public boolean areNoMoreEnemiesToSpawn() {
         return noMoreEnemiesToSpawn;
     }
+
+    public void setNoMoreEnemiesToSpawn(boolean noMoreEnemiesToSpawn) {
+        this.noMoreEnemiesToSpawn = noMoreEnemiesToSpawn;
+    }
 }
 
 class EnemyFormation {
