@@ -44,10 +44,10 @@
 - **[42]** Add berry mechanic after every enemy wave
 - **[43]** Spray count GUI
 - **[44]** Refill Spray and HP at start of cooldown phase
+- **[45]** Handle weird Spray and HP counts in GUI
 
 ## Open Issues ##
 
-- **[45]** Handle weird Spray and HP counts in GUI
 - **[46]** Regain Spray and HP by eating berries
 - **[47]** Shop Mechanic and basic UI
 - **[48]** Refactor level design to have more horizontal enemy movement

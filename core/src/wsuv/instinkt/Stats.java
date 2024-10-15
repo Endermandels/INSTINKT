@@ -44,6 +44,11 @@ public class Stats {
         return maxHP;
     }
 
+    public void setMaxHP(int maxHP) {
+        this.maxHP = Math.max(0, maxHP);
+        hp = maxHP;
+    }
+
     public int getAtk() {
         return atk;
     }
