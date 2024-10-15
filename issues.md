@@ -51,13 +51,13 @@
 ## Open Issues ##
 
 - **[48]** Implement Goal: survive 10 waves.
-- **[49]** Shop Mechanic and basic UI
+- **[49]** Switch up enemy formations between waves.
+- **[50]** Shop Mechanic and basic UI
 
 ## Backlog ##
 
 - **[]** Refactor level design to have more horizontal enemy movement
 - **[]** Stop enemy when first smelling stink.
-- **[]** 
 - **[]** 
 - **[]** 
 - **[]** 

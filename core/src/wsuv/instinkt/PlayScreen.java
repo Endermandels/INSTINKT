@@ -38,6 +38,9 @@ public class PlayScreen extends ScreenAdapter {
     private final float TIMER_MAX = 3.0f;
     private float timer;
 
+    private final int WAVES_GOAL = 10;
+    private int wave;
+
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
     private boolean escPressed;
@@ -62,7 +65,7 @@ public class PlayScreen extends ScreenAdapter {
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player, berryManager);
+        gui = new GUI(game, player, berryManager, this);
         enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
@@ -87,6 +90,9 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         timer = 0f;
+
+        wave = 1;
+
         paused = false;
         doStep = false;
         escPressed = false;
@@ -369,6 +375,7 @@ public class PlayScreen extends ScreenAdapter {
 
                 if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
                     state = SubState.COOLDOWN;
+                    wave++;
                     berryManager.startOfCooldown();
                     player.startCooldown();
                     timer = 0;
@@ -398,7 +405,7 @@ public class PlayScreen extends ScreenAdapter {
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
                         interactPressed = true;
                         int amount = berryManager.getBerriesCollected();
-                        if (amount > 0) {
+                        if (amount > 0 && player.getSpraysLeft() < player.getMaxSprays()) {
                             berryManager.setBerriesCollected(amount-1);
                             player.eatBerry();
                         }
@@ -583,6 +590,10 @@ public class PlayScreen extends ScreenAdapter {
         }
         hud.draw(game.batch);
         game.batch.end();
+    }
+
+    public int getWave() {
+        return wave;
     }
 }
 
