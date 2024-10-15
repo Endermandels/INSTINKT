@@ -34,6 +34,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_SQUIRREL_IMG = "Images/Squirrel Sprite Sheet.png";
     public static final String RSC_SS_COBRA_IMG = "Images/Cobra Sprite Sheet.png";
     public static final String RSC_SS_HEALTH_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/MinimumDamage-Sheet.png";
+    public static final String RSC_SS_SPRAY_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/ManaFading-Sheet.png";
 
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
@@ -104,6 +105,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
         am.load(RSC_SS_COBRA_IMG, Texture.class);
         am.load(RSC_SS_HEALTH_BAR_IMG, Texture.class);
+        am.load(RSC_SS_SPRAY_BAR_IMG, Texture.class);
 
         // Load SFX
         am.load(RSC_SQUIRREL_NOISE_SFX, Sound.class);

@@ -42,17 +42,23 @@
 - **[40]** Add enemy SFX reaction to spray
 - **[41]** Phase transitions (cooldown and enemy wave)
 - **[42]** Add berry mechanic after every enemy wave
+- **[43]** Spray count GUI
 
 ## Open Issues ##
 
-- **[43]** Spray count GUI
-- **[44]** Shop Mechanic and basic UI
-- **[45]** Refactor level design to have more horizontal enemy movement
+- **[44]** Refill Spray and HP after cooldown phase
+- **[45]** Handle weird Spray and HP counts in GUI
+- **[46]** Regain Spray and HP by eating berries
+- **[47]** Shop Mechanic and basic UI
+- **[48]** Refactor level design to have more horizontal enemy movement
 
 ## Backlog ##
 
 - **[]** Implement Goal: survive 10 waves.
 - **[]** HUD command for complete enemy wave.
+- **[]** Stop enemy when first smelling stink.
+- **[]** 
+- **[]** 
 - **[]** 
 - **[]** 
 - **[]** Enemies run a certain amount of distance before fainting from smell
