@@ -97,7 +97,7 @@ public class Player extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayCooldown = 1000L;
-        maxSprays = 88;
+        maxSprays = 8;
         spraysLeft = maxSprays;
         sprayRadius = 1;
         sprayDuration = 1000L;
@@ -512,6 +512,10 @@ public class Player extends GameObject {
 
     public int getMaxSprays() {
         return maxSprays;
+    }
+
+    public int getSpraysLeft() {
+        return spraysLeft;
     }
 
     public void setSprayRadius(int sprayRadius) {
