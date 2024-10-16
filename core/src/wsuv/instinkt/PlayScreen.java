@@ -337,7 +337,7 @@ public class PlayScreen extends ScreenAdapter {
 
         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
         gameObjects.add(player);
-        enemySpawner.setFormation(0);
+        enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
 
         wave = 1;
         skipToCooldownPhase = false;
@@ -423,7 +423,8 @@ public class PlayScreen extends ScreenAdapter {
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
                         interactPressed = true;
                         int amount = berryManager.getBerriesCollected();
-                        if (amount > 0 && player.getSpraysLeft() < player.getMaxSprays()) {
+                        if (amount > 0 && (player.getSpraysLeft() < player.getMaxSprays()
+                                || player.getStats().getHp() < player.getStats().getMaxHP())) {
                             berryManager.setBerriesCollected(amount-1);
                             player.eatBerry();
                         }
@@ -460,7 +461,7 @@ public class PlayScreen extends ScreenAdapter {
                         state = SubState.ENEMY_WAVE;
                         skipToCooldownPhase = false;
                         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
-                        enemySpawner.setFormation(0);
+                        enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {

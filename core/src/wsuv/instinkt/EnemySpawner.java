@@ -153,8 +153,8 @@ public class EnemySpawner {
         return noMoreEnemiesToSpawn;
     }
 
-    public void setNoMoreEnemiesToSpawn(boolean noMoreEnemiesToSpawn) {
-        this.noMoreEnemiesToSpawn = noMoreEnemiesToSpawn;
+    public int numFormations() {
+        return formationsMap.size();
     }
 }
 

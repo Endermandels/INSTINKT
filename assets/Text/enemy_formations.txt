@@ -1,18 +1,31 @@
 1000
 fox bleft
-cbr bright
-cbr bright
-cbr bright
-cbr bright
-cbr bright
+fox bright
 sql top
 
-500
-fox bright
-fox bleft
-fox bright
-fox bright
-fox top
+1000
 fox bright
 fox bright
 fox bleft
+fox bleft
+
+800
+fox bleft
+sql top
+sql top
+sql top
+fox bright
+sql top
+sql top
+sql top
+
+800
+cbr bright
+fox bleft
+cbr bright
+fox bleft
+cbr bright
+fox bleft
+sql top
+sql top
+sql top
