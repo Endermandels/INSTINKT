@@ -32,6 +32,7 @@ public class Enemy extends GameObject {
 
     private Game game;
     private Player player;
+    private BerryManager berryManager;
     private AnimationManager am;
     private Stats stats;
     private Type type;
@@ -64,15 +65,18 @@ public class Enemy extends GameObject {
 
     private boolean sprayed;
 
+    // Squirrel specific
     private long stealBerriesDuration;
     private long startStealingBerries;
+    private final int BERRIES_TAKEN = 3;
 
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
-                 ArrayList<Integer[]> enemySpawnLocations, Player player) {
+                 ArrayList<Integer[]> enemySpawnLocations, Player player, BerryManager berryManager) {
         super(null, 0, 0, 20);
         this.game = game;
         this.type = type;
         this.player = player;
+        this.berryManager = berryManager;
         this.enemySpawnLocations = enemySpawnLocations;
 
         hurtSound = null;
@@ -381,11 +385,18 @@ public class Enemy extends GameObject {
             }
         }
 
-        if (startStealingBerries > 0 && System.currentTimeMillis() > startStealingBerries + stealBerriesDuration) {
+        if (targetType != Tile.DistanceType.EXIT
+                && startStealingBerries > 0
+                && !stats.isDead()
+                && System.currentTimeMillis() > startStealingBerries + stealBerriesDuration) {
             targetType = Tile.DistanceType.EXIT;
+            startStealingBerries = -1L;
+            berryManager.setBerriesCollected(berryManager.getBerriesCollected()-BERRIES_TAKEN);
         }
 
-        if (type == Type.SQL && game.validMove(tileX, tileY)
+        if (type == Type.SQL
+                && targetType == Tile.DistanceType.BERRIES
+                && game.validMove(tileX, tileY)
                 && tileMap[tileY][tileX].getDistance(Tile.DistanceType.BERRIES) < 2f
                 && startStealingBerries < 0) {
             startStealingBerries = System.currentTimeMillis();
@@ -499,6 +510,6 @@ public class Enemy extends GameObject {
     }
 
     public Enemy clone() {
-        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player);
+        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player, berryManager);
     }
 }

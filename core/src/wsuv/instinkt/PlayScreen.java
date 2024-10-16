@@ -68,7 +68,7 @@ public class PlayScreen extends ScreenAdapter {
         berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
         gui = new GUI(game, player, berryManager, this);
-        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player, berryManager);
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
