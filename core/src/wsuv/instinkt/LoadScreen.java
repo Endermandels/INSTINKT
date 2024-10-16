@@ -14,15 +14,13 @@ public class LoadScreen extends ScreenAdapter {
     int frames;
     BitmapFont font;
     BitmapFont font_big;
-    int scrollrate;
+    final int scrollrate = 10; // this is currently pixels/frame, not pixels/sec!
     int linesShown;
     String[] credits;
 
     public LoadScreen(Game game) {
         this.game = game;
         linesShown = 6;
-        scrollrate = 5;  // this is currently pixels/frame, not pixels/sec!
-        // TODO: Skippable load screen
 
         // really our app will load quickly, but let's
         // fake a more complicated system... we'll wait
