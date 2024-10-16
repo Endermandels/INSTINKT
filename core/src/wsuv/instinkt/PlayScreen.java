@@ -362,6 +362,13 @@ public class PlayScreen extends ScreenAdapter {
                     timer = 0;
                     game.battleMusic.stop();
                     game.menuMusic.play();
+
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            tile.setStinky(false, 0L);
+                            aoeEffectTiles.remove(tile);
+                        }
+                    }
                 }
 
                 for (Enemy enemy : enemies) {
@@ -392,6 +399,7 @@ public class PlayScreen extends ScreenAdapter {
                     }
 
                     if (++wave >= WAVES_GOAL) {
+                        game.victoryMusic.play();
                         state = SubState.WON;
                         timer = 0f;
                     } else {
