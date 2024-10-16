@@ -14,16 +14,20 @@ public class GUI {
 
     private HealthBar hb;
     private SprayBar sb;
+    private BitmapFont font;
     private Player player;
+    private PlayScreen playScreen;
     private BerryCounter berryCounter;
 
     private int lastPlayerHP;
     private int lastPlayerSprayCount;
 
-    public GUI(Game game, Player player, BerryManager berryManager) {
+    public GUI(Game game, Player player, BerryManager berryManager, PlayScreen playScreen) {
         hb = new HealthBar(game);
         sb = new SprayBar(game);
+        font = game.am.get(Game.RSC_DPCOMIC_FONT);
         this.player = player;
+        this.playScreen = playScreen;
         this.berryCounter = new BerryCounter(game, berryManager);
         lastPlayerHP = player.getStats().getHp();
     }
@@ -49,6 +53,7 @@ public class GUI {
         hb.draw(batch);
         sb.draw(batch);
         berryCounter.draw(batch);
+        font.draw(batch, "Wave: " + playScreen.getWave(), 400f, 40f);
     }
 }
 
@@ -179,7 +184,7 @@ class BerryCounter {
     }
 
     public void draw(Batch batch) {
-        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), 420f, 40f);
-        batch.draw(berryIcon, 320f, -35f, berryIcon.getRegionWidth()*4, berryIcon.getRegionHeight()*4);
+        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), 700f, 40f);
+        batch.draw(berryIcon, 600f, -35f, berryIcon.getRegionWidth()*4, berryIcon.getRegionHeight()*4);
     }
 }

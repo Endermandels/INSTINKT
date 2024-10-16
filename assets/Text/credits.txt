@@ -1,7 +1,19 @@
+  Battle, Menu, and Cooldown Music
+  DJ $hredder
+  https://soundcloud.com/user-809973569
+
+  Animal Sprites
+  Elthen
+  https://elthen.itch.io/
+
+  World Textures
+  Cainos
+  https://cainos.itch.io/
+
   Font (DPComic)
   codeman38
   http://www.zone38.net/
 
-  Music
-  DJ $hredder
-  https://soundcloud.com/user-809973569
+  Victory Music
+  ZapSplat
+  https://www.zapsplat.com/

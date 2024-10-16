@@ -3,6 +3,8 @@ package wsuv.instinkt;
 public class Stats {
 
     private int maxHP;
+    private int startHP;
+    private int startATK;
 
     private int hp;
     private int atk;
@@ -12,8 +14,10 @@ public class Stats {
 
     public Stats(int hp, int atk, long atkInv) {
         this.maxHP = hp;
+        startHP = hp;
         this.hp = hp;
         this.atk = atk;
+        startATK = atk;
         this.atkInv = atkInv;
         lastAttacked = 0;
     }
@@ -29,6 +33,8 @@ public class Stats {
     }
 
     public void reset() {
+        atk = startATK;
+        maxHP = startHP;
         hp = maxHP;
     }
 

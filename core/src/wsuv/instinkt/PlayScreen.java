@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.*;
 
 public class PlayScreen extends ScreenAdapter {
-    public enum SubState {READY, GAME_OVER, ENEMY_WAVE, COOLDOWN}
+    public enum SubState {READY, GAME_OVER, ENEMY_WAVE, COOLDOWN, WON}
     private Game game;
     private HUD hud;
     private GUI gui;
@@ -18,6 +18,7 @@ public class PlayScreen extends ScreenAdapter {
     private BerryManager berryManager;
     private SubState state;
     private BitmapFont debugFont;
+    private BitmapFont bigFont;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
@@ -37,6 +38,9 @@ public class PlayScreen extends ScreenAdapter {
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
     private float timer;
+
+    private final int WAVES_GOAL = 11;
+    private int wave;
 
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
@@ -59,10 +63,11 @@ public class PlayScreen extends ScreenAdapter {
 
         hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
+        bigFont = game.am.get(Game.RSC_DPCOMIC_FONT_BIG);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player, berryManager);
+        gui = new GUI(game, player, berryManager, this);
         enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
 
         gameObjects.add(player);
@@ -87,6 +92,9 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         timer = 0f;
+
+        wave = 1;
+
         paused = false;
         doStep = false;
         escPressed = false;
@@ -173,7 +181,6 @@ public class PlayScreen extends ScreenAdapter {
             @Override
             public String execute(String[] cmd) {
                 skipToCooldownPhase = true;
-                enemySpawner.setNoMoreEnemiesToSpawn(true);
                 return "ok!";
             }
 
@@ -331,6 +338,9 @@ public class PlayScreen extends ScreenAdapter {
         fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
         gameObjects.add(player);
         enemySpawner.setFormation(0);
+
+        wave = 1;
+        skipToCooldownPhase = false;
     }
 
     @Override
@@ -342,6 +352,7 @@ public class PlayScreen extends ScreenAdapter {
     public void update(float delta) {
         if (!paused || doStep) {
             if (state == SubState.ENEMY_WAVE) {
+                ////////////////////////////////// ENEMY WAVE //////////////////////////////////
                 if (player.update(tileMap, enemies, state)) {
                     fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
                 }
@@ -351,6 +362,13 @@ public class PlayScreen extends ScreenAdapter {
                     timer = 0;
                     game.battleMusic.stop();
                     game.menuMusic.play();
+
+                    for (Tile[] tiles : tileMap) {
+                        for (Tile tile : tiles) {
+                            tile.setStinky(false, 0L);
+                            aoeEffectTiles.remove(tile);
+                        }
+                    }
                 }
 
                 for (Enemy enemy : enemies) {
@@ -367,19 +385,26 @@ public class PlayScreen extends ScreenAdapter {
 
                 enemySpawner.update();
 
-                if (enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) {
-                    state = SubState.COOLDOWN;
+                if ((enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) || skipToCooldownPhase) {
                     berryManager.startOfCooldown();
                     player.startCooldown();
-                    timer = 0;
                     game.battleMusic.stop();
-                    game.cooldownMusic.play();
+                    skipToCooldownPhase = false;
 
                     for (Tile[] tiles : tileMap) {
                         for (Tile tile : tiles) {
                             tile.setStinky(false, 0L);
                             aoeEffectTiles.remove(tile);
                         }
+                    }
+
+                    if (++wave >= WAVES_GOAL) {
+                        game.victoryMusic.play();
+                        state = SubState.WON;
+                        timer = 0f;
+                    } else {
+                        game.cooldownMusic.play();
+                        state = SubState.COOLDOWN;
                     }
                 }
 
@@ -398,7 +423,7 @@ public class PlayScreen extends ScreenAdapter {
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
                         interactPressed = true;
                         int amount = berryManager.getBerriesCollected();
-                        if (amount > 0) {
+                        if (amount > 0 && player.getSpraysLeft() < player.getMaxSprays()) {
                             berryManager.setBerriesCollected(amount-1);
                             player.eatBerry();
                         }
@@ -411,12 +436,23 @@ public class PlayScreen extends ScreenAdapter {
                 }
                 gui.update();
             } else if (state == SubState.COOLDOWN) {
+                ////////////////////////////////// COOLDOWN //////////////////////////////////
                 player.update(tileMap, enemies, state);
 
                 for (Tile[] tiles : tileMap) {
                     for (Tile tile : tiles) {
                         if (tile.update()) aoeEffectTiles.remove(tile);
                     }
+                }
+
+                if (skipToCooldownPhase) {
+                    if (++wave >= WAVES_GOAL) {
+                        game.cooldownMusic.stop();
+                        game.victoryMusic.play();
+                        state = SubState.WON;
+                        timer = 0f;
+                    }
+                    skipToCooldownPhase = false;
                 }
 
                 if (!hud.isOpen()) {
@@ -439,14 +475,21 @@ public class PlayScreen extends ScreenAdapter {
                 }
                 gui.update();
             } else if (state == SubState.GAME_OVER) {
+                ////////////////////////////////// GAME OVER //////////////////////////////////
+                timer += delta;
+                if (timer > TIMER_MAX) state = SubState.READY;
+            } else if (state == SubState.WON) {
+                ////////////////////////////////// WON //////////////////////////////////
                 timer += delta;
                 if (timer > TIMER_MAX) state = SubState.READY;
             } else if (state == SubState.READY) {
+                ////////////////////////////////// READY //////////////////////////////////
                 if (!hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY) && !Gdx.input.isKeyPressed(Input.Keys.GRAVE)) {
                         reset();
                         state = SubState.ENEMY_WAVE;
                         game.menuMusic.stop();
+                        game.victoryMusic.stop();
                         game.battleMusic.play();
                     }
                 }
@@ -468,7 +511,8 @@ public class PlayScreen extends ScreenAdapter {
     public void render(float delta) {
         update(delta);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        if (wave >= WAVES_GOAL) ScreenUtils.clear(105f/255f,173f/255f,45f/255f,1);
+        else ScreenUtils.clear(0, 0, 0, 1);
         game.batch.begin();
         // this logic could also be pushed into a method on SubState enum
         if (state == SubState.GAME_OVER) {
@@ -477,6 +521,11 @@ public class PlayScreen extends ScreenAdapter {
             game.batch.draw(gameover_img
                     , Gdx.graphics.getWidth() / 2f - gameover_img.getWidth() / 2f
                     , Gdx.graphics.getHeight() / 2f - gameover_img.getHeight() / 2f +50f);
+        } else if (state == SubState.WON) {
+            // Draw You Won text
+            bigFont.draw(game.batch, "YOU WIN!!!"
+                    , Gdx.graphics.getWidth() / 2f - 240f
+                    , Gdx.graphics.getHeight() / 2f + 100f);
         } else if (state == SubState.READY) {
             // Draw Press A Key image
             Texture pressakey_img = game.am.get(Game.RSC_PRESSAKEY_IMG, Texture.class);
@@ -583,6 +632,10 @@ public class PlayScreen extends ScreenAdapter {
         }
         hud.draw(game.batch);
         game.batch.end();
+    }
+
+    public int getWave() {
+        return wave;
     }
 }
 

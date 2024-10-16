@@ -48,12 +48,18 @@ public class Player extends GameObject {
     private Spray spray;
     private final long SPRAY_DELAY = 200L;
     private long lastTimeSprayed;
+
     private long sprayCooldown;
+    private long startSprayCooldown;
     private int maxSprays;
+    private int startMaxSprays;
     private int spraysLeft;
     private int sprayRadius;
+    private int startSprayRadius;
     private long sprayDuration;
+    private long startSprayDuration;
     private int sprayLength;
+    private int startSprayLength;
 
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
@@ -96,12 +102,18 @@ public class Player extends GameObject {
         timeFinishedDeathAnimation = -1L;
 
         lastTimeSprayed = -1L;
+
         sprayCooldown = 1000L;
+        startSprayCooldown = sprayCooldown;
         maxSprays = 8;
+        startMaxSprays = maxSprays;
         spraysLeft = maxSprays;
         sprayRadius = 1;
+        startSprayRadius = sprayRadius;
         sprayDuration = 1000L;
+        startSprayDuration = sprayDuration;
         sprayLength = 2;
+        startSprayLength = sprayLength;
 
         toSpray = false;
 
@@ -453,6 +465,12 @@ public class Player extends GameObject {
 
         am.switchAnimState("IDLE");
         finishedDeathAnimation = false;
+
+        maxSprays = startMaxSprays;
+        sprayRadius = startSprayRadius;
+        sprayCooldown = startSprayCooldown;
+        sprayDuration = startSprayDuration;
+        sprayLength = startSprayLength;
 
         spraysLeft = maxSprays;
         lastTimeSprayed = System.currentTimeMillis();
