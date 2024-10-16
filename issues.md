@@ -50,10 +50,10 @@
 - **[48]** Implement Goal: survive 10 waves.
 - **[49]** Fix Spray bar shake at beginning of enemy wave
 - **[50]** Switch up enemy formations between waves.
+- **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
 
 ## Open Issues ##
 
-- **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
 - **[52]** Shop Mechanic and basic UI
 
 ## Backlog ##
