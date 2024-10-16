@@ -49,18 +49,22 @@
 - **[47]** HUD command for complete enemy wave.
 - **[48]** Implement Goal: survive 10 waves.
 - **[49]** Fix Spray bar shake at beginning of enemy wave
+- **[50]** Switch up enemy formations between waves.
 
 ## Open Issues ##
 
-- **[50]** Switch up enemy formations between waves.
-- **[51]** Shop Mechanic and basic UI
+- **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
+- **[52]** Shop Mechanic and basic UI
 
 ## Backlog ##
 
 - **[]** Refactor level design to have more horizontal enemy movement
+- **[]** Give player reason to move outside of their base
 - **[]** Stop enemy when first smelling stink.
 - **[]** 
 - **[]** 
+- **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
+change the frequency
 - **[]** Use Regeneration animation for health and spray
 - **[]** 
 - **[]** 
