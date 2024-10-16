@@ -48,10 +48,10 @@
 - **[46]** Regain Spray and HP by eating berries
 - **[47]** HUD command for complete enemy wave.
 - **[48]** Implement Goal: survive 10 waves.
+- **[49]** Fix Spray bar shake at beginning of enemy wave
 
 ## Open Issues ##
 
-- **[49]** Fix Spray bar shake at beginning of enemy wave
 - **[50]** Switch up enemy formations between waves.
 - **[51]** Shop Mechanic and basic UI
 
