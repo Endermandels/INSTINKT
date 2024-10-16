@@ -35,6 +35,7 @@ public class EnemySpawner {
 
     private Game game;
     private Player player;
+    private BerryManager berryManager;
     private ArrayList<Enemy> enemies;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Integer[]> enemySpawnLocations;
@@ -44,9 +45,11 @@ public class EnemySpawner {
     private long lastSpawn;
     private boolean noMoreEnemiesToSpawn;
 
-    public EnemySpawner(Game game, ArrayList<Enemy> enemies, ArrayList<GameObject> gameObjects, Player player) {
+    public EnemySpawner(Game game, ArrayList<Enemy> enemies, ArrayList<GameObject> gameObjects, Player player,
+                        BerryManager berryManager) {
         this.game = game;
         this.player = player;
+        this.berryManager = berryManager;
         this.enemies = enemies;
         this.gameObjects = gameObjects;
         enemySpawnLocations = new ArrayList<>(Arrays.asList(
@@ -121,7 +124,7 @@ public class EnemySpawner {
                 break;
         }
         return new Enemy(game, enemySpawnLocations.get(sl.ordinal())[1]
-                ,enemySpawnLocations.get(sl.ordinal())[0], dir, type, enemySpawnLocations, player);
+                ,enemySpawnLocations.get(sl.ordinal())[0], dir, type, enemySpawnLocations, player, berryManager);
     }
 
     private void spawnEnemy(Enemy enemy) {

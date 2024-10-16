@@ -32,6 +32,7 @@ public class Enemy extends GameObject {
 
     private Game game;
     private Player player;
+    private BerryManager berryManager;
     private AnimationManager am;
     private Stats stats;
     private Type type;
@@ -64,12 +65,19 @@ public class Enemy extends GameObject {
 
     private boolean sprayed;
 
+    // Squirrel specific
+    private long stealBerriesDuration;
+    private long startStealingBerries;
+    private final int BERRIES_TAKEN = 3;
+    private int berriesStolen;
+
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
-                 ArrayList<Integer[]> enemySpawnLocations, Player player) {
+                 ArrayList<Integer[]> enemySpawnLocations, Player player, BerryManager berryManager) {
         super(null, 0, 0, 20);
         this.game = game;
         this.type = type;
         this.player = player;
+        this.berryManager = berryManager;
         this.enemySpawnLocations = enemySpawnLocations;
 
         hurtSound = null;
@@ -170,6 +178,10 @@ public class Enemy extends GameObject {
         pathX = tileX;
         pathY = tileY;
         targetPos = new int[2];
+
+        stealBerriesDuration = 1000L;
+        startStealingBerries = -1;
+        berriesStolen = 0;
     }
 
     private boolean isSpawnTile(int tileX, int tileY) {
@@ -211,20 +223,8 @@ public class Enemy extends GameObject {
                 if ((movingHorizontal && pathY == tile.getY())
                         || (movingVertical && pathX == tile.getX())
                         || (!movingHorizontal && !movingVertical)) {
-                    if (targetType != Tile.DistanceType.EXIT) {
-                        if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
-                            lowestTile = tile;
-                        }
-                    } else {
-                        // Avoid player
-                        float exitDist1 = tile.getDistance(targetType);
-                        float playerDist1 = tile.getDistance(Tile.DistanceType.PLAYER);
-                        float exitDist2 = lowestTile.getDistance(targetType);
-                        float playerDist2 = lowestTile.getDistance(Tile.DistanceType.PLAYER);
-                        float alpha = 0.6f;
-                        if (exitDist1*alpha - playerDist1*(1-alpha) < exitDist2*alpha - playerDist2*(1-alpha)) {
-                            lowestTile = tile;
-                        }
+                    if (tile.getDistance(targetType) < lowestTile.getDistance(targetType)) {
+                        lowestTile = tile;
                     }
                 }
             }
@@ -375,6 +375,24 @@ public class Enemy extends GameObject {
             }
         }
 
+        if (targetType != Tile.DistanceType.EXIT
+                && startStealingBerries > 0
+                && !stats.isDead()
+                && System.currentTimeMillis() > startStealingBerries + stealBerriesDuration) {
+            targetType = Tile.DistanceType.EXIT;
+            startStealingBerries = -1L;
+            int prevBerries = berryManager.getBerriesCollected();
+            berriesStolen = prevBerries - berryManager.setBerriesCollected(prevBerries-BERRIES_TAKEN);
+        }
+
+        if (type == Type.SQL
+                && targetType == Tile.DistanceType.BERRIES
+                && game.validMove(tileX, tileY)
+                && tileMap[tileY][tileX].getDistance(Tile.DistanceType.BERRIES) < 2f
+                && startStealingBerries < 0) {
+            startStealingBerries = System.currentTimeMillis();
+        }
+
         if (type != Type.CBR && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
             targetType = Tile.DistanceType.EXIT;
         }
@@ -382,6 +400,7 @@ public class Enemy extends GameObject {
         if (stats.isDead()) {
             if (!wasDead) {
                 playDeathSound();
+                berryManager.setBerriesCollected(berryManager.getBerriesCollected()+berriesStolen);
                 wasDead = true;
             }
             am.switchAnimState("DEAD");
@@ -483,6 +502,6 @@ public class Enemy extends GameObject {
     }
 
     public Enemy clone() {
-        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player);
+        return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player, berryManager);
     }
 }

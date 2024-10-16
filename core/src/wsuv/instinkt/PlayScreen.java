@@ -25,6 +25,7 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<GameObject> debugImages;
     private Set<Tile> aoeEffectTiles;
     private Texture aoeEffectImg;
+    private Integer[] berryPile;
 
     private Tile[][] tileMap;
     public static final int TILE_ROWS = 12;
@@ -68,7 +69,7 @@ public class PlayScreen extends ScreenAdapter {
         berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
         gui = new GUI(game, player, berryManager, this);
-        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player);
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player, berryManager);
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
@@ -76,20 +77,9 @@ public class PlayScreen extends ScreenAdapter {
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
-        Integer[] berryPile = importantLocations.get(0);
+        berryPile = importantLocations.get(0);
 
-        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
-        fillDijkstraFromTile(Tile.DistanceType.BERRIES, berryPile[0], berryPile[1]);
-
-        ArrayList<Integer[]> enemySpawnLocations = enemySpawner.getEnemySpawnLocations();
-        boolean first = true;
-        for (Integer[] location : enemySpawnLocations) {
-            fillDijkstraFromTile(Tile.DistanceType.EXIT
-                    , location[1]
-                    , location[0]
-                    , first);
-            first = false;
-        }
+        fillAllDijkstraValues();
 
         timer = 0f;
 
@@ -277,6 +267,21 @@ public class PlayScreen extends ScreenAdapter {
         return null;
     }
 
+    private void fillAllDijkstraValues() {
+        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+        fillDijkstraFromTile(Tile.DistanceType.BERRIES, berryPile[0], berryPile[1]);
+
+        ArrayList<Integer[]> enemySpawnLocations = enemySpawner.getEnemySpawnLocations();
+        boolean first = true;
+        for (Integer[] location : enemySpawnLocations) {
+            fillDijkstraFromTile(Tile.DistanceType.EXIT
+                    , location[1]
+                    , location[0]
+                    , first);
+            first = false;
+        }
+    }
+
     private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
         fillDijkstraFromTile(dt, tileX, tileY, true);
     }
@@ -293,8 +298,7 @@ public class PlayScreen extends ScreenAdapter {
         if (dt != Tile.DistanceType.EXIT)  {
             source = tileMap[tileY][tileX];
             source.setDistance(dt, 0f);
-        }
-        else  {
+        } else {
             source = getEnemyStartTile(tileX, tileY);
             source.setDistance(dt, 1f);
         }
@@ -302,15 +306,25 @@ public class PlayScreen extends ScreenAdapter {
         for (Tile[] tiles : tileMap) {
             for (Tile tile : tiles) {
                 if (!tile.equals(source) && newFill) tile.setDistance(dt, Tile.INF);
-                if (!tile.isObstacle() || tile.equals(source)) queue.add(tile);
+                if (!tile.isObstacle()
+                        && !(tile.getX() == player.getTileX() && tile.getY() == player.getTileY())
+                        || tile.equals(source)) queue.add(tile);
             }
         }
 
         while (!queue.isEmpty()) {
             Tile tile = queue.poll();
+            float playerDist = 0f;
+            if (dt != Tile.DistanceType.PLAYER) {
+                playerDist = tileMap[tile.getY()][tile.getX()].getDistance(Tile.DistanceType.PLAYER);
+                playerDist = 10f/(float)Math.pow(playerDist, 2);
+            }
+
+            float pathDist = tile.getDistance(dt) + 1f
+                    + playerDist;
 
             for (Tile neighbor : getNeighbors(tile, queue)) {
-                float pathDist = tile.getDistance(dt) + 1f; // Each path has a weight of 1 for now.
+                // Each path has a weight of 1 for now.
                 if (pathDist < neighbor.getDistance(dt)) {
                     neighbor.setDistance(dt, pathDist);
                     queue.remove(neighbor);
@@ -335,7 +349,7 @@ public class PlayScreen extends ScreenAdapter {
         enemies.clear();
         enemiesToRemove.clear();
 
-        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+        fillAllDijkstraValues();
         gameObjects.add(player);
         enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
 
@@ -354,7 +368,7 @@ public class PlayScreen extends ScreenAdapter {
             if (state == SubState.ENEMY_WAVE) {
                 ////////////////////////////////// ENEMY WAVE //////////////////////////////////
                 if (player.update(tileMap, enemies, state)) {
-                    fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                    fillAllDijkstraValues();
                 }
 
                 if (player.getStats().isDead() && player.isFinishedDeathAnimation()) {
@@ -460,7 +474,7 @@ public class PlayScreen extends ScreenAdapter {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                         state = SubState.ENEMY_WAVE;
                         skipToCooldownPhase = false;
-                        fillDijkstraFromTile(Tile.DistanceType.PLAYER, player.getTileX(), player.getTileY());
+                        fillAllDijkstraValues();
                         enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
@@ -545,19 +559,9 @@ public class PlayScreen extends ScreenAdapter {
                         float dist = tile.getDistance(Tile.DistanceType.PLAYER);
                         float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
                         float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
-                        String num;
-                        String berryNum;
-                        String exitNum;
-                        if (dist == Tile.INF) {
-                            num = "~";
-                            berryNum = "~";
-                            exitNum = "~";
-                        }
-                        else {
-                            num = Integer.toString((int) tile.getDistance(Tile.DistanceType.PLAYER));
-                            berryNum = Integer.toString((int) berryDist);
-                            exitNum = Integer.toString((int) exitDist);
-                        }
+                        String num = dist == Tile.INF ? "~" : Integer.toString((int) dist);
+                        String berryNum = berryDist == Tile.INF ? "~" : Integer.toString((int) berryDist);
+                        String exitNum = exitDist == Tile.INF ? "~" : Integer.toString((int) exitDist);
 
                         float clampedDist = Math.min(Math.max(dist, 0), 12);
                         float redIntensity = clampedDist / 12.0f;

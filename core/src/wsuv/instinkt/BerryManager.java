@@ -74,8 +74,9 @@ public class BerryManager {
         return berriesCollected;
     }
 
-    public void setBerriesCollected(int berriesCollected) {
+    public int setBerriesCollected(int berriesCollected) {
         this.berriesCollected = Math.max(0,berriesCollected);
+        return this.berriesCollected;
     }
 
     public void reset() {
