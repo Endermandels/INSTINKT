@@ -30,6 +30,7 @@ public class GUI {
         this.playScreen = playScreen;
         this.berryCounter = new BerryCounter(game, berryManager);
         lastPlayerHP = player.getStats().getHp();
+        lastPlayerSprayCount = player.getSpraysLeft();
     }
 
     public void update() {
