@@ -64,6 +64,9 @@ public class Enemy extends GameObject {
 
     private boolean sprayed;
 
+    private long stealBerriesDuration;
+    private long startStealingBerries;
+
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations, Player player) {
         super(null, 0, 0, 20);
@@ -170,6 +173,9 @@ public class Enemy extends GameObject {
         pathX = tileX;
         pathY = tileY;
         targetPos = new int[2];
+
+        stealBerriesDuration = 1000L;
+        startStealingBerries = -1;
     }
 
     private boolean isSpawnTile(int tileX, int tileY) {
@@ -373,6 +379,16 @@ public class Enemy extends GameObject {
                     }
                 }
             }
+        }
+
+        if (startStealingBerries > 0 && System.currentTimeMillis() > startStealingBerries + stealBerriesDuration) {
+            targetType = Tile.DistanceType.EXIT;
+        }
+
+        if (type == Type.SQL && game.validMove(tileX, tileY)
+                && tileMap[tileY][tileX].getDistance(Tile.DistanceType.BERRIES) < 2f
+                && startStealingBerries < 0) {
+            startStealingBerries = System.currentTimeMillis();
         }
 
         if (type != Type.CBR && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {

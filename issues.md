@@ -68,6 +68,7 @@ change the frequency
 - **[]** Use Regeneration animation for health and spray
 - **[]** 
 - **[]** 
+- **[]** Separate enemies in their own classes
 - **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** Fade out AOE effect
 - **[]** Improve AOE effect texture
