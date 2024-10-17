@@ -58,13 +58,14 @@
 
 ## Backlog ##
 
+- **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
+change the frequency
 - **[]** Refactor level design to have more horizontal enemy movement
 - **[]** Give player reason to move outside of their base
 - **[]** Stop enemy when first smelling stink.
+- **[]** Balance Player, Enemy, and World stats
 - **[]** 
 - **[]** 
-- **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
-change the frequency
 - **[]** Use Regeneration animation for health and spray
 - **[]** 
 - **[]** 
