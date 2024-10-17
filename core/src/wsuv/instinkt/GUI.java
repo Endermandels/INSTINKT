@@ -26,7 +26,7 @@ public class GUI {
     public GUI(Game game, Player player, BerryManager berryManager, PlayScreen playScreen) {
         hb = new HealthBar(game);
         sb = new SprayBar(game);
-        font = game.am.get(Game.RSC_DPCOMIC_FONT);
+        font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
         font.setColor(0, 0, 0, 1);
         bg = game.am.get(Game.RSC_GUI_AREA_IMG);
         this.player = player;
@@ -54,14 +54,14 @@ public class GUI {
     }
 
     public void draw(Batch batch) {
-        batch.draw(bg, 0f, 0f, bg.getWidth()*4f, bg.getHeight()*4f);
+        batch.draw(bg, 0f, 0f, bg.getWidth()*8f, bg.getHeight()*8f);
         hb.draw(batch, 32f);
-        sb.draw(batch, 232f);
-        font.draw(batch, "Wave: " + playScreen.getWave(), 434f, 42f);
+        sb.draw(batch, 332f);
+        font.draw(batch, "Wave: " + playScreen.getWave(), 634f, 82f);
         font.setColor(1,1,1,1);
-        font.draw(batch, "Wave: " + playScreen.getWave(), 432f, 44f);
+        font.draw(batch, "Wave: " + playScreen.getWave(), 630f, 86f);
         font.setColor(0,0,0,1);
-        berryCounter.draw(batch, 532f);
+        berryCounter.draw(batch, 764f);
     }
 }
 
@@ -104,8 +104,8 @@ class SprayBar {
 
     public void draw(Batch batch, float x) {
         TextureRegion image = getImage();
-        batch.draw(image, x+shakeX, 16, image.getRegionWidth()*PlayScreen.TILE_SCALE,
-                image.getRegionHeight()*PlayScreen.TILE_SCALE);
+        batch.draw(image, x+shakeX, 32, image.getRegionWidth()*PlayScreen.TILE_SCALE*2f,
+                image.getRegionHeight()*PlayScreen.TILE_SCALE*2f);
     }
 
     public void useSpray(int idx) {
@@ -158,8 +158,8 @@ class HealthBar {
 
     public void draw(Batch batch, float x) {
         TextureRegion image = getImage();
-        batch.draw(image, x, 16+shakeY, image.getRegionWidth()*PlayScreen.TILE_SCALE,
-                image.getRegionHeight()*PlayScreen.TILE_SCALE);
+        batch.draw(image, x, 32+shakeY, image.getRegionWidth()*PlayScreen.TILE_SCALE*2f,
+                image.getRegionHeight()*PlayScreen.TILE_SCALE*2f);
     }
 
     public void getHit(int idx) {
@@ -181,7 +181,7 @@ class BerryCounter {
 
     public BerryCounter(Game game, BerryManager berryManager) {
         this.berryManager = berryManager;
-        font = game.am.get(Game.RSC_DPCOMIC_FONT);
+        font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
 
         ArrayList<Integer[]> berryIconLocation = new ArrayList<>(Arrays.asList(
                 new Integer[]{1,0},
@@ -192,7 +192,10 @@ class BerryCounter {
     }
 
     public void draw(Batch batch, float x) {
-        batch.draw(berryIcon, x, -34f, berryIcon.getRegionWidth()*4, berryIcon.getRegionHeight()*4);
-        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+100f, 44f);
+        batch.draw(berryIcon, x, -68f, berryIcon.getRegionWidth()*8, berryIcon.getRegionHeight()*8);
+        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+184f, 82f);
+        font.setColor(1,1,1,1);
+        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+178f, 86f);
+        font.setColor(0,0,0,1);
     }
 }

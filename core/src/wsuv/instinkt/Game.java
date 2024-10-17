@@ -40,6 +40,7 @@ public class Game extends com.badlogic.gdx.Game {
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
     public static final String RSC_DPCOMIC_FONT = "DPComic.ttf";
+    public static final String RSC_DPCOMIC_FONT_GUI = "DPComic_GUI.ttf";
     public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
 
@@ -91,6 +92,12 @@ public class Game extends com.badlogic.gdx.Game {
         myFontBlack.fontParameters.size = 20;
         myFontBlack.fontParameters.color = new Color(Color.BLACK);
         am.load(RSC_DPCOMIC_FONT_BLACK, BitmapFont.class, myFontBlack);
+
+        // GUI Font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter myFontGUI = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        myFontGUI.fontFileName = RSC_DPCOMIC_FONT_FILE;
+        myFontGUI.fontParameters.size = 64;
+        am.load(RSC_DPCOMIC_FONT_GUI, BitmapFont.class, myFontGUI);
 
         // Load Textures after the font...
         am.load(RSC_GAMEOVER_IMG, Texture.class);

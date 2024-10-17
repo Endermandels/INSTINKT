@@ -31,7 +31,7 @@ public class PlayScreen extends ScreenAdapter {
     public static final int TILE_ROWS = 12;
     public static final int TILE_COLS = 18;
 
-    private final int GUI_SPACE = 64;
+    private final int GUI_SPACE = 128;
     public static int TILE_SIZE = 32;
     public static int TILE_SCALE = 2;
     public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
