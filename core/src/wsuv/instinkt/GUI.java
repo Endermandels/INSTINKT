@@ -51,6 +51,7 @@ public class GUI {
 
         hb.update();
         sb.update();
+        berryCounter.update();
     }
 
     public void draw(Batch batch) {
@@ -179,6 +180,12 @@ class BerryCounter {
     private BerryManager berryManager;
     private BitmapFont font;
 
+    private int shakeY;
+    private long lastShaked;
+    private final long FREQUENCY = 50L;
+
+    private int lastBerryCount;
+
     public BerryCounter(Game game, BerryManager berryManager) {
         this.berryManager = berryManager;
         font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
@@ -189,10 +196,28 @@ class BerryCounter {
         ));
 
         berryIcon = GameObject.getImgRegion(game, berryIconLocation, Game.RSC_SS_BERRIES_IMG);
+
+        shakeY = 0;
+        lastShaked = -1L;
+
+        lastBerryCount = berryManager.getBerriesCollected();
+    }
+
+    public void update() {
+        long time = System.currentTimeMillis();
+        if (shakeY != 0 && time > lastShaked + FREQUENCY) {
+            shakeY = (Math.abs(shakeY) - 2) * -Integer.signum(shakeY);
+            lastShaked = time;
+        }
+
+        if (lastBerryCount != berryManager.getBerriesCollected()) {
+            lastBerryCount = berryManager.getBerriesCollected();
+            shakeY = 8;
+        }
     }
 
     public void draw(Batch batch, float x) {
-        batch.draw(berryIcon, x, -68f, berryIcon.getRegionWidth()*8, berryIcon.getRegionHeight()*8);
+        batch.draw(berryIcon, x, -68f+shakeY, berryIcon.getRegionWidth()*8, berryIcon.getRegionHeight()*8);
         font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+184f, 82f);
         font.setColor(1,1,1,1);
         font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+178f, 86f);
