@@ -10,6 +10,10 @@
   Cainos
   https://cainos.itch.io/
 
+  GUI Textures
+  Androx
+  https://byandrox.itch.io/
+
   Font (DPComic)
   codeman38
   http://www.zone38.net/
