@@ -31,10 +31,10 @@ public class PlayScreen extends ScreenAdapter {
     public static final int TILE_ROWS = 12;
     public static final int TILE_COLS = 18;
 
-    private final int GUI_SPACE = 128;
-    public static int TILE_SIZE = 32;
-    public static int TILE_SCALE = 2;
-    public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
+    public static final int GUI_SPACE = 128;
+    public static final int TILE_SIZE = 32;
+    public static final int TILE_SCALE = 2;
+    public static final int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
 
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
@@ -470,23 +470,41 @@ public class PlayScreen extends ScreenAdapter {
                     skipToCooldownPhase = false;
                 }
 
-                if (!hud.isOpen()) {
+                if (!hud.isOpen() && !gui.isShopOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        // Start new enemy wave
                         state = SubState.ENEMY_WAVE;
                         skipToCooldownPhase = false;
+                        gui.startEnemyWave();
                         fillAllDijkstraValues();
                         enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                        // Plant Berry bush
                         interactPressed = true;
                         berryManager.plantNewBerryBush();
-                    } else if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                    }
+
+                    if (!Gdx.input.isKeyPressed(Input.Keys.E) && !Gdx.input.isKeyPressed(Input.Keys.Q)) {
                         interactPressed = false;
+                    }
+
+                    if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
+                        // Open Shop
+                        gui.setShopOpen(true);
+                        interactPressed = true;
                     }
                     player.setTakeInput(true);
                 } else {
                     player.setTakeInput(false);
+
+                    if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
+                        gui.setShopOpen(false);
+                        interactPressed = true;
+                    } else if (!Gdx.input.isKeyPressed(Input.Keys.Q)) {
+                        interactPressed = false;
+                    }
                 }
                 gui.update();
             } else if (state == SubState.GAME_OVER) {
