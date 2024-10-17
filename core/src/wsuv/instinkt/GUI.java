@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class GUI {
 
-    private Texture bg; // Background
+    private AnimationManager am;
     private HealthBar hb;
     private SprayBar sb;
     private BitmapFont font;
@@ -35,7 +35,18 @@ public class GUI {
         shopSelect = new ShopSelect(game);
         font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
         font.setColor(0, 0, 0, 1);
-        bg = game.am.get(Game.RSC_GUI_AREA_IMG);
+
+        am = new AnimationManager(game.am.get(Game.RSC_SS_GUI_AREA_IMG)
+                , new ArrayList<>(Arrays.asList(1,3,2))
+                , new HashMap<>() {{
+            put("SHORT", 0);
+            put("EXPANDED", 1);
+            put("COLLAPSING", 2);
+        }}
+                , 0.08f, 144, 64, true
+        );
+        am.setOneShot(true);
+
         this.player = player;
         this.playScreen = playScreen;
         this.berryCounter = new BerryCounter(game, berryManager);
@@ -99,10 +110,16 @@ public class GUI {
         hb.update();
         sb.update();
         berryCounter.update();
+
+        if (shopOpen) am.switchAnimState("EXPANDED");
+        else if (!am.getCurrentAnimState().equals("SHORT")) am.switchAnimState("COLLAPSING", "SHORT");
+        am.setOneShot(true);
+        am.update();
     }
 
     public void draw(Batch batch) {
-        batch.draw(bg, 0f, 0f, bg.getWidth()*8f, bg.getHeight()*8f);
+        TextureRegion bg = am.getCurrentImage(false);
+        batch.draw(bg, 0f, 0f, bg.getRegionWidth()*8f, bg.getRegionHeight()*8f);
         hb.draw(batch, 32f);
         sb.draw(batch, 332f);
         font.draw(batch, "Wave: " + playScreen.getWave(), 634f, 82f);
@@ -114,7 +131,7 @@ public class GUI {
     }
 
     public void upgradePlayer(int selectedIdx) {
-
+        // TODO: Implement
     }
 
     public boolean isShopOpen() {
@@ -162,7 +179,7 @@ class ShopSelect {
         float width = image.getRegionWidth()*PlayScreen.TILE_SCALE*4f;
         float height = image.getRegionHeight()*PlayScreen.TILE_SCALE*4f;
         float x = Gdx.graphics.getWidth()/2f - width/2f;
-        float y = Gdx.graphics.getHeight()/2f - height/2f + PlayScreen.GUI_SPACE/2f;
+        float y = Gdx.graphics.getHeight()/2f - height/2f + 140f + PlayScreen.GUI_SPACE;
         batch.draw(image, x, y, width, height);
     }
 
