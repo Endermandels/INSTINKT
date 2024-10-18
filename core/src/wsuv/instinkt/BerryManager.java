@@ -1,5 +1,6 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
@@ -14,9 +15,13 @@ public class BerryManager {
 
     private ArrayList<BerryBush> bushes;
 
+    private Sound plantSeed;
+
     public BerryManager(Game game, ArrayList<GameObject> gameObjects) {
         berriesCollected = START_BERRY_COUNT;
         bushes = new ArrayList<>();
+
+        plantSeed = game.am.get(Game.RSC_SEED_SFX);
 
         ArrayList<Integer[]> blueBushSpriteLocation = new ArrayList<>(Arrays.asList(
                 new Integer[]{0,2},
@@ -58,6 +63,7 @@ public class BerryManager {
             if (bb.state == BerryBush.State.UNPLANTED) {
                 bb.grow();
                 berriesCollected-=BUSH_PRICE;
+                plantSeed.play(0.05f);
                 break;
             }
         }
