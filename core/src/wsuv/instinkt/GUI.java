@@ -3,6 +3,7 @@ package wsuv.instinkt;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -71,26 +72,16 @@ public class GUI {
 
         upgrades = new ArrayList<>();
 
-        upgrades.add(new Upgrade(
-                new AnimationManager(
-                    game.am.get(Game.RSC_SS_HEART_ICON_IMG)
-                    , new ArrayList<>(Arrays.asList(1,10))
-                    , new HashMap<>() {{
-                        put("STILL", 0);
-                        put("MOVING", 1);
-                    }}
-                    , 0.04f, 24, 22, true
-                ),"Increase Player's Max Health", "+1 HP", 3, 0));
-        upgrades.add(new Upgrade(
-                new AnimationManager(
-                        game.am.get(Game.RSC_SS_HEART_ICON_IMG)
-                        , new ArrayList<>(Arrays.asList(1,10))
-                        , new HashMap<>() {{
-                    put("STILL", 0);
-                    put("MOVING", 1);
-                }}
-                        , 0.04f, 24, 22, true
-                ),"Increase Player's Attack", "+1 ATK", 5, 1));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_HEART_ICON_IMG)
+                 ,"Thicker Skin", "+1 Max HP", 3, 0));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_HEART_ICON_IMG)
+                ,"Sharper Claws", "+1 ATK", 5, 1));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Extra Reserves", "+1 Max Spray", 4, 2));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Target Practice", "+1 Spray Length", 1, 3));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Ferment", "+1 Spray Radius", 20, 4));
     }
 
     public void update(boolean hudOpen) {
@@ -225,6 +216,23 @@ public class GUI {
                         // ATK
                         playerStats.setAtk(playerStats.getAtk()+1);
                         break;
+                    case 2:
+                        // Max Sprays
+                        player.setMaxSprays(player.getMaxSprays()+1);
+                        break;
+                    case 3:
+                        // Spray Length
+                        player.setSprayLength(player.getSprayLength()+1);
+                        break;
+                    case 4:
+                        // Spray Radius
+                        player.setSprayRadius(player.getSprayRadius()+1);
+                        if (player.getSprayRadius() > 3) {
+                            upgrades.get(4).cost = 999999999;
+                            upgrades.get(4).desc = "Fully fermented";
+                            upgrades.get(4).details = "-w-";
+                        }
+                        break;
                 }
                 return true;
             }
@@ -268,22 +276,25 @@ class Upgrade {
 
     private int idx;
     public int cost;
-    public int level;
     public String desc;
     public String details;
 
-    public Upgrade(AnimationManager am, String description, String details, int cost, int idx) {
-        this.am = am;
+    public Upgrade(Texture spriteSheet, String description, String details, int cost, int idx) {
+        this.am = new AnimationManager(
+                spriteSheet
+                , new ArrayList<>(Arrays.asList(1,10))
+                , new HashMap<>() {{
+            put("STILL", 0);
+            put("MOVING", 1);
+        }}
+                , 0.04f, 24, 22, true
+        );
         this.idx = idx;
 
         this.desc = description;
         this.details = details;
         this.cost = cost;
         startCost = cost;
-
-        // Keep track of how many times this upgrade was purchased;
-        // useful in calculating cost
-        this.level = 0;
     }
 
     public void update() {
@@ -303,11 +314,23 @@ class Upgrade {
             switch (idx) {
                 case 0:
                     x -= 32f;
-                    y += 16f;
+                    y += 8f;
                     break;
                 case 1:
                     x -= 8f;
-                    y += 16f;
+                    y += 8f;
+                    break;
+                case 2:
+                    x += 8f;
+                    y += 8f;
+                    break;
+                case 3:
+                    x += 32f;
+                    y += 8f;
+                    break;
+                case 4:
+                    x -= 32f;
+                    y -= 8f;
                     break;
             }
         } else {

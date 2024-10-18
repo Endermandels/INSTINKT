@@ -55,6 +55,7 @@
 ## Open Issues ##
 
 - **[52]** Shop Mechanic and basic UI
+- **[53]** Change AOE effect shape from square to diamond
 
 ## Backlog ##
 
@@ -65,6 +66,8 @@ change the frequency
 - **[]** Give player reason to move outside of their base
 - **[]** Stop enemy when first smelling stink.
 - **[]** Balance Player, Enemy, and World stats
+- **[]** Create Berry upgrade to heal more for every berry collected
+- **[]** Create Berry upgrade to get more berries from berry bushes
 - **[]** 
 - **[]** 
 - **[]** Use Regeneration animation for health and spray

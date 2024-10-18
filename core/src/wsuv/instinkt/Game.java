@@ -37,6 +37,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_SPRAY_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/ManaFading-Sheet.png";
     public static final String RSC_SS_GUI_AREA_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/GUI area sprite sheet.png";
     public static final String RSC_SS_HEART_ICON_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/heart icon sprite sheet.png";
+    public static final String RSC_SS_SPRAY_ICON_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/spray icon sprite sheet.png";
     public static final String RSC_SS_SHOP_SELECT_IMG = "Images/CrimsonFantasyGUI/Shop select sprite sheet.png";
 
     // Fonts
@@ -123,6 +124,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_SPRAY_BAR_IMG, Texture.class);
         am.load(RSC_SS_GUI_AREA_IMG, Texture.class);
         am.load(RSC_SS_HEART_ICON_IMG, Texture.class);
+        am.load(RSC_SS_SPRAY_ICON_IMG, Texture.class);
         am.load(RSC_SS_SHOP_SELECT_IMG, Texture.class);
 
         // Load SFX
