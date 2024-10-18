@@ -355,6 +355,8 @@ public class PlayScreen extends ScreenAdapter {
 
         wave = 1;
         skipToCooldownPhase = false;
+
+        gui.reset();
     }
 
     @Override
@@ -449,7 +451,7 @@ public class PlayScreen extends ScreenAdapter {
                 } else if (!escPressed) {
                     player.setTakeInput(false);
                 }
-                gui.update();
+                gui.update(hud.isOpen());
             } else if (state == SubState.COOLDOWN) {
                 ////////////////////////////////// COOLDOWN //////////////////////////////////
                 player.update(tileMap, enemies, state);
@@ -499,14 +501,16 @@ public class PlayScreen extends ScreenAdapter {
                 } else {
                     player.setTakeInput(false);
 
-                    if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
-                        gui.setShopOpen(false);
-                        interactPressed = true;
-                    } else if (!Gdx.input.isKeyPressed(Input.Keys.Q)) {
-                        interactPressed = false;
+                    if (!hud.isOpen()) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
+                            gui.setShopOpen(false);
+                            interactPressed = true;
+                        } else if (!Gdx.input.isKeyPressed(Input.Keys.Q)) {
+                            interactPressed = false;
+                        }
                     }
                 }
-                gui.update();
+                gui.update(hud.isOpen());
             } else if (state == SubState.GAME_OVER) {
                 ////////////////////////////////// GAME OVER //////////////////////////////////
                 timer += delta;

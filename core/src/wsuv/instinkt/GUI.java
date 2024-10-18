@@ -2,12 +2,10 @@ package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,8 +21,9 @@ public class GUI {
     private PlayScreen playScreen;
     private BerryCounter berryCounter;
     private ShopSelect shopSelect;
+    private BerryManager berryManager;
 
-    private HashMap<Integer, HashMap<String, String>> upgrades;
+    private ArrayList<Upgrade> upgrades;
 
     private int lastPlayerHP;
     private int lastPlayerSprayCount;
@@ -54,6 +53,7 @@ public class GUI {
 
         this.player = player;
         this.playScreen = playScreen;
+        this.berryManager = berryManager;
         this.berryCounter = new BerryCounter(game, berryManager);
         lastPlayerHP = player.getStats().getHp();
         lastPlayerSprayCount = player.getSpraysLeft();
@@ -61,24 +61,13 @@ public class GUI {
         shopOpen = false;
         selectKeyPressed = false;
 
-        upgrades = new HashMap<>();
+        upgrades = new ArrayList<>();
 
-        upgrades.put(0, new HashMap<>() {{
-            put("cost", "3");
-            put("desc", "Increase Player's Max Health");
-            put("details", "+1 HP");
-            put("level", "0"); // Keep track of how many times this upgrade was purchased;
-            // useful in calculating cost
-        }});
-        upgrades.put(1, new HashMap<>() {{
-            put("cost", "5");
-            put("desc", "Increase Player's Attack");
-            put("details", "+1 ATK");
-            put("level", "0");
-        }});
+        upgrades.add(new Upgrade("Increase Player's Max Health", "+1 HP", 3));
+        upgrades.add(new Upgrade("Increase Player's Attack", "+1 ATK", 5));
     }
 
-    public void update() {
+    public void update(boolean hudOpen) {
         if (lastPlayerHP != player.getStats().getHp()) {
             lastPlayerHP = player.getStats().getHp();
             int idx = (int) (8f * (1f-((float)lastPlayerHP/(float)player.getStats().getMaxHP())));
@@ -91,7 +80,8 @@ public class GUI {
             sb.useSpray(idx);
         }
 
-        if (shopOpen) {
+        // Shop Inputs
+        if (shopOpen && !hudOpen) {
             if (!selectKeyPressed) {
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
                     selectKeyPressed = true;
@@ -116,16 +106,20 @@ public class GUI {
                     && !Gdx.input.isKeyPressed(Input.Keys.W)
                     && !Gdx.input.isKeyPressed(Input.Keys.A)
                     && !Gdx.input.isKeyPressed(Input.Keys.S)
-                    && !Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    && !Gdx.input.isKeyPressed(Input.Keys.D)
+                    && !Gdx.input.isKeyPressed(Input.Keys.E)
+            ) {
                 selectKeyPressed = false;
             }
 
             // Select Upgrade
-            if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.E) && !selectKeyPressed) {
+                selectKeyPressed = true;
                 int selectedIdx = shopSelect.getSelectedIdx();
                 if (selectedIdx >= 0) {
                     upgradePlayer(selectedIdx);
                 }
+                berryCounter.shake();
             }
         }
 
@@ -149,20 +143,37 @@ public class GUI {
         if (shopOpen && am.isFinished()) {
             shopSelect.draw(batch);
             int selectedIdx = shopSelect.getSelectedIdx();
-            if (selectedIdx > -1 && selectedIdx < 2) {
+            if (selectedIdx > -1 && selectedIdx < upgrades.size()) {
                 float x = 100f;
                 float y = 420f;
                 float dy = -60f;
-                HashMap<String, String> selectedUpgrade = upgrades.get(selectedIdx);
-                drawGUIText(batch, font, "Cost: " + selectedUpgrade.get("cost"), x, y + (0*dy));
-                drawGUIText(batch, font, selectedUpgrade.get("desc"), x, y + (2*dy));
-                drawGUIText(batch, font, selectedUpgrade.get("details"), x, y + (3*dy));
+                Upgrade selectedUpgrade = upgrades.get(selectedIdx);
+                drawGUIText(batch, font, "Cost: " + selectedUpgrade.cost, x, y + (0*dy));
+                drawGUIText(batch, font, selectedUpgrade.desc, x, y + (2*dy));
+                drawGUIText(batch, font, selectedUpgrade.details, x, y + (3*dy));
             }
         }
     }
 
     public void upgradePlayer(int selectedIdx) {
-        // TODO: Implement
+        if (selectedIdx > -1 && selectedIdx < upgrades.size()) {
+            Upgrade upgrade = upgrades.get(selectedIdx);
+            if (berryManager.getBerriesCollected() >= upgrade.cost) {
+                berryManager.setBerriesCollected(berryManager.getBerriesCollected() - upgrade.cost);
+                upgrade.increaseCost();
+                Stats playerStats = player.getStats();
+                switch (selectedIdx) {
+                    case 0:
+                        // Max HP
+                        playerStats.setMaxHP(playerStats.getMaxHP()+1);
+                        break;
+                    case 1:
+                        // ATK
+                        playerStats.setAtk(playerStats.getAtk()+1);
+                        break;
+                }
+            }
+        }
     }
 
     public boolean isShopOpen() {
@@ -177,6 +188,14 @@ public class GUI {
         shopSelect.resetIdx();
     }
 
+    public void reset() {
+        for (Upgrade upgrade : upgrades) {
+            upgrade.resetCost();
+        }
+        am.switchAnimState("SHORT");
+        shopOpen = false;
+    }
+
     public static void drawGUIText(Batch batch, BitmapFont font, String str, float x, float y) {
         font.setColor(0,0,0,1);
         font.draw(batch, str, x, y);
@@ -186,7 +205,34 @@ public class GUI {
 }
 
 
+class Upgrade {
 
+    private int startCost;
+
+    public int cost;
+    public int level;
+    public String desc;
+    public String details;
+
+    public Upgrade(String description, String details, int cost) {
+        this.desc = description;
+        this.details = details;
+        this.cost = cost;
+        startCost = cost;
+
+        // Keep track of how many times this upgrade was purchased;
+        // useful in calculating cost
+        this.level = 0;
+    }
+
+    public void resetCost() {
+        cost = startCost;
+    }
+
+    public void increaseCost() {
+        cost *= 2;
+    }
+}
 
 
 
@@ -425,12 +471,16 @@ class BerryCounter {
 
         if (lastBerryCount != berryManager.getBerriesCollected()) {
             lastBerryCount = berryManager.getBerriesCollected();
-            shakeY = 8;
+            shake();
         }
     }
 
     public void draw(Batch batch, float x) {
         batch.draw(berryIcon, x, -68f+shakeY, berryIcon.getRegionWidth()*8, berryIcon.getRegionHeight()*8);
         GUI.drawGUIText(batch, font, Integer.toString(berryManager.getBerriesCollected()), x+184f, 82f);
+    }
+
+    public void shake() {
+        shakeY = 8;
     }
 }
