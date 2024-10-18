@@ -71,8 +71,26 @@ public class GUI {
 
         upgrades = new ArrayList<>();
 
-        upgrades.add(new Upgrade("Increase Player's Max Health", "+1 HP", 3));
-        upgrades.add(new Upgrade("Increase Player's Attack", "+1 ATK", 5));
+        upgrades.add(new Upgrade(
+                new AnimationManager(
+                    game.am.get(Game.RSC_SS_HEART_ICON_IMG)
+                    , new ArrayList<>(Arrays.asList(1,10))
+                    , new HashMap<>() {{
+                        put("STILL", 0);
+                        put("MOVING", 1);
+                    }}
+                    , 0.04f, 24, 22, true
+                ),"Increase Player's Max Health", "+1 HP", 3, 0));
+        upgrades.add(new Upgrade(
+                new AnimationManager(
+                        game.am.get(Game.RSC_SS_HEART_ICON_IMG)
+                        , new ArrayList<>(Arrays.asList(1,10))
+                        , new HashMap<>() {{
+                    put("STILL", 0);
+                    put("MOVING", 1);
+                }}
+                        , 0.04f, 24, 22, true
+                ),"Increase Player's Attack", "+1 ATK", 5, 1));
     }
 
     public void update(boolean hudOpen) {
@@ -146,6 +164,10 @@ public class GUI {
         sb.update();
         berryCounter.update();
 
+        for (Upgrade upgrade : upgrades) {
+            upgrade.update();
+        }
+
         if (shopOpen) am.switchAnimState("EXPANDED");
         else if (!am.getCurrentAnimState().equals("SHORT")) am.switchAnimState("COLLAPSING", "SHORT");
         am.setOneShot(true);
@@ -166,7 +188,12 @@ public class GUI {
         berryCounter.draw(batch, 764f);
         if (shopOpen && am.isFinished()) {
             shopSelect.draw(batch);
+
             int selectedIdx = shopSelect.getSelectedIdx();
+            for (Upgrade upgrade : upgrades) {
+                upgrade.draw(batch, selectedIdx);
+            }
+
             if (selectedIdx > -1 && selectedIdx < upgrades.size()) {
                 float x = 100f;
                 float y = 420f;
@@ -236,14 +263,19 @@ public class GUI {
 
 class Upgrade {
 
+    private AnimationManager am;
     private int startCost;
 
+    private int idx;
     public int cost;
     public int level;
     public String desc;
     public String details;
 
-    public Upgrade(String description, String details, int cost) {
+    public Upgrade(AnimationManager am, String description, String details, int cost, int idx) {
+        this.am = am;
+        this.idx = idx;
+
         this.desc = description;
         this.details = details;
         this.cost = cost;
@@ -252,6 +284,36 @@ class Upgrade {
         // Keep track of how many times this upgrade was purchased;
         // useful in calculating cost
         this.level = 0;
+    }
+
+    public void update() {
+        am.update();
+    }
+
+    public void draw(Batch batch, int selectedIdx) {
+        TextureRegion img = am.getCurrentImage(false);
+        float width = img.getRegionWidth()*PlayScreen.TILE_SCALE*2f;
+        float height = img.getRegionHeight()*PlayScreen.TILE_SCALE*2f;
+        float x = Gdx.graphics.getWidth()/2f - width/2f - 190f;
+        x += (idx%4)*128f;
+        float y = Gdx.graphics.getHeight()/2f - height/2f + 210f + PlayScreen.GUI_SPACE;
+        y -= idx > 3 ? 128f : 0f;
+        if (idx == selectedIdx) {
+            am.switchAnimState("MOVING");
+            switch (idx) {
+                case 0:
+                    x -= 32f;
+                    y += 16f;
+                    break;
+                case 1:
+                    x -= 8f;
+                    y += 16f;
+                    break;
+            }
+        } else {
+            am.switchAnimState("STILL");
+        }
+        batch.draw(img, x, y, width, height);
     }
 
     public void resetCost() {
