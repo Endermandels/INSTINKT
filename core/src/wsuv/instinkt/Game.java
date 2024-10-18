@@ -52,6 +52,9 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SNAKE_NOISE_SFX = "SFX/snake noise 1.mp3";
     public static final String RSC_SNAKE_NOISE_2_SFX = "SFX/snake noise 2.mp3";
     public static final String RSC_SPRAY_SFX = "SFX/spray.mp3";
+    public static final String RSC_SWITCH_SFX = "SFX/switch sound.mp3";
+    public static final String RSC_SELECT_SFX = "SFX/select.mp3";
+    public static final String RSC_INVALID_SFX = "SFX/invalid.mp3";
 
     public AssetManager am;  // AssetManager provides a single source for loaded resources
     public SpriteBatch batch;
@@ -126,6 +129,9 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SNAKE_NOISE_SFX, Sound.class);
         am.load(RSC_SNAKE_NOISE_2_SFX, Sound.class);
         am.load(RSC_SPRAY_SFX, Sound.class);
+        am.load(RSC_SWITCH_SFX, Sound.class);
+        am.load(RSC_SELECT_SFX, Sound.class);
+        am.load(RSC_INVALID_SFX, Sound.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));

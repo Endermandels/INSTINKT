@@ -2,6 +2,7 @@ package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,13 +13,17 @@ import java.util.HashMap;
 
 public class GUI {
 
+    private PlayScreen playScreen;
     private AnimationManager am;
+    private BitmapFont font;
+    private Player player;
+
+    private Sound switchSound;
+    private Sound selectSound;
+    private Sound invalidSound;
+
     private HealthBar hb;
     private SprayBar sb;
-    private BitmapFont font;
-    private BitmapFont smallFont;
-    private Player player;
-    private PlayScreen playScreen;
     private BerryCounter berryCounter;
     private ShopSelect shopSelect;
     private BerryManager berryManager;
@@ -28,6 +33,7 @@ public class GUI {
     private int lastPlayerHP;
     private int lastPlayerSprayCount;
 
+    private boolean wasShopOpen;
     private boolean shopOpen;
     private boolean selectKeyPressed;
 
@@ -37,8 +43,9 @@ public class GUI {
         shopSelect = new ShopSelect(game);
 
         font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
-        smallFont = game.am.get(Game.RSC_DPCOMIC_FONT);
-        font.setColor(1, 1, 1, 1);
+        switchSound = game.am.get(Game.RSC_SWITCH_SFX);
+        selectSound = game.am.get(Game.RSC_SELECT_SFX);
+        invalidSound = game.am.get(Game.RSC_INVALID_SFX);
 
         am = new AnimationManager(game.am.get(Game.RSC_SS_GUI_AREA_IMG)
                 , new ArrayList<>(Arrays.asList(1,3,2))
@@ -59,6 +66,7 @@ public class GUI {
         lastPlayerSprayCount = player.getSpraysLeft();
 
         shopOpen = false;
+        wasShopOpen = false;
         selectKeyPressed = false;
 
         upgrades = new ArrayList<>();
@@ -82,21 +90,25 @@ public class GUI {
 
         // Shop Inputs
         if (shopOpen && !hudOpen) {
+            if (!wasShopOpen) {
+                wasShopOpen = true;
+                switchSound.play(0.1f);
+            }
             if (!selectKeyPressed) {
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-                    selectKeyPressed = true;
+                    movedSelection();
                     shopSelect.goRight();
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-                    selectKeyPressed = true;
+                    movedSelection();
                     shopSelect.goLeft();
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-                    selectKeyPressed = true;
+                    movedSelection();
                     shopSelect.goUp();
                 }
                 if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-                    selectKeyPressed = true;
+                    movedSelection();
                     shopSelect.goDown();
                 }
             } else if (!Gdx.input.isKeyPressed(Input.Keys.RIGHT)
@@ -117,10 +129,17 @@ public class GUI {
                 selectKeyPressed = true;
                 int selectedIdx = shopSelect.getSelectedIdx();
                 if (selectedIdx >= 0) {
-                    upgradePlayer(selectedIdx);
+                    if (upgradePlayer(selectedIdx)) {
+                        selectSound.play(0.05f, 1.5f, 0f);
+                    } else {
+                        invalidSound.play(0.05f);
+                    }
                 }
                 berryCounter.shake();
             }
+        } else if (!shopOpen && wasShopOpen) {
+            wasShopOpen = false;
+            switchSound.play(0.1f);
         }
 
         hb.update();
@@ -131,6 +150,11 @@ public class GUI {
         else if (!am.getCurrentAnimState().equals("SHORT")) am.switchAnimState("COLLAPSING", "SHORT");
         am.setOneShot(true);
         am.update();
+    }
+
+    public void movedSelection() {
+        selectKeyPressed = true;
+        switchSound.play(0.1f);
     }
 
     public void draw(Batch batch) {
@@ -155,7 +179,10 @@ public class GUI {
         }
     }
 
-    public void upgradePlayer(int selectedIdx) {
+    /**
+     * @return whether the upgrade completed successfully
+     */
+    public boolean upgradePlayer(int selectedIdx) {
         if (selectedIdx > -1 && selectedIdx < upgrades.size()) {
             Upgrade upgrade = upgrades.get(selectedIdx);
             if (berryManager.getBerriesCollected() >= upgrade.cost) {
@@ -172,8 +199,10 @@ public class GUI {
                         playerStats.setAtk(playerStats.getAtk()+1);
                         break;
                 }
+                return true;
             }
         }
+        return false;
     }
 
     public boolean isShopOpen() {
