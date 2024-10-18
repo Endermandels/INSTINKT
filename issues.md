@@ -58,6 +58,7 @@
 
 ## Backlog ##
 
+- **[]** How to Play Screen
 - **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency
 - **[]** Refactor level design to have more horizontal enemy movement

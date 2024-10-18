@@ -18,10 +18,13 @@ public class GUI {
     private HealthBar hb;
     private SprayBar sb;
     private BitmapFont font;
+    private BitmapFont smallFont;
     private Player player;
     private PlayScreen playScreen;
     private BerryCounter berryCounter;
     private ShopSelect shopSelect;
+
+    private HashMap<Integer, HashMap<String, String>> upgrades;
 
     private int lastPlayerHP;
     private int lastPlayerSprayCount;
@@ -33,8 +36,10 @@ public class GUI {
         hb = new HealthBar(game);
         sb = new SprayBar(game);
         shopSelect = new ShopSelect(game);
+
         font = game.am.get(Game.RSC_DPCOMIC_FONT_GUI);
-        font.setColor(0, 0, 0, 1);
+        smallFont = game.am.get(Game.RSC_DPCOMIC_FONT);
+        font.setColor(1, 1, 1, 1);
 
         am = new AnimationManager(game.am.get(Game.RSC_SS_GUI_AREA_IMG)
                 , new ArrayList<>(Arrays.asList(1,3,2))
@@ -55,6 +60,22 @@ public class GUI {
 
         shopOpen = false;
         selectKeyPressed = false;
+
+        upgrades = new HashMap<>();
+
+        upgrades.put(0, new HashMap<>() {{
+            put("cost", "3");
+            put("desc", "Increase Player's Max Health");
+            put("details", "+1 HP");
+            put("level", "0"); // Keep track of how many times this upgrade was purchased;
+            // useful in calculating cost
+        }});
+        upgrades.put(1, new HashMap<>() {{
+            put("cost", "5");
+            put("desc", "Increase Player's Attack");
+            put("details", "+1 ATK");
+            put("level", "0");
+        }});
     }
 
     public void update() {
@@ -99,6 +120,7 @@ public class GUI {
                 selectKeyPressed = false;
             }
 
+            // Select Upgrade
             if (Gdx.input.isKeyPressed(Input.Keys.E)) {
                 int selectedIdx = shopSelect.getSelectedIdx();
                 if (selectedIdx >= 0) {
@@ -122,12 +144,21 @@ public class GUI {
         batch.draw(bg, 0f, 0f, bg.getRegionWidth()*8f, bg.getRegionHeight()*8f);
         hb.draw(batch, 32f);
         sb.draw(batch, 332f);
-        font.draw(batch, "Wave: " + playScreen.getWave(), 634f, 82f);
-        font.setColor(1,1,1,1);
-        font.draw(batch, "Wave: " + playScreen.getWave(), 630f, 86f);
-        font.setColor(0,0,0,1);
+        drawGUIText(batch, font, "Wave: " + playScreen.getWave(), 634f, 82f);
         berryCounter.draw(batch, 764f);
-        if (shopOpen) shopSelect.draw(batch);
+        if (shopOpen && am.isFinished()) {
+            shopSelect.draw(batch);
+            int selectedIdx = shopSelect.getSelectedIdx();
+            if (selectedIdx > -1 && selectedIdx < 2) {
+                float x = 100f;
+                float y = 420f;
+                float dy = -60f;
+                HashMap<String, String> selectedUpgrade = upgrades.get(selectedIdx);
+                drawGUIText(batch, font, "Cost: " + selectedUpgrade.get("cost"), x, y + (0*dy));
+                drawGUIText(batch, font, selectedUpgrade.get("desc"), x, y + (2*dy));
+                drawGUIText(batch, font, selectedUpgrade.get("details"), x, y + (3*dy));
+            }
+        }
     }
 
     public void upgradePlayer(int selectedIdx) {
@@ -144,6 +175,13 @@ public class GUI {
 
     public void startEnemyWave() {
         shopSelect.resetIdx();
+    }
+
+    public static void drawGUIText(Batch batch, BitmapFont font, String str, float x, float y) {
+        font.setColor(0,0,0,1);
+        font.draw(batch, str, x, y);
+        font.setColor(1,1,1,1);
+        font.draw(batch, str, x-4f, y+4f);
     }
 }
 
@@ -393,9 +431,6 @@ class BerryCounter {
 
     public void draw(Batch batch, float x) {
         batch.draw(berryIcon, x, -68f+shakeY, berryIcon.getRegionWidth()*8, berryIcon.getRegionHeight()*8);
-        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+184f, 82f);
-        font.setColor(1,1,1,1);
-        font.draw(batch, Integer.toString(berryManager.getBerriesCollected()), x+178f, 86f);
-        font.setColor(0,0,0,1);
+        GUI.drawGUIText(batch, font, Integer.toString(berryManager.getBerriesCollected()), x+184f, 82f);
     }
 }
