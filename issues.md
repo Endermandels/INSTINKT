@@ -52,14 +52,14 @@
 - **[50]** Switch up enemy formations between waves.
 - **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
 - **[52]** Shop Mechanic and basic UI
+- **[53]** Change AOE effect shape from square to circle
 
 ## Open Issues ##
 
-- **[53]** Change AOE effect shape from square to diamond
+- **[54]** Give player reason to move outside their base
 
 ## Backlog ##
 
-- **[]** Give player reason to move outside of their base
 - **[]** Refactor level design to have more horizontal enemy movement
 - **[]** Enemies run away from stinky tiles
 - **[]** How to Play Screen

@@ -416,10 +416,16 @@ public class Player extends GameObject {
                 x += -dir;
                 tileMap[tileY][tileX+x].setStinky(true, sprayDuration);
 
-                for (int i = x - sprayRadius; i <= x + sprayRadius; i++) {
-                    for (int j = -sprayRadius; j <= sprayRadius; j++) {
-                        if (game.validMove(tileX+i, tileY+j)) {
-                            tileMap[tileY+j][tileX+i].setStinky(true, sprayDuration);
+
+                for (int row = -sprayRadius; row <= sprayRadius; row++) {
+                    for (int col = x - sprayRadius; col <= x + sprayRadius; col++) {
+                        // Spawn stinky tiles in a circle (roughly)
+                        double distance = Math.pow(col-x, 2) + Math.pow(row, 2);
+                        double alpha = 1.4; // Smooths out the circle
+
+                        if (game.validMove(tileX+col, tileY+row)
+                                && distance <= Math.pow(sprayRadius,2)*alpha) {
+                            tileMap[tileY+row][tileX+col].setStinky(true, sprayDuration);
                         }
                     }
                 }
