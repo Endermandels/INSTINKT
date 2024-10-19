@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.setTitle("inSTINKt");
 		config.setWindowedMode(1152, 896);
 		config.useVsync(true);
+		config.setWindowIcon("Images/icon 16.png", "Images/icon 32.png", "Images/icon 64.png", "Images/icon 128.png");
 		new Lwjgl3Application(new Game(), config);
 	}
 }

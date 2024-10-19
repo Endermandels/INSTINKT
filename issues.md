@@ -56,7 +56,8 @@
 
 ## Open Issues ##
 
-- **[54]** Give player reason to move outside their base
+- **[54]** Add Icon and make EXE
+- **[55]** Give player reason to move outside their base
 
 ## Backlog ##
 
