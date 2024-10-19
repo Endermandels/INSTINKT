@@ -51,20 +51,30 @@
 - **[49]** Fix Spray bar shake at beginning of enemy wave
 - **[50]** Switch up enemy formations between waves.
 - **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
+- **[52]** Shop Mechanic and basic UI
 
 ## Open Issues ##
 
-- **[52]** Shop Mechanic and basic UI
+- **[53]** Change AOE effect shape from square to diamond
 
 ## Backlog ##
 
-- **[]** Refactor level design to have more horizontal enemy movement
 - **[]** Give player reason to move outside of their base
-- **[]** Stop enemy when first smelling stink.
-- **[]** 
-- **[]** 
+- **[]** Refactor level design to have more horizontal enemy movement
+- **[]** Enemies run away from stinky tiles
+- **[]** How to Play Screen
 - **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency
+- **[]** 
+- **[]** 
+- **[]** 
+- **[]** 
+- **[]** Press and Hold space to move to next enemy wave
+- **[]** Stop enemy when first smelling stink (hurt animation).
+- **[]** Balance Player, Enemy, and World stats
+- **[]** Make shop upgrades more interesting
+- **[]** 
+- **[]** 
 - **[]** Use Regeneration animation for health and spray
 - **[]** 
 - **[]** 
@@ -74,4 +84,4 @@ change the frequency
 - **[]** Improve AOE effect texture
 - **[]** Fix player movement stickiness
 - **[]** Once the spray cooldown drops below 0.1 seconds,
-Change SFX to be a constant spray sound while spraying
+Change SFX and animation to be a constant spray sound while spraying

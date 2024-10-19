@@ -35,10 +35,16 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_COBRA_IMG = "Images/Cobra Sprite Sheet.png";
     public static final String RSC_SS_HEALTH_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/MinimumDamage-Sheet.png";
     public static final String RSC_SS_SPRAY_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/ManaFading-Sheet.png";
+    public static final String RSC_SS_GUI_AREA_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/GUI area sprite sheet.png";
+    public static final String RSC_SS_HEART_ICON_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/heart icon sprite sheet.png";
+    public static final String RSC_SS_SPRAY_ICON_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/spray icon sprite sheet.png";
+    public static final String RSC_SS_BERRY_ICON_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/berry icon sprite sheet.png";
+    public static final String RSC_SS_SHOP_SELECT_IMG = "Images/CrimsonFantasyGUI/Shop select sprite sheet.png";
 
     // Fonts
     public static final String RSC_DPCOMIC_FONT_FILE = "dpcomic.ttf";
     public static final String RSC_DPCOMIC_FONT = "DPComic.ttf";
+    public static final String RSC_DPCOMIC_FONT_GUI = "DPComic_GUI.ttf";
     public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
 
@@ -49,6 +55,10 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SNAKE_NOISE_SFX = "SFX/snake noise 1.mp3";
     public static final String RSC_SNAKE_NOISE_2_SFX = "SFX/snake noise 2.mp3";
     public static final String RSC_SPRAY_SFX = "SFX/spray.mp3";
+    public static final String RSC_SWITCH_SFX = "SFX/switch sound.mp3";
+    public static final String RSC_SELECT_SFX = "SFX/select.mp3";
+    public static final String RSC_INVALID_SFX = "SFX/invalid.mp3";
+    public static final String RSC_SEED_SFX = "SFX/plant seed.mp3";
 
     public AssetManager am;  // AssetManager provides a single source for loaded resources
     public SpriteBatch batch;
@@ -91,6 +101,12 @@ public class Game extends com.badlogic.gdx.Game {
         myFontBlack.fontParameters.color = new Color(Color.BLACK);
         am.load(RSC_DPCOMIC_FONT_BLACK, BitmapFont.class, myFontBlack);
 
+        // GUI Font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter myFontGUI = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        myFontGUI.fontFileName = RSC_DPCOMIC_FONT_FILE;
+        myFontGUI.fontParameters.size = 64;
+        am.load(RSC_DPCOMIC_FONT_GUI, BitmapFont.class, myFontGUI);
+
         // Load Textures after the font...
         am.load(RSC_GAMEOVER_IMG, Texture.class);
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
@@ -107,6 +123,11 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_COBRA_IMG, Texture.class);
         am.load(RSC_SS_HEALTH_BAR_IMG, Texture.class);
         am.load(RSC_SS_SPRAY_BAR_IMG, Texture.class);
+        am.load(RSC_SS_GUI_AREA_IMG, Texture.class);
+        am.load(RSC_SS_HEART_ICON_IMG, Texture.class);
+        am.load(RSC_SS_SPRAY_ICON_IMG, Texture.class);
+        am.load(RSC_SS_BERRY_ICON_IMG, Texture.class);
+        am.load(RSC_SS_SHOP_SELECT_IMG, Texture.class);
 
         // Load SFX
         am.load(RSC_SQUIRREL_NOISE_SFX, Sound.class);
@@ -115,6 +136,10 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SNAKE_NOISE_SFX, Sound.class);
         am.load(RSC_SNAKE_NOISE_2_SFX, Sound.class);
         am.load(RSC_SPRAY_SFX, Sound.class);
+        am.load(RSC_SWITCH_SFX, Sound.class);
+        am.load(RSC_SELECT_SFX, Sound.class);
+        am.load(RSC_INVALID_SFX, Sound.class);
+        am.load(RSC_SEED_SFX, Sound.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));

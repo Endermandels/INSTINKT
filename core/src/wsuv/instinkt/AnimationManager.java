@@ -157,6 +157,10 @@ public class AnimationManager {
         return null;
     }
 
+    public int getCurrentRow() {
+        return currentRow;
+    }
+
     public void restartOneShotAnimation() {
         oneShot = true;
         nextRow = -1;

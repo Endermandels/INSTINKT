@@ -1,5 +1,6 @@
 package wsuv.instinkt;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
@@ -7,16 +8,28 @@ import java.util.Arrays;
 
 public class BerryManager {
 
+    private Game game;
+
     private final int BUSH_PRICE = 2;
 
     private final int START_BERRY_COUNT = 2;
     private int berriesCollected;
 
+    private final int START_BUSH_BOUND = 5;
+    private int bushBound;
+
     private ArrayList<BerryBush> bushes;
 
+    private Sound plantSeed;
+
     public BerryManager(Game game, ArrayList<GameObject> gameObjects) {
+        this.game = game;
+
         berriesCollected = START_BERRY_COUNT;
+        bushBound = START_BUSH_BOUND;
+
         bushes = new ArrayList<>();
+        plantSeed = game.am.get(Game.RSC_SEED_SFX);
 
         ArrayList<Integer[]> blueBushSpriteLocation = new ArrayList<>(Arrays.asList(
                 new Integer[]{0,2},
@@ -58,6 +71,7 @@ public class BerryManager {
             if (bb.state == BerryBush.State.UNPLANTED) {
                 bb.grow();
                 berriesCollected-=BUSH_PRICE;
+                plantSeed.play(0.05f);
                 break;
             }
         }
@@ -66,8 +80,18 @@ public class BerryManager {
     public void startOfCooldown() {
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
-            else if (bb.state == BerryBush.State.GROWN) berriesCollected += bb.collectBerries();
+            else if (bb.state == BerryBush.State.GROWN) {
+                berriesCollected += game.random.nextInt(2 + bushBound/START_BUSH_BOUND,bushBound);
+            }
         }
+    }
+
+    public void setBushBound(int bushBound) {
+        this.bushBound = bushBound;
+    }
+
+    public int getBushBound() {
+        return bushBound;
     }
 
     public int getBerriesCollected() {
@@ -81,6 +105,7 @@ public class BerryManager {
 
     public void reset() {
         berriesCollected = START_BERRY_COUNT;
+        bushBound = START_BUSH_BOUND;
         boolean first = true;
         for (BerryBush bb : bushes) {
             if (first) {
@@ -100,12 +125,10 @@ class BerryBush extends GameObject {
     private TextureRegion bushTexture;
 
     public State state;
-    private Game game;
 
     public BerryBush(Game game, int row, int col, ArrayList<Integer[]> ssTiles, String fileName, int priority) {
         super(game, row, col, ssTiles, fileName, priority);
 
-        this.game = game;
         bushTexture = super.getImg();
 
         ArrayList<Integer[]> seedlingSpriteLocation = new ArrayList<>(Arrays.asList(
@@ -125,10 +148,6 @@ class BerryBush extends GameObject {
 
     public void resetState() {
         state = State.UNPLANTED;
-    }
-
-    public int collectBerries() {
-        return game.random.nextInt(2, 5);
     }
 
     @Override

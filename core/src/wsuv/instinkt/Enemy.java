@@ -64,6 +64,11 @@ public class Enemy extends GameObject {
     private boolean wasDead;
 
     private boolean sprayed;
+    private boolean passedOut;
+
+    private final long TIME_TO_PASS_OUT = 800L;
+    private final long TIME_TO_CLEAR_STINK = 1000L;
+    private long lastTimeNuclearSprayed;
 
     // Squirrel specific
     private long stealBerriesDuration;
@@ -169,6 +174,9 @@ public class Enemy extends GameObject {
         wasDead = false;
 
         sprayed = false;
+        passedOut = false;
+
+        lastTimeNuclearSprayed = -1L;
 
         this.dir = dir;
         flipped = false;
@@ -397,6 +405,16 @@ public class Enemy extends GameObject {
             targetType = Tile.DistanceType.EXIT;
         }
 
+        if (lastTimeNuclearSprayed > 0L) {
+            if (!passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT) {
+                passedOut = true;
+                stats.setHp(0);
+            } else if (passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT
+                + TIME_TO_CLEAR_STINK) {
+                sprayed = false;
+            }
+        }
+
         if (stats.isDead()) {
             if (!wasDead) {
                 playDeathSound();
@@ -405,7 +423,7 @@ public class Enemy extends GameObject {
             }
             am.switchAnimState("DEAD");
             am.setOneShot(true);
-            if (am.isFinished()) {
+            if (am.isFinished() && !passedOut) {
                 if(!finishedDeathAnimation) {
                     finishedDeathAnimation = true;
                     timeFinishedDeathAnimation = System.currentTimeMillis();
@@ -484,7 +502,7 @@ public class Enemy extends GameObject {
         return stats;
     }
 
-    public void setSprayed(boolean sprayed) {
+    public void setSprayed(boolean sprayed, boolean nuclearSpray) {
         this.sprayed = sprayed;
         if (sprayedSound != null && sprayed && !stats.isDead()) {
             long id = sprayedSound.play();
@@ -498,10 +516,17 @@ public class Enemy extends GameObject {
                     sprayedSound.setPitch(id, 3f);
                     break;
             }
+            if (nuclearSpray) {
+                lastTimeNuclearSprayed = System.currentTimeMillis();
+            }
         }
     }
 
     public Enemy clone() {
         return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player, berryManager);
+    }
+
+    public boolean isPassedOut() {
+        return passedOut;
     }
 }

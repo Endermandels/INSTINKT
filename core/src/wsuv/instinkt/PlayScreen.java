@@ -31,10 +31,10 @@ public class PlayScreen extends ScreenAdapter {
     public static final int TILE_ROWS = 12;
     public static final int TILE_COLS = 18;
 
-    private final int GUI_SPACE = 64;
-    public static int TILE_SIZE = 32;
-    public static int TILE_SCALE = 2;
-    public static int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
+    public static final int GUI_SPACE = 128;
+    public static final int TILE_SIZE = 32;
+    public static final int TILE_SCALE = 2;
+    public static final int TILE_SCALED_SIZE = TILE_SIZE * TILE_SCALE;
 
     // Switching between Game Over and Ready
     private final float TIMER_MAX = 3.0f;
@@ -355,6 +355,15 @@ public class PlayScreen extends ScreenAdapter {
 
         wave = 1;
         skipToCooldownPhase = false;
+
+        gui.reset();
+    }
+
+    public boolean enemiesArePassedOut() {
+        for (Enemy e : enemies) {
+            if (!e.isPassedOut()) return false;
+        }
+        return true;
     }
 
     @Override
@@ -399,7 +408,13 @@ public class PlayScreen extends ScreenAdapter {
 
                 enemySpawner.update();
 
-                if ((enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) || skipToCooldownPhase) {
+                if ((enemySpawner.areNoMoreEnemiesToSpawn() && (
+                        enemies.isEmpty() || enemiesArePassedOut())
+                        || skipToCooldownPhase)) {
+                    for (Enemy e : enemies) {
+                        gameObjects.remove(e);
+                    }
+
                     berryManager.startOfCooldown();
                     player.startCooldown();
                     game.battleMusic.stop();
@@ -408,6 +423,7 @@ public class PlayScreen extends ScreenAdapter {
                     for (Tile[] tiles : tileMap) {
                         for (Tile tile : tiles) {
                             tile.setStinky(false, 0L);
+                            tile.getEnemies().clear();
                             aoeEffectTiles.remove(tile);
                         }
                     }
@@ -449,7 +465,7 @@ public class PlayScreen extends ScreenAdapter {
                 } else if (!escPressed) {
                     player.setTakeInput(false);
                 }
-                gui.update();
+                gui.update(hud.isOpen());
             } else if (state == SubState.COOLDOWN) {
                 ////////////////////////////////// COOLDOWN //////////////////////////////////
                 player.update(tileMap, enemies, state);
@@ -470,25 +486,45 @@ public class PlayScreen extends ScreenAdapter {
                     skipToCooldownPhase = false;
                 }
 
-                if (!hud.isOpen()) {
+                if (!hud.isOpen() && !gui.isShopOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                        // Start new enemy wave
                         state = SubState.ENEMY_WAVE;
                         skipToCooldownPhase = false;
+                        gui.startEnemyWave();
                         fillAllDijkstraValues();
                         enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                        // Plant Berry bush
                         interactPressed = true;
                         berryManager.plantNewBerryBush();
-                    } else if (!Gdx.input.isKeyPressed(Input.Keys.E)) {
+                    }
+
+                    if (!Gdx.input.isKeyPressed(Input.Keys.E) && !Gdx.input.isKeyPressed(Input.Keys.Q)) {
                         interactPressed = false;
+                    }
+
+                    if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
+                        // Open Shop
+                        gui.setShopOpen(true);
+                        interactPressed = true;
                     }
                     player.setTakeInput(true);
                 } else {
                     player.setTakeInput(false);
+
+                    if (!hud.isOpen()) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.Q) && !interactPressed) {
+                            gui.setShopOpen(false);
+                            interactPressed = true;
+                        } else if (!Gdx.input.isKeyPressed(Input.Keys.Q)) {
+                            interactPressed = false;
+                        }
+                    }
                 }
-                gui.update();
+                gui.update(hud.isOpen());
             } else if (state == SubState.GAME_OVER) {
                 ////////////////////////////////// GAME OVER //////////////////////////////////
                 timer += delta;
