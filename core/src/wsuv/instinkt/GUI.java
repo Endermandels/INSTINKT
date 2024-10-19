@@ -82,6 +82,8 @@ public class GUI {
                 ,"Target Practice", "+1 Spray Length", 1, 3));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
                 ,"Ferment", "+1 Spray Radius", 20, 4));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_BERRY_ICON_IMG)
+                ,"Quality Berries", "+1 HP and Spray on eating a Berry", 5, 5));
     }
 
     public void update(boolean hudOpen) {
@@ -238,7 +240,9 @@ public class GUI {
                         }
                         break;
                     case 5:
-                        // Spray Duration
+                        // Berry Healing
+                        player.setBerryHPRegen(player.getBerryHPRegen()+1);
+                        player.setBerrySprayRegen(player.getBerrySprayRegen()+1);
                         break;
                     case 6:
                         // Berry Healing

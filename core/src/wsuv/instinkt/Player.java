@@ -61,6 +61,10 @@ public class Player extends GameObject {
     private int sprayLength;
     private int startSprayLength;
 
+    // Eat Berry Stats
+    private int berrySprayRegen;
+    private int berryHPRegen;
+
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
                 , tileY * PlayScreen.TILE_SCALED_SIZE, 10);
@@ -114,6 +118,9 @@ public class Player extends GameObject {
         startSprayDuration = sprayDuration;
         sprayLength = 2;
         startSprayLength = sprayLength;
+
+        berrySprayRegen = 1;
+        berryHPRegen = 1;
 
         toSpray = false;
 
@@ -477,8 +484,8 @@ public class Player extends GameObject {
     }
 
     public void eatBerry() {
-        spraysLeft = Math.min(spraysLeft+1, maxSprays);
-        stats.setHp(Math.min(stats.getHp()+1, stats.getMaxHP()));
+        spraysLeft = Math.min(spraysLeft+berrySprayRegen, maxSprays);
+        stats.setHp(Math.min(stats.getHp()+berryHPRegen, stats.getMaxHP()));
     }
 
     public void startCooldown() {
@@ -565,5 +572,21 @@ public class Player extends GameObject {
     public void setMaxSprays(int maxSprays) {
         this.maxSprays = Math.max(0, maxSprays);
         this.spraysLeft = maxSprays;
+    }
+
+    public void setBerryHPRegen(int berryHPRegen) {
+        this.berryHPRegen = berryHPRegen;
+    }
+
+    public void setBerrySprayRegen(int berrySprayRegen) {
+        this.berrySprayRegen = berrySprayRegen;
+    }
+
+    public int getBerryHPRegen() {
+        return berryHPRegen;
+    }
+
+    public int getBerrySprayRegen() {
+        return berrySprayRegen;
     }
 }

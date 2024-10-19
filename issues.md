@@ -66,7 +66,6 @@
 - **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency
 - **[]** Balance Player, Enemy, and World stats
-- **[]** Create Berry upgrade to heal more for every berry collected
 - **[]** Create Berry upgrade to get more berries from berry bushes
 - **[]** Make shop upgrades more interesting
 - **[]** Press and Hold space to move to next enemy wave
