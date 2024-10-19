@@ -1,8 +1,10 @@
 package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +68,10 @@ public class EnemySpawner {
     }
 
     private void readFormationsFile() {
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/enemy_formations.txt"))) {
+        // Directory path relative to the assets folder
+        FileHandle enemyFormations = Gdx.files.internal("Text/enemy_formations.txt");
+
+        try (BufferedReader br = enemyFormations.reader(100000)) {
             String line;
             Integer currentFrequency = null;
             ArrayList<Enemy> currentEnemiesToSpawn = new ArrayList<>();
