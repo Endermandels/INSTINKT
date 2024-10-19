@@ -129,12 +129,14 @@ public class GUI {
                     && !Gdx.input.isKeyPressed(Input.Keys.S)
                     && !Gdx.input.isKeyPressed(Input.Keys.D)
                     && !Gdx.input.isKeyPressed(Input.Keys.E)
+                    && !Gdx.input.isKeyPressed(Input.Keys.SPACE)
             ) {
                 selectKeyPressed = false;
             }
 
             // Select Upgrade
-            if (Gdx.input.isKeyPressed(Input.Keys.E) && !selectKeyPressed) {
+            if ((Gdx.input.isKeyPressed(Input.Keys.E) || Gdx.input.isKeyPressed(Input.Keys.SPACE))
+                    && !selectKeyPressed) {
                 selectKeyPressed = true;
                 int selectedIdx = shopSelect.getSelectedIdx();
                 if (selectedIdx >= 0) {
@@ -221,17 +223,30 @@ public class GUI {
                         player.setMaxSprays(player.getMaxSprays()+1);
                         break;
                     case 3:
-                        // Spray Length
+                        // Spray Length (and cooldown)
                         player.setSprayLength(player.getSprayLength()+1);
+                        player.setSprayCooldown(player.getSprayCooldown()-100L);
                         break;
                     case 4:
-                        // Spray Radius
+                        // Spray Radius (and duration)
                         player.setSprayRadius(player.getSprayRadius()+1);
+                        player.setSprayDuration(player.getSprayDuration()+500L);
                         if (player.getSprayRadius() > 3) {
                             upgrades.get(4).cost = 999999999;
                             upgrades.get(4).desc = "Fully fermented";
                             upgrades.get(4).details = "-w-";
                         }
+                        break;
+                    case 5:
+                        // Spray Duration
+                        break;
+                    case 6:
+                        // Berry Healing
+                        player.setSprayRadius(player.getSprayRadius()+1);
+                        break;
+                    case 7:
+                        // Berry Growth
+                        player.setSprayRadius(player.getSprayRadius()+1);
                         break;
                 }
                 return true;
@@ -330,6 +345,18 @@ class Upgrade {
                     break;
                 case 4:
                     x -= 32f;
+                    y -= 8f;
+                    break;
+                case 5:
+                    x -= 8f;
+                    y -= 8f;
+                    break;
+                case 6:
+                    x += 8f;
+                    y -= 8f;
+                    break;
+                case 7:
+                    x += 32f;
                     y -= 8f;
                     break;
             }

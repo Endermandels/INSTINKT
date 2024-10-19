@@ -59,15 +59,17 @@
 
 ## Backlog ##
 
+- **[]** Give player reason to move outside of their base
+- **[]** Refactor level design to have more horizontal enemy movement
+- **[]** Stop enemy when first smelling stink.
 - **[]** How to Play Screen
 - **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency
-- **[]** Refactor level design to have more horizontal enemy movement
-- **[]** Give player reason to move outside of their base
-- **[]** Stop enemy when first smelling stink.
 - **[]** Balance Player, Enemy, and World stats
 - **[]** Create Berry upgrade to heal more for every berry collected
 - **[]** Create Berry upgrade to get more berries from berry bushes
+- **[]** Make shop upgrades more interesting
+- **[]** Press and Hold space to move to next enemy wave
 - **[]** 
 - **[]** 
 - **[]** Use Regeneration animation for health and spray
@@ -79,4 +81,4 @@ change the frequency
 - **[]** Improve AOE effect texture
 - **[]** Fix player movement stickiness
 - **[]** Once the spray cooldown drops below 0.1 seconds,
-Change SFX to be a constant spray sound while spraying
+Change SFX and animation to be a constant spray sound while spraying

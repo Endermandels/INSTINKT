@@ -555,7 +555,7 @@ public class Player extends GameObject {
     }
 
     public void setSprayCooldown(long sprayCooldown) {
-        this.sprayCooldown = Math.max(0L, sprayCooldown);
+        this.sprayCooldown = Math.max(100L, sprayCooldown);
     }
 
     public long getSprayCooldown() {
