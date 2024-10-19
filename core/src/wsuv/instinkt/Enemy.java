@@ -66,6 +66,10 @@ public class Enemy extends GameObject {
     private boolean sprayed;
     private boolean passedOut;
 
+    private final long TIME_TO_PASS_OUT = 800L;
+    private final long TIME_TO_CLEAR_STINK = 1000L;
+    private long lastTimeNuclearSprayed;
+
     // Squirrel specific
     private long stealBerriesDuration;
     private long startStealingBerries;
@@ -171,6 +175,8 @@ public class Enemy extends GameObject {
 
         sprayed = false;
         passedOut = false;
+
+        lastTimeNuclearSprayed = -1L;
 
         this.dir = dir;
         flipped = false;
@@ -399,6 +405,16 @@ public class Enemy extends GameObject {
             targetType = Tile.DistanceType.EXIT;
         }
 
+        if (lastTimeNuclearSprayed > 0L) {
+            if (!passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT) {
+                passedOut = true;
+                stats.setHp(0);
+            } else if (passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT
+                + TIME_TO_CLEAR_STINK) {
+                sprayed = false;
+            }
+        }
+
         if (stats.isDead()) {
             if (!wasDead) {
                 playDeathSound();
@@ -501,8 +517,7 @@ public class Enemy extends GameObject {
                     break;
             }
             if (nuclearSpray) {
-                passedOut = true;
-                stats.setHp(0);
+                lastTimeNuclearSprayed = System.currentTimeMillis();
             }
         }
     }
