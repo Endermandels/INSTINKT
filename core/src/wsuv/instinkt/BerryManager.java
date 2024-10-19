@@ -81,7 +81,8 @@ public class BerryManager {
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
             else if (bb.state == BerryBush.State.GROWN) {
-                berriesCollected += game.random.nextInt(2 + bushBound/START_BUSH_BOUND,bushBound);
+                int x = 2 + bushBound/START_BUSH_BOUND;
+                berriesCollected += x+game.random.nextInt(bushBound-x);
             }
         }
     }
