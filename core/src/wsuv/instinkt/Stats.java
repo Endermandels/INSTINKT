@@ -65,5 +65,8 @@ public class Stats {
 
     public boolean isDead() { return hp <=0; }
 
+    public boolean canBeAttacked() {
+        return System.currentTimeMillis() - lastAttacked > atkInv;
+    }
 }
 

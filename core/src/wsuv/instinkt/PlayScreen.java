@@ -359,6 +359,13 @@ public class PlayScreen extends ScreenAdapter {
         gui.reset();
     }
 
+    public boolean enemiesArePassedOut() {
+        for (Enemy e : enemies) {
+            if (!e.isPassedOut()) return false;
+        }
+        return true;
+    }
+
     @Override
     public void show() {
         Gdx.app.log("PlayScreen", "show");
@@ -401,7 +408,13 @@ public class PlayScreen extends ScreenAdapter {
 
                 enemySpawner.update();
 
-                if ((enemySpawner.areNoMoreEnemiesToSpawn() && enemies.isEmpty()) || skipToCooldownPhase) {
+                if ((enemySpawner.areNoMoreEnemiesToSpawn() && (
+                        enemies.isEmpty() || enemiesArePassedOut())
+                        || skipToCooldownPhase)) {
+                    for (Enemy e : enemies) {
+                        gameObjects.remove(e);
+                    }
+
                     berryManager.startOfCooldown();
                     player.startCooldown();
                     game.battleMusic.stop();
@@ -410,6 +423,7 @@ public class PlayScreen extends ScreenAdapter {
                     for (Tile[] tiles : tileMap) {
                         for (Tile tile : tiles) {
                             tile.setStinky(false, 0L);
+                            tile.getEnemies().clear();
                             aoeEffectTiles.remove(tile);
                         }
                     }

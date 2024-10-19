@@ -76,14 +76,18 @@ public class GUI {
                  ,"Thicker Skin", "+1 Max HP", 3, 0));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_HEART_ICON_IMG)
                 ,"Sharper Claws", "+1 ATK", 5, 1));
-        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
-                ,"Extra Reserves", "+1 Max Spray", 4, 2));
-        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
-                ,"Target Practice", "+1 Spray Length", 1, 3));
-        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
-                ,"Ferment", "+1 Spray Radius", 20, 4));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_BERRY_ICON_IMG)
-                ,"Quality Berries", "+1 HP and Spray on eating a Berry", 5, 5));
+                ,"Quality Berries", "+1 HP and Spray on eating a Berry", 5, 2));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_BERRY_ICON_IMG)
+                ,"Fertilizer", "+2 Berry Gathering", 3, 3));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Extra Reserves", "+1 Max Spray", 4, 4));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Target Practice", "+1 Spray Length", 1, 5));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Ferment", "+1 Spray Radius", 20, 6));
+        upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
+                ,"Nuclear Spray", "Stink overpowers sprayed Enemy", 200, 7));
     }
 
     public void update(boolean hudOpen) {
@@ -207,7 +211,7 @@ public class GUI {
     public boolean upgradePlayer(int selectedIdx) {
         if (selectedIdx > -1 && selectedIdx < upgrades.size()) {
             Upgrade upgrade = upgrades.get(selectedIdx);
-            if (berryManager.getBerriesCollected() >= upgrade.cost) {
+            if (berryManager.getBerriesCollected() >= upgrade.cost && upgrade.cost > 0) {
                 berryManager.setBerriesCollected(berryManager.getBerriesCollected() - upgrade.cost);
                 upgrade.increaseCost();
                 Stats playerStats = player.getStats();
@@ -221,36 +225,39 @@ public class GUI {
                         playerStats.setAtk(playerStats.getAtk()+1);
                         break;
                     case 2:
-                        // Max Sprays
-                        player.setMaxSprays(player.getMaxSprays()+1);
-                        break;
-                    case 3:
-                        // Spray Length (and cooldown)
-                        player.setSprayLength(player.getSprayLength()+1);
-                        player.setSprayCooldown(player.getSprayCooldown()-100L);
-                        break;
-                    case 4:
-                        // Spray Radius (and duration)
-                        player.setSprayRadius(player.getSprayRadius()+1);
-                        player.setSprayDuration(player.getSprayDuration()+500L);
-                        if (player.getSprayRadius() > 3) {
-                            upgrades.get(4).cost = 999999999;
-                            upgrades.get(4).desc = "Fully fermented";
-                            upgrades.get(4).details = "-w-";
-                        }
-                        break;
-                    case 5:
                         // Berry Healing
                         player.setBerryHPRegen(player.getBerryHPRegen()+1);
                         player.setBerrySprayRegen(player.getBerrySprayRegen()+1);
                         break;
+                    case 3:
+                        // Berry Growth
+                        berryManager.setBushBound(berryManager.getBushBound()+2);
+                        break;
+                    case 4:
+                        // Max Sprays
+                        player.setMaxSprays(player.getMaxSprays()+1);
+                        break;
+                    case 5:
+                        // Spray Length (and cooldown)
+                        player.setSprayLength(player.getSprayLength()+1);
+                        player.setSprayCooldown(player.getSprayCooldown()-100L);
+                        break;
                     case 6:
-                        // Berry Healing
+                        // Spray Radius (and duration)
                         player.setSprayRadius(player.getSprayRadius()+1);
+                        player.setSprayDuration(player.getSprayDuration()+500L);
+                        if (player.getSprayRadius() > 3) {
+                            upgrade.cost = 999999999;
+                            upgrade.desc = "Fully fermented";
+                            upgrade.details = "-w-";
+                        }
                         break;
                     case 7:
-                        // Berry Growth
-                        player.setSprayRadius(player.getSprayRadius()+1);
+                        // Nuclear Spray
+                        player.setNuclearSpray(true);
+                        upgrade.cost = -1;
+                        upgrade.desc = "One can only become nuclear once";
+                        upgrade.details = ":3";
                         break;
                 }
                 return true;

@@ -64,6 +64,7 @@ public class Enemy extends GameObject {
     private boolean wasDead;
 
     private boolean sprayed;
+    private boolean passedOut;
 
     // Squirrel specific
     private long stealBerriesDuration;
@@ -169,6 +170,7 @@ public class Enemy extends GameObject {
         wasDead = false;
 
         sprayed = false;
+        passedOut = false;
 
         this.dir = dir;
         flipped = false;
@@ -405,7 +407,7 @@ public class Enemy extends GameObject {
             }
             am.switchAnimState("DEAD");
             am.setOneShot(true);
-            if (am.isFinished()) {
+            if (am.isFinished() && !passedOut) {
                 if(!finishedDeathAnimation) {
                     finishedDeathAnimation = true;
                     timeFinishedDeathAnimation = System.currentTimeMillis();
@@ -484,7 +486,7 @@ public class Enemy extends GameObject {
         return stats;
     }
 
-    public void setSprayed(boolean sprayed) {
+    public void setSprayed(boolean sprayed, boolean nuclearSpray) {
         this.sprayed = sprayed;
         if (sprayedSound != null && sprayed && !stats.isDead()) {
             long id = sprayedSound.play();
@@ -498,10 +500,18 @@ public class Enemy extends GameObject {
                     sprayedSound.setPitch(id, 3f);
                     break;
             }
+            if (nuclearSpray) {
+                passedOut = true;
+                stats.setHp(0);
+            }
         }
     }
 
     public Enemy clone() {
         return new Enemy(game, tileX, tileY, dir, type, enemySpawnLocations, player, berryManager);
+    }
+
+    public boolean isPassedOut() {
+        return passedOut;
     }
 }

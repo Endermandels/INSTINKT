@@ -61,6 +61,8 @@ public class Player extends GameObject {
     private int sprayLength;
     private int startSprayLength;
 
+    private boolean nuclearSpray;
+
     // Eat Berry Stats
     private int berrySprayRegen;
     private int berryHPRegen;
@@ -118,6 +120,8 @@ public class Player extends GameObject {
         startSprayDuration = sprayDuration;
         sprayLength = 2;
         startSprayLength = sprayLength;
+
+        nuclearSpray = false;
 
         berrySprayRegen = 1;
         berryHPRegen = 1;
@@ -343,7 +347,8 @@ public class Player extends GameObject {
 
     public void collision(ArrayList<Enemy> enemies) {
         for (Enemy e : enemies) {
-            if (e.getTileX() == tileX && e.getTileY() == tileY) {
+            if (e.getTileX() == tileX && e.getTileY() == tileY
+                    && stats.canBeAttacked() && e.getStats().canBeAttacked()) {
                 // Collision!  Perform attack
                 int playerHP = stats.getHp();
                 int enemyHP = e.getStats().getHp();
@@ -400,7 +405,7 @@ public class Player extends GameObject {
                 if (!enemiesInTile.isEmpty()) {
                     for (Enemy e : enemiesInTile) {
                         // Mark enemies as sprayed
-                        e.setSprayed(true);
+                        e.setSprayed(true, nuclearSpray);
                     }
                     foundEnemy = true;
                     break;
@@ -478,6 +483,8 @@ public class Player extends GameObject {
         sprayCooldown = startSprayCooldown;
         sprayDuration = startSprayDuration;
         sprayLength = startSprayLength;
+
+        nuclearSpray = false;
 
         spraysLeft = maxSprays;
         lastTimeSprayed = System.currentTimeMillis();
@@ -588,5 +595,9 @@ public class Player extends GameObject {
 
     public int getBerrySprayRegen() {
         return berrySprayRegen;
+    }
+
+    public void setNuclearSpray(boolean nuclearSpray) {
+        this.nuclearSpray = nuclearSpray;
     }
 }
