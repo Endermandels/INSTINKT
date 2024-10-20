@@ -1,6 +1,7 @@
 package wsuv.instinkt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,7 +34,9 @@ public class AssetsSpawner {
      *      and the tiles are separated by commas.
      */
     private void populateTileMap() {
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/tile_map.txt"))) {
+        FileHandle tileMapFile = Gdx.files.internal("Text/tile_map.txt");
+
+        try (BufferedReader br = tileMapFile.reader(100000)) {
             String line;
             char txtRow;
             char txtCol;
@@ -141,7 +144,10 @@ public class AssetsSpawner {
 
     private void plantObstacles() {
         initializeSSPlantsMap();
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/plants_map.txt"))) {
+
+        FileHandle tileMapFile = Gdx.files.internal("Text/plants_map.txt");
+
+        try (BufferedReader br = tileMapFile.reader(100000)) {
             String line;
             String substr;
             int y = PlayScreen.TILE_ROWS-1;
@@ -171,7 +177,9 @@ public class AssetsSpawner {
 
     private void berryObstacles() {
         initializeSSBerriesMap();
-        try (BufferedReader br = new BufferedReader(new FileReader("Text/berries_map.txt"))) {
+        FileHandle berriesFile = Gdx.files.internal("Text/berries_map.txt");
+
+        try (BufferedReader br = berriesFile.reader(100000)) {
             String line;
             String substr;
             int y = PlayScreen.TILE_ROWS-1;

@@ -351,7 +351,7 @@ public class PlayScreen extends ScreenAdapter {
 
         fillAllDijkstraValues();
         gameObjects.add(player);
-        enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
+        enemySpawner.setFormation(game.random.nextInt(enemySpawner.numFormations()));
 
         wave = 1;
         skipToCooldownPhase = false;
@@ -493,7 +493,7 @@ public class PlayScreen extends ScreenAdapter {
                         skipToCooldownPhase = false;
                         gui.startEnemyWave();
                         fillAllDijkstraValues();
-                        enemySpawner.setFormation(game.random.nextInt(0, enemySpawner.numFormations()));
+                        enemySpawner.setFormation(game.random.nextInt(enemySpawner.numFormations()));
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
