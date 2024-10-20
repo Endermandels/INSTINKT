@@ -55,10 +55,10 @@
 - **[53]** Change AOE effect shape from square to circle
 - **[54]** Add Icon and make EXE
 - **[55]** Wear off stink on sprayed enemies
+- **[56]** Bias enemies moving vertically before horizontally
 
 ## Open Issues ##
 
-- **[56]** Bias enemies moving vertically before horizontally
 - **[57]** Add Twig Blight leader (Tanky, targets player, imune to stink
 disappear when all other normal enemies have been defeated)
 - **[58]** Refactor level design to have more horizontal enemy movement
