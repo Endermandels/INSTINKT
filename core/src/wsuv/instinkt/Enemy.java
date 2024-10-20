@@ -67,8 +67,8 @@ public class Enemy extends GameObject {
     private boolean passedOut;
 
     private final long TIME_TO_PASS_OUT = 800L;
-    private final long TIME_TO_CLEAR_STINK = 1000L;
-    private long lastTimeNuclearSprayed;
+    private long lastTimeSprayed;
+    private boolean nuclearSprayed;
 
     // Squirrel specific
     private long stealBerriesDuration;
@@ -173,10 +173,11 @@ public class Enemy extends GameObject {
         timeFinishedDeathAnimation = -1L;
         wasDead = false;
 
+        lastTimeSprayed = -1L;
         sprayed = false;
+        nuclearSprayed = false;
         passedOut = false;
 
-        lastTimeNuclearSprayed = -1L;
 
         this.dir = dir;
         flipped = false;
@@ -410,14 +411,16 @@ public class Enemy extends GameObject {
             targetType = Tile.DistanceType.EXIT;
         }
 
-        if (lastTimeNuclearSprayed > 0L) {
-            if (!passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT) {
+        if (nuclearSprayed) {
+            if (!passedOut && System.currentTimeMillis() > lastTimeSprayed + TIME_TO_PASS_OUT) {
                 passedOut = true;
                 stats.setHp(0);
-            } else if (passedOut && System.currentTimeMillis() > lastTimeNuclearSprayed + TIME_TO_PASS_OUT
-                + TIME_TO_CLEAR_STINK) {
+            } else if (passedOut && System.currentTimeMillis() > lastTimeSprayed + TIME_TO_PASS_OUT
+                + player.getSprayDuration()*2) {
                 sprayed = false;
             }
+        } else if (sprayed && System.currentTimeMillis() > lastTimeSprayed + player.getSprayDuration()*2) {
+            sprayed = false;
         }
 
         if (stats.isDead()) {
@@ -509,6 +512,7 @@ public class Enemy extends GameObject {
 
     public void setSprayed(boolean sprayed, boolean nuclearSpray) {
         this.sprayed = sprayed;
+        if (sprayed) lastTimeSprayed = System.currentTimeMillis();
         if (sprayedSound != null && sprayed && !stats.isDead()) {
             long id = sprayedSound.play();
             switch (type) {
@@ -521,9 +525,7 @@ public class Enemy extends GameObject {
                     sprayedSound.setPitch(id, 3f);
                     break;
             }
-            if (nuclearSpray) {
-                lastTimeNuclearSprayed = System.currentTimeMillis();
-            }
+            nuclearSprayed = nuclearSpray;
         }
     }
 

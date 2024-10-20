@@ -54,14 +54,15 @@
 - **[52]** Shop Mechanic and basic UI
 - **[53]** Change AOE effect shape from square to circle
 - **[54]** Add Icon and make EXE
+- **[55]** Wear off stink on sprayed enemies
 
 ## Open Issues ##
 
-- **[55]** Wear off stink on sprayed enemies
-- **[56]** Add Twig Blight leader (Tanky, targets player, imune to stink
+- **[56]** Bias enemies moving vertically before horizontally
+- **[57]** Add Twig Blight leader (Tanky, targets player, imune to stink
 disappear when all other normal enemies have been defeated)
-- **[57]** Refactor level design to have more horizontal enemy movement
-- **[58]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
+- **[58]** Refactor level design to have more horizontal enemy movement
+- **[59]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
 
 ## Backlog ##
