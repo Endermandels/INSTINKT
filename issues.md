@@ -53,20 +53,24 @@
 - **[51]** Squirrel mechanic (steal berries and then run) (also avoid player)
 - **[52]** Shop Mechanic and basic UI
 - **[53]** Change AOE effect shape from square to circle
+- **[54]** Add Icon and make EXE
 
 ## Open Issues ##
 
-- **[54]** Add Icon and make EXE
-- **[55]** Give player reason to move outside their base
+- **[55]** Wear off stink on sprayed enemies
+- **[56]** Add Twig Blight leader (Tanky, targets player, imune to stink
+disappear when all other normal enemies have been defeated)
+- **[57]** Refactor level design to have more horizontal enemy movement
+- **[58]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
+change the frequency (Introduces longer waves)
 
 ## Backlog ##
 
-- **[]** Refactor level design to have more horizontal enemy movement
 - **[]** Enemies run away from stinky tiles
 - **[]** How to Play Screen
-- **[]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
-change the frequency
 - **[]** 
+- **[]** Add Druid leader
+(Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** 
 - **[]** 
 - **[]** 
