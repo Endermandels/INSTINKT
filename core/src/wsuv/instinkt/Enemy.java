@@ -204,14 +204,14 @@ public class Enemy extends GameObject {
     private ArrayList<Tile> getNeighbors(Tile[][] tileMap, Tile tile) {
         ArrayList<Tile> neighbors = new ArrayList<>();
 
-        if (game.validMove(tileMap,tile.getX()-1, tile.getY()))
-            neighbors.add(tileMap[tile.getY()][tile.getX()-1]);
-        if (game.validMove(tileMap,tile.getX()+1, tile.getY()))
-            neighbors.add(tileMap[tile.getY()][tile.getX()+1]);
         if (game.validMove(tileMap, tile.getX(), tile.getY()-1))
             neighbors.add(tileMap[tile.getY()-1][tile.getX()]);
         if (game.validMove(tileMap, tile.getX(), tile.getY()+1))
             neighbors.add(tileMap[tile.getY()+1][tile.getX()]);
+        if (game.validMove(tileMap,tile.getX()-1, tile.getY()))
+            neighbors.add(tileMap[tile.getY()][tile.getX()-1]);
+        if (game.validMove(tileMap,tile.getX()+1, tile.getY()))
+            neighbors.add(tileMap[tile.getY()][tile.getX()+1]);
 
         return neighbors;
     }
