@@ -67,6 +67,11 @@ public class Player extends GameObject {
     private int berrySprayRegen;
     private int berryHPRegen;
 
+    private boolean slowed; // for when cobra hits player
+    private long timeSlowed;
+    private long slowedDuration;
+    private float slowedAmount;
+
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
                 , tileY * PlayScreen.TILE_SCALED_SIZE, 10);
@@ -127,6 +132,11 @@ public class Player extends GameObject {
         berryHPRegen = 1;
 
         toSpray = false;
+
+        slowed = false;
+        timeSlowed = -1L;
+        slowedDuration = 2500L;
+        slowedAmount = 200f;
 
         spray = new Spray(game);
         gameObjects.add(spray);
@@ -257,6 +267,7 @@ public class Player extends GameObject {
             switch (dir) {
                 case LEFT:
                     imgX -= imgSpeed * time;
+                    if (slowed) imgX += slowedAmount * time;
 
                     if (imgX < targetTile.getImgX() + PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileX != targetTile.getX()) {
@@ -278,6 +289,7 @@ public class Player extends GameObject {
                     break;
                 case RIGHT:
                     imgX += imgSpeed * time;
+                    if (slowed) imgX -= slowedAmount * time;
 
                     if (imgX > targetTile.getImgX() - PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileX != targetTile.getX()) {
@@ -299,6 +311,7 @@ public class Player extends GameObject {
                     break;
                 case UP:
                     imgY += imgSpeed * time;
+                    if (slowed) imgY -= slowedAmount * time;
 
                     if (imgY > targetTile.getImgY() - PlayScreen.TILE_SCALED_SIZE / 2f) {
                         if (tileY != targetTile.getY()) {
@@ -321,6 +334,7 @@ public class Player extends GameObject {
                     break;
                 case DOWN:
                     imgY -= imgSpeed * time;
+                    if (slowed) imgY += slowedAmount * time;
 
                     if (imgY < targetTile.getImgY() + PlayScreen.TILE_SCALED_SIZE / 2f) {
                         // Player middle has crossed into new tile
@@ -358,6 +372,10 @@ public class Player extends GameObject {
 
                 if (!stats.isDead() && playerHP != stats.getHp()) {
                     am.switchAnimState("HURT", "RUN");
+                    if (e.getType() == Enemy.Type.CBR) {
+                        timeSlowed = System.currentTimeMillis();
+                        slowed = true;
+                    }
                     long id = hurtSound.play();
                     hurtSound.setVolume(id, 0.1f);
                     hurtSound.setPitch(id, 0.8f);
@@ -442,6 +460,9 @@ public class Player extends GameObject {
         boolean onNewTile = false;
         am.update();
 
+        if (slowed && System.currentTimeMillis() > timeSlowed + slowedDuration) {
+            slowed = false;
+        }
 
         if (stats.isDead()) {
             am.switchAnimState("DEAD");
@@ -504,6 +525,7 @@ public class Player extends GameObject {
     public void startCooldown() {
         spraysLeft = maxSprays;
         stats.setHp(stats.getMaxHP());
+        slowed = false;
     }
 
     public boolean isFinishedDeathAnimation() {
