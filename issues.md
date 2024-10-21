@@ -58,10 +58,10 @@
 - **[56]** Bias enemies moving vertically before horizontally
 - **[57]** Add Twig Blight leader (Tanky, targets player, immune to stink
 disappear when all other normal enemies have been defeated)
+- **[58]** Cobra slows player
 
 ## Open Issues ##
 
-- **[58]** Cobra slows player
 - **[59]** Refactor level design to have more horizontal enemy movement
 - **[60]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
