@@ -1,21 +1,27 @@
 1000
 fox bleft
+10000
 twg bleft
+10
 fox bleft
 fox bright
 sql top
-
+---------
 1000
 fox bleft
+10000
 twg bleft
+10
 fox bright
 fox bright
 fox bleft
 fox bleft
-
+---------
 800
 fox bleft
+10000
 twg bleft
+10
 fox bleft
 sql top
 sql top
@@ -24,10 +30,12 @@ fox bright
 sql top
 sql top
 sql top
-
+---------
 800
 fox bleft
+10000
 twg bleft
+10
 cbr bright
 fox bleft
 cbr bright

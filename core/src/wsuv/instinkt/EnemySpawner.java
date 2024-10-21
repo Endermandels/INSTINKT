@@ -74,7 +74,7 @@ public class EnemySpawner {
         try (BufferedReader br = enemyFormations.reader(100000)) {
             String line;
             Integer currentFrequency = null;
-            ArrayList<Enemy> currentEnemiesToSpawn = new ArrayList<>();
+            ArrayList<EnemyFrequencyTuple> currentEnemiesToSpawn = new ArrayList<>();
 
             int idx = 0;
 
@@ -83,12 +83,11 @@ public class EnemySpawner {
 
                 // If the line contains only digits, it's a frequency
                 if (line.matches("\\d+")) {
-                    if (currentFrequency != null) {
-                        // Store the previous formation before starting a new one
-                        formationsMap.put(idx++, new EnemyFormation(currentFrequency, new ArrayList<>(currentEnemiesToSpawn)));
-                    }
-                    // Start a new formation
+                    // Update frequency
                     currentFrequency = Integer.parseInt(line);
+                } else if (line.matches("^-+")) {
+                    // Start new formation
+                    formationsMap.put(idx++, new EnemyFormation(new ArrayList<>(currentEnemiesToSpawn)));
                     currentEnemiesToSpawn.clear();
                 } else {
                     // Split the line and extract the spawn location (ignoring the enemy type for now)
@@ -98,14 +97,14 @@ public class EnemySpawner {
                         String spawnLocationStr = parts[1];
                         SpawnLocation spawnLocation = SpawnLocation.fromString(spawnLocationStr);
                         Enemy.Type type = Enemy.Type.fromString(enemyType);
-                        currentEnemiesToSpawn.add(newEnemyAtLocation(spawnLocation, type));
+                        currentEnemiesToSpawn.add(new EnemyFrequencyTuple(newEnemyAtLocation(spawnLocation, type), currentFrequency));
                     }
                 }
             }
 
             // Store the last formation
             if (currentFrequency != null) {
-                formationsMap.put(idx, new EnemyFormation(currentFrequency, currentEnemiesToSpawn));
+                formationsMap.put(idx, new EnemyFormation(currentEnemiesToSpawn));
             }
 
         } catch (Exception e) {
@@ -166,24 +165,31 @@ public class EnemySpawner {
     }
 }
 
+class EnemyFrequencyTuple {
+    public Enemy enemy;
+    public int frequency;
+    public EnemyFrequencyTuple(Enemy enemy, int frequency) {
+        this.enemy = enemy;
+        this.frequency = frequency;
+    }
+}
+
 class EnemyFormation {
 
-    private long frequency;
-    private ArrayList<Enemy> enemiesToSpawn;
+    private ArrayList<EnemyFrequencyTuple> enemiesToSpawn;
     private int idx;
 
-    public EnemyFormation(long frequency, ArrayList<Enemy> enemiesToSpawn) {
-        this.frequency = frequency;
+    public EnemyFormation(ArrayList<EnemyFrequencyTuple> enemiesToSpawn) {
         this.enemiesToSpawn = enemiesToSpawn;
         this.idx = 0;
     }
 
     public Enemy getNextEnemy() {
-        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx++).clone() : null;
+        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx++).enemy.clone() : null;
     }
 
     public long getFrequency() {
-        return frequency;
+        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx).frequency : -1;
     }
 
     public EnemyFormation reset() {
