@@ -6,6 +6,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.*;
 
+/**
+ *
+ * ENEMY DESCRIPTIONS:
+ *
+ * Fox:
+ *  Targets player, fast, strong
+ *
+ * Squirrel:
+ *  Targets berries, fast, weak, will take berries (and drop them if killed)
+ *
+ * Cobra:
+ *  Targets player, slow, weak, slows down player
+ *
+ * Twig Blight:
+ *  Targets player, slow, tanky, dies when all other creatures have disappeared
+ *
+ */
+
 public class Enemy extends GameObject {
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -14,7 +32,8 @@ public class Enemy extends GameObject {
     public enum Type {
         FOX, // Fox
         SQL, // Squirrel
-        CBR; // Cobra
+        CBR, // Cobra
+        TWG; // Twig Blight
 
         public static Enemy.Type fromString(String type) {
             switch (type.toLowerCase()) {
@@ -24,6 +43,8 @@ public class Enemy extends GameObject {
                     return SQL;
                 case "cbr":
                     return CBR;
+                case "twg":
+                    return TWG;
                 default:
                     throw new IllegalArgumentException("Unknown enemy type: " + type);
             }
@@ -160,6 +181,29 @@ public class Enemy extends GameObject {
                 stats = new Stats(4, 1, 800L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
+                break;
+            case TWG:
+                am = new AnimationManager(game.am.get(Game.RSC_SS_TWIG_BLIGHT_IMG)
+                        , new ArrayList<>(Arrays.asList(4,8,6,5,6))
+                        , new HashMap<>() {{
+                    put("IDLE", 0);
+                    put("RUN", 1);
+                    put("ATTACK", 2);
+                    put("HURT", 3);
+                    put("DEAD", 4);
+                }}
+                        , 0.2f, 64, 64
+                );
+
+                // Sounds
+                hurtSound = game.am.get(Game.RSC_TWIG_BLIGHT_HURT_SFX);
+                deathSound = game.am.get(Game.RSC_TWIG_BLIGHT_DEATH_SFX);
+
+                // Stats
+                stats = new Stats(8, 3, 1000L);
+                imgSpeed = 80f;
+                targetType = Tile.DistanceType.PLAYER;
+                this.setPriority(2);
                 break;
         }
 
@@ -368,7 +412,7 @@ public class Enemy extends GameObject {
         return toRemove;
     }
 
-    public boolean update(Tile[][] tileMap) {
+    public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies) {
         boolean toRemove = false;
 
         am.update();
@@ -407,7 +451,7 @@ public class Enemy extends GameObject {
             startStealingBerries = System.currentTimeMillis();
         }
 
-        if (type != Type.CBR && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
+        if (sprayedSound != null && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
             targetType = Tile.DistanceType.EXIT;
         }
 
@@ -421,6 +465,18 @@ public class Enemy extends GameObject {
             }
         } else if (sprayed && System.currentTimeMillis() > lastTimeSprayed + player.getSprayDuration()*2) {
             sprayed = false;
+        }
+
+        // Twig Blights die when there are no more enemies on screen
+        if (type == Type.TWG) {
+            boolean shouldRemove = true;
+            for (Enemy e : enemies) {
+                if (e.getType() != Type.TWG && !e.isPassedOut()) {
+                    shouldRemove = false;
+                    break;
+                }
+            }
+            if (shouldRemove) stats.setHp(0);
         }
 
         if (stats.isDead()) {
@@ -462,6 +518,8 @@ public class Enemy extends GameObject {
                     hurtSound.setVolume(id, 0.7f);
                     hurtSound.setPitch(id, 4f);
                     break;
+                case TWG:
+                    hurtSound.setVolume(id, 0.9f);
             }
         }
     }
@@ -482,8 +540,14 @@ public class Enemy extends GameObject {
                     deathSound.setVolume(id, 1f);
                     deathSound.setPitch(id, 1f);
                     break;
+                case TWG:
+                    deathSound.setVolume(id, 0.9f);
             }
         }
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public float getImgX() {
@@ -535,5 +599,9 @@ public class Enemy extends GameObject {
 
     public boolean isPassedOut() {
         return passedOut;
+    }
+
+    public Direction getDir() {
+        return dir;
     }
 }

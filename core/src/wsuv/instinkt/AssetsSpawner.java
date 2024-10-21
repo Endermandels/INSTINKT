@@ -136,8 +136,8 @@ public class AssetsSpawner {
         ssMaps.put(Game.RSC_SS_BERRIES_IMG, ssMap);
     }
 
-    private void spawnObstacleAt(int row, int col, int obsType, String ssID) {
-        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID, 1);
+    private void spawnObstacleAt(int row, int col, int obsType, String ssID, int priority) {
+        GameObject obs = new GameObject(game, row, col, ssMaps.get(ssID).get(obsType), ssID, priority);
         gameObjects.add(obs);
         tileMap[row][col].setContainsObstacle(true);
     }
@@ -163,7 +163,8 @@ public class AssetsSpawner {
                                 , ssMaps.get(Game.RSC_SS_PLANTS_IMG).get(obsType-1)
                                 , Game.RSC_SS_PLANTS_SHADOW_IMG, 1000);
                         gameObjects.add(shadow);
-                        spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_PLANTS_IMG);
+                        int priority = obsType < 3 ? 1 : 5;
+                        spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_PLANTS_IMG, priority);
                     }
                 }
                 y--;
@@ -195,7 +196,7 @@ public class AssetsSpawner {
                         importantLocations.add(new Integer[]{x/3, y});
                     }
 
-                    if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_BERRIES_IMG);
+                    if (obsType > 0) spawnObstacleAt(y,x/3, obsType-1, Game.RSC_SS_BERRIES_IMG, 5);
                 }
                 y--;
             }
