@@ -34,6 +34,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_SQUIRREL_IMG = "Images/Squirrel Sprite Sheet.png";
     public static final String RSC_SS_COBRA_IMG = "Images/Cobra Sprite Sheet.png";
     public static final String RSC_SS_TWIG_BLIGHT_IMG = "Images/Twig Blight Sprite Sheet.png";
+    public static final String RSC_SS_STINK_EFFECT_IMG = "Images/Stink Effect Sprite Sheet.png";
     public static final String RSC_SS_HEALTH_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/MinimumDamage-Sheet.png";
     public static final String RSC_SS_SPRAY_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/ManaFading-Sheet.png";
     public static final String RSC_SS_GUI_AREA_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/GUI area sprite sheet.png";
@@ -125,6 +126,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
         am.load(RSC_SS_COBRA_IMG, Texture.class);
         am.load(RSC_SS_TWIG_BLIGHT_IMG, Texture.class);
+        am.load(RSC_SS_STINK_EFFECT_IMG, Texture.class);
         am.load(RSC_SS_HEALTH_BAR_IMG, Texture.class);
         am.load(RSC_SS_SPRAY_BAR_IMG, Texture.class);
         am.load(RSC_SS_GUI_AREA_IMG, Texture.class);

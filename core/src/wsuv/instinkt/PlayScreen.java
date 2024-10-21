@@ -696,8 +696,18 @@ public class PlayScreen extends ScreenAdapter {
                 }
             }
 
-            for (Tile tile : aoeEffectTiles) {
-                game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+            if (showTileLocations) {
+                for (Tile tile : aoeEffectTiles) {
+                    game.batch.draw(aoeEffectImg, tile.getImgX(), tile.getImgY() + GUI_SPACE, TILE_SCALED_SIZE, TILE_SCALED_SIZE);
+                }
+            }
+
+            for (Tile[] tiles : tileMap) {
+                for (Tile tile : tiles) {
+                    if (tile.isStinky()) {
+                        tile.getStinkEffect().draw(game.batch);
+                    }
+                }
             }
 
             debugImages.clear();
