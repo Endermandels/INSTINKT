@@ -4,6 +4,7 @@
 # fox -> bleft, bright
 
 !!!!!!!! Easy !!!!!!!!
+
 1000
 fox bleft
 fox bright
@@ -34,14 +35,64 @@ cbr bright
 
 !!!!!!!! Medium !!!!!!!!
 
-10
-cbr top
-twg bleft
-cbr bleft
+100
+cbr bright
+cbr bright
 cbr bright
 
-!!!!!!!! Hard !!!!!!!!
+1000
+fox bleft
+500
+fox bleft
 
+5000
+sql top
+500
+sql bleft
+sql bleft
+sql top
+
+700
+fox bleft
+fox bleft
+fox bleft
+fox bleft
+fox bleft
+fox bleft
+
+---
+
+700
+fox bleft
+fox bleft
+fox bright
+fox bright
+fox bleft
+fox bleft
+fox bright
+fox bright
+fox bleft
+fox bleft
+fox bright
+fox bright
+cbr top
+cbr top
+cbr top
+fox bleft
+fox bleft
+fox bright
+fox bright
+fox bleft
+fox bleft
+fox bright
+fox bright
+fox bleft
+fox bleft
+fox bright
+fox bright
+
+
+!!!!!!!! Hard !!!!!!!!
 
 10
 cbr top
