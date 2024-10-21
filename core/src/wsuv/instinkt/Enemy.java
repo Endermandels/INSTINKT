@@ -132,8 +132,8 @@ public class Enemy extends GameObject {
                 sprayedSound = game.am.get(Game.RSC_SQUIRREL_NOISE_3_SFX);
 
                 // Stats
-                stats = new Stats(3, 2, 800L);
-                imgSpeed = 400f;
+                stats = new Stats(2, 2, 800L);
+                imgSpeed = 200f;
                 targetType = Tile.DistanceType.PLAYER;
                 break;
             case SQL:
@@ -157,7 +157,7 @@ public class Enemy extends GameObject {
 
                 // Stats
                 stats = new Stats(1, 0, 0L);
-                imgSpeed = 500f;
+                imgSpeed = 240f;
                 targetType = Tile.DistanceType.BERRIES;
                 break;
             case CBR:
@@ -178,7 +178,7 @@ public class Enemy extends GameObject {
                 deathSound = game.am.get(Game.RSC_SNAKE_NOISE_2_SFX);
 
                 // Stats
-                stats = new Stats(4, 1, 800L);
+                stats = new Stats(1, 1, 800L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
                 break;
@@ -200,7 +200,7 @@ public class Enemy extends GameObject {
                 deathSound = game.am.get(Game.RSC_TWIG_BLIGHT_DEATH_SFX);
 
                 // Stats
-                stats = new Stats(8, 3, 1000L);
+                stats = new Stats(10, 6, 1000L);
                 imgSpeed = 80f;
                 targetType = Tile.DistanceType.PLAYER;
                 this.setPriority(2);
@@ -232,7 +232,7 @@ public class Enemy extends GameObject {
         pathY = tileY;
         targetPos = new int[2];
 
-        stealBerriesDuration = 1000L;
+        stealBerriesDuration = 1500L;
         startStealingBerries = -1;
         berriesStolen = 0;
     }

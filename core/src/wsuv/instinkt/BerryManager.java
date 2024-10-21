@@ -12,10 +12,11 @@ public class BerryManager {
 
     private final int BUSH_PRICE = 2;
 
-    private final int START_BERRY_COUNT = 2;
+    private final int START_BERRY_COUNT = 6;
     private int berriesCollected;
 
     private final int START_BUSH_BOUND = 5;
+    private final int BUSH_LOWER_BOUND = 3;
     private int bushBound;
 
     private ArrayList<BerryBush> bushes;
@@ -81,7 +82,7 @@ public class BerryManager {
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
             else if (bb.state == BerryBush.State.GROWN) {
-                int x = 2 + bushBound/START_BUSH_BOUND;
+                int x = BUSH_LOWER_BOUND + bushBound/START_BUSH_BOUND;
                 berriesCollected += x+game.random.nextInt(bushBound-x);
             }
         }

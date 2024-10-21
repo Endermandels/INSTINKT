@@ -63,13 +63,16 @@ disappear when all other normal enemies have been defeated)
 - **[60]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
 - **[61]** Create good enemy formations, separate difficulty levels
+- **[62]** Balance Player, Enemy, and World stats, Add restart mechanic
 
 ## Open Issues ##
 
-- **[62]** Balance Player, Enemy, and World stats
+- **[63]** Show current stats in shop
+- **[64]** Create AOE Effect image (instead of green tiles)
 
 ## Backlog ##
 
+- **[]** Create README with instructions and info
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
@@ -77,7 +80,6 @@ change the frequency (Introduces longer waves)
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** Create difficulty levels of enemy formation spawning
-- **[]** 
 - **[]** 
 - **[]** 
 - **[]** How to Play Screen
