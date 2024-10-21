@@ -69,10 +69,10 @@ change the frequency (Introduces longer waves)
 
 ## Open Issues ##
 
+- **[65]** Create README with instructions and info
 
 ## Backlog ##
 
-- **[]** Create README with instructions and info
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
