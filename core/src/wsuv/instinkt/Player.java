@@ -427,7 +427,8 @@ public class Player extends GameObject {
                     e.setSprayed(true, nuclearSpray);
                 }
                 foundEnemy = true;
-            } else {
+            }
+            if (tileMap[tileY][tileX].getEnemies().isEmpty() || nuclearSpray) {
                 for (; Math.abs(x) <= sprayLength && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
                     ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
                     if (!enemiesInTile.isEmpty()) {
@@ -436,7 +437,8 @@ public class Player extends GameObject {
                             e.setSprayed(true, nuclearSpray);
                         }
                         foundEnemy = true;
-                        break;
+                        if (!nuclearSpray)
+                            break;
                     }
                 }
                 spray.show(flipped, imgX, imgY, Math.abs(x));
