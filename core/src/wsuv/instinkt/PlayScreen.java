@@ -395,7 +395,7 @@ public class PlayScreen extends ScreenAdapter {
                 }
 
                 for (Enemy enemy : enemies) {
-                    if (enemy.update(tileMap) || skipToCooldownPhase) enemiesToRemove.add(enemy);
+                    if (enemy.update(tileMap, enemies) || skipToCooldownPhase) enemiesToRemove.add(enemy);
                 }
                 for (Enemy enemy : enemiesToRemove) {
                     if (game.validMove(enemy.getTileX(), enemy.getTileY())) {
@@ -642,17 +642,27 @@ public class PlayScreen extends ScreenAdapter {
                                     , img.getRegionWidth() * TILE_SCALE, img.getRegionHeight() * TILE_SCALE);
                         }
                     }
+                } else if (ob instanceof Enemy) {
+                    if (showEnemyStats) {
+                        debugImages.add(ob);
+                    }
+
+                    TextureRegion img = ob.getImg();
+                    Enemy e = (Enemy) ob;
+
+                    if (e.getType() == Enemy.Type.TWG) {
+                        game.batch.draw(img, ob.getImgX() - img.getRegionWidth()*TILE_SCALE+TILE_SCALED_SIZE/2f
+                                , ob.getImgY()+GUI_SPACE
+                                , img.getRegionWidth()*TILE_SCALE*2, img.getRegionHeight()*TILE_SCALE*2);
+                    } else {
+                        game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
+                                , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
+                    }
                 } else {
                     TextureRegion img = ob.getImg();
                     if (img != null) {
                         game.batch.draw(img, ob.getImgX(), ob.getImgY()+GUI_SPACE
                             , img.getRegionWidth()*TILE_SCALE, img.getRegionHeight()*TILE_SCALE);
-                    }
-                }
-
-                if (showEnemyStats) {
-                    if (ob instanceof Enemy) {
-                        debugImages.add(ob);
                     }
                 }
             }

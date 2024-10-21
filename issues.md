@@ -56,28 +56,31 @@
 - **[54]** Add Icon and make EXE
 - **[55]** Wear off stink on sprayed enemies
 - **[56]** Bias enemies moving vertically before horizontally
+- **[57]** Add Twig Blight leader (Tanky, targets player, immune to stink
+disappear when all other normal enemies have been defeated)
 
 ## Open Issues ##
 
-- **[57]** Add Twig Blight leader (Tanky, targets player, imune to stink
-disappear when all other normal enemies have been defeated)
-- **[58]** Refactor level design to have more horizontal enemy movement
-- **[59]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
+- **[58]** Cobra slows player
+- **[59]** Refactor level design to have more horizontal enemy movement
+- **[60]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
 
 ## Backlog ##
 
+- **[]** Balance Player, Enemy, and World stats
 - **[]** Enemies run away from stinky tiles
-- **[]** How to Play Screen
+- **[]** 
+- **[]** 
 - **[]** 
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** 
 - **[]** 
 - **[]** 
+- **[]** How to Play Screen
 - **[]** Press and Hold space to move to next enemy wave
 - **[]** Stop enemy when first smelling stink (hurt animation).
-- **[]** Balance Player, Enemy, and World stats
 - **[]** Make shop upgrades more interesting
 - **[]** 
 - **[]** 

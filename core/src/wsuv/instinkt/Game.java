@@ -33,6 +33,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SS_SPRAY_IMG = "Images/Spray Sprite Sheet.png";
     public static final String RSC_SS_SQUIRREL_IMG = "Images/Squirrel Sprite Sheet.png";
     public static final String RSC_SS_COBRA_IMG = "Images/Cobra Sprite Sheet.png";
+    public static final String RSC_SS_TWIG_BLIGHT_IMG = "Images/Twig Blight Sprite Sheet.png";
     public static final String RSC_SS_HEALTH_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/MinimumDamage-Sheet.png";
     public static final String RSC_SS_SPRAY_BAR_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/ManaFading-Sheet.png";
     public static final String RSC_SS_GUI_AREA_IMG = "Images/CrimsonFantasyGUI/AnimationSheets/GUI area sprite sheet.png";
@@ -59,6 +60,8 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SELECT_SFX = "SFX/select.mp3";
     public static final String RSC_INVALID_SFX = "SFX/invalid.mp3";
     public static final String RSC_SEED_SFX = "SFX/plant seed.mp3";
+    public static final String RSC_TWIG_BLIGHT_HURT_SFX = "SFX/twig hurt.mp3";
+    public static final String RSC_TWIG_BLIGHT_DEATH_SFX = "SFX/twig death.mp3";
 
     public AssetManager am;  // AssetManager provides a single source for loaded resources
     public SpriteBatch batch;
@@ -121,6 +124,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SS_FOX_IMG, Texture.class);
         am.load(RSC_SS_SQUIRREL_IMG, Texture.class);
         am.load(RSC_SS_COBRA_IMG, Texture.class);
+        am.load(RSC_SS_TWIG_BLIGHT_IMG, Texture.class);
         am.load(RSC_SS_HEALTH_BAR_IMG, Texture.class);
         am.load(RSC_SS_SPRAY_BAR_IMG, Texture.class);
         am.load(RSC_SS_GUI_AREA_IMG, Texture.class);
@@ -140,6 +144,8 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SELECT_SFX, Sound.class);
         am.load(RSC_INVALID_SFX, Sound.class);
         am.load(RSC_SEED_SFX, Sound.class);
+        am.load(RSC_TWIG_BLIGHT_HURT_SFX, Sound.class);
+        am.load(RSC_TWIG_BLIGHT_DEATH_SFX, Sound.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
