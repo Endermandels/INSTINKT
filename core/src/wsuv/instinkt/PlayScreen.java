@@ -43,6 +43,10 @@ public class PlayScreen extends ScreenAdapter {
     private final int WAVES_GOAL = 11;
     private int wave;
 
+    // Thresholds for increasing enemy formation difficulties
+    private int medThresh;
+    private int hardThresh;
+
     private boolean paused;
     private boolean doStep; // Stepping through update cycles while paused
     private boolean escPressed;
@@ -84,6 +88,9 @@ public class PlayScreen extends ScreenAdapter {
         timer = 0f;
 
         wave = 1;
+
+        medThresh = 4;
+        hardThresh = 8;
 
         paused = false;
         doStep = false;
@@ -351,7 +358,7 @@ public class PlayScreen extends ScreenAdapter {
 
         fillAllDijkstraValues();
         gameObjects.add(player);
-        enemySpawner.setFormation(game.random.nextInt(enemySpawner.numFormations()));
+        enemySpawner.setFormation(0);
 
         wave = 1;
         skipToCooldownPhase = false;
@@ -493,7 +500,16 @@ public class PlayScreen extends ScreenAdapter {
                         skipToCooldownPhase = false;
                         gui.startEnemyWave();
                         fillAllDijkstraValues();
-                        enemySpawner.setFormation(game.random.nextInt(enemySpawner.numFormations()));
+                        if (wave < medThresh) {
+                            // EASY
+                            enemySpawner.setFormation(0);
+                        } else if (wave < hardThresh) {
+                            // MEDIUM
+                            enemySpawner.setFormation(1);
+                        } else {
+                            // HARD
+                            enemySpawner.setFormation(2);
+                        }
                         game.cooldownMusic.stop();
                         game.battleMusic.play();
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {

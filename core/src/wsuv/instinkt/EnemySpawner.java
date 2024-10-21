@@ -42,7 +42,7 @@ public class EnemySpawner {
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Integer[]> enemySpawnLocations;
     private EnemyFormation formation;
-    private Map<Integer, EnemyFormation> formationsMap = new HashMap<>();
+    private ArrayList<Map<Integer, EnemyFormation>> formations;
 
     private long lastSpawn;
     private boolean noMoreEnemiesToSpawn;
@@ -60,8 +60,9 @@ public class EnemySpawner {
                 new Integer[]{PlayScreen.TILE_ROWS,PlayScreen.TILE_COLS-1}
         ));
 
+        formations = new ArrayList<>();
         readFormationsFile();
-        formation = formationsMap.get(0);
+        formation = formations.get(0).get(0);
 
         lastSpawn = 0L;
         noMoreEnemiesToSpawn = false;
@@ -75,8 +76,11 @@ public class EnemySpawner {
             String line;
             Integer currentFrequency = null;
             ArrayList<EnemyFrequencyTuple> currentEnemiesToSpawn = new ArrayList<>();
+            Map<Integer, EnemyFormation> formationsMap = new HashMap<>();
 
             int idx = 0;
+            int difficulty = -1;
+            boolean toAdd = false;
 
             while ((line = br.readLine()) != null) {
                 line = line.trim();
@@ -87,13 +91,26 @@ public class EnemySpawner {
                     currentFrequency = Integer.parseInt(line);
                 } else if (line.matches("^-.*")) {
                     // Start new formation
+                    toAdd = false;
                     formationsMap.put(idx++, new EnemyFormation(new ArrayList<>(currentEnemiesToSpawn)));
                     currentEnemiesToSpawn.clear();
+                } else if (line.matches("^!.*")) {
+                    // New difficulty
+                    if (difficulty >= 0) {
+                        toAdd = false;
+                        formationsMap.put(idx, new EnemyFormation(new ArrayList<>(currentEnemiesToSpawn)));
+                        currentEnemiesToSpawn.clear();
+                        formations.add(formationsMap);
+                        formationsMap = new HashMap<>();
+                        idx = 0;
+                    }
+                    difficulty++;
                 } else if (!line.matches("^#.*")) {
                     // Split the line and extract the spawn location
                     // Ignore comments using '#'
                     String[] parts = line.split(" ");
                     if (parts.length > 1) {
+                        toAdd = true;
                         String enemyType = parts[0];
                         String spawnLocationStr = parts[1];
                         SpawnLocation spawnLocation = SpawnLocation.fromString(spawnLocationStr);
@@ -104,8 +121,12 @@ public class EnemySpawner {
             }
 
             // Store the last formation
-            if (currentFrequency != null) {
+            if (toAdd) {
+                System.out.println("Adding...");
                 formationsMap.put(idx, new EnemyFormation(currentEnemiesToSpawn));
+            }
+            if (!formationsMap.isEmpty()) {
+                formations.add(formationsMap);
             }
 
         } catch (Exception e) {
@@ -147,9 +168,11 @@ public class EnemySpawner {
         }
     }
 
-    public void setFormation(int idx) {
+    public void setFormation(int difficulty) {
         lastSpawn = System.currentTimeMillis();
-        formation = formationsMap.get(idx).reset();
+        Map<Integer, EnemyFormation> formationMap = formations.get(difficulty);
+        System.out.println(formationMap);
+        formation = formationMap.get(game.random.nextInt(formationMap.size())).reset();
         noMoreEnemiesToSpawn = false;
     }
 
@@ -159,10 +182,6 @@ public class EnemySpawner {
 
     public boolean areNoMoreEnemiesToSpawn() {
         return noMoreEnemiesToSpawn;
-    }
-
-    public int numFormations() {
-        return formationsMap.size();
     }
 }
 

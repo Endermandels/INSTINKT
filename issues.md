@@ -65,7 +65,7 @@ change the frequency (Introduces longer waves)
 
 ## Open Issues ##
 
-- **[61]** Create good enemy formations
+- **[61]** Create good enemy formations, separate difficulty levels
 - **[62]** Balance Player, Enemy, and World stats
 
 ## Backlog ##

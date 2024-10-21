@@ -3,7 +3,7 @@
 # twg -> top, bleft
 # fox -> bleft, bright
 
-###### Easy ######
+!!!!!!!! Easy !!!!!!!!
 1000
 fox bleft
 fox bright
@@ -32,8 +32,19 @@ cbr top
 cbr bleft
 cbr bright
 
-###### Medium ######
+!!!!!!!! Medium !!!!!!!!
+
+10
+cbr top
+twg bleft
+cbr bleft
+cbr bright
+
+!!!!!!!! Hard !!!!!!!!
 
 
-###### Hard ######
-
+10
+cbr top
+cbr bleft
+cbr bright
+twg top
