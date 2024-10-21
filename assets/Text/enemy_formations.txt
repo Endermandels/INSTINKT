@@ -1,47 +1,39 @@
+# cbr -> top, bleft, bright
+# sql -> top, bleft
+# twg -> top, bleft
+# fox -> bleft, bright
+
+###### Easy ######
 1000
 fox bleft
-10000
-twg bleft
-10
-fox bleft
 fox bright
-sql top
----------
+fox bleft
+---
 1000
 fox bleft
-10000
-twg bleft
-10
+fox bleft
+500
+sql top
+sql top
+---
+1000
+fox bleft
+400
+sql top
+sql bleft
+3000
 fox bright
-fox bright
-fox bleft
-fox bleft
----------
-800
-fox bleft
-10000
-twg bleft
-10
-fox bleft
+400
 sql top
-sql top
-sql top
-fox bright
-sql top
-sql top
-sql top
----------
-800
-fox bleft
-10000
-twg bleft
-10
+sql bleft
+---
+1000
+cbr top
+cbr bleft
 cbr bright
-fox bleft
-cbr bright
-fox bleft
-cbr bright
-fox bleft
-sql top
-sql top
-sql top
+
+###### Medium ######
+
+
+###### Hard ######
+

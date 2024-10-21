@@ -76,6 +76,7 @@ change the frequency (Introduces longer waves)
 - **[]** Enemies run away from stinky tiles
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
+- **[]** Create difficulty levels of enemy formation spawning
 - **[]** 
 - **[]** 
 - **[]** 

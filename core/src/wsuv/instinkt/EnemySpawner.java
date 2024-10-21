@@ -85,12 +85,13 @@ public class EnemySpawner {
                 if (line.matches("\\d+")) {
                     // Update frequency
                     currentFrequency = Integer.parseInt(line);
-                } else if (line.matches("^-+")) {
+                } else if (line.matches("^-.*")) {
                     // Start new formation
                     formationsMap.put(idx++, new EnemyFormation(new ArrayList<>(currentEnemiesToSpawn)));
                     currentEnemiesToSpawn.clear();
-                } else {
-                    // Split the line and extract the spawn location (ignoring the enemy type for now)
+                } else if (!line.matches("^#.*")) {
+                    // Split the line and extract the spawn location
+                    // Ignore comments using '#'
                     String[] parts = line.split(" ");
                     if (parts.length > 1) {
                         String enemyType = parts[0];

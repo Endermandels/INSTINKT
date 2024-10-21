@@ -421,19 +421,27 @@ public class Player extends GameObject {
             // Search for enemies along path
             int dir = flipped ? 1 : -1;
             boolean foundEnemy = false;
-            int x;
-            for (x = dir; Math.abs(x) <= sprayLength && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
-                ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
-                if (!enemiesInTile.isEmpty()) {
-                    for (Enemy e : enemiesInTile) {
-                        // Mark enemies as sprayed
-                        e.setSprayed(true, nuclearSpray);
-                    }
-                    foundEnemy = true;
-                    break;
+            int x = dir;
+            if (!tileMap[tileY][tileX].getEnemies().isEmpty()) {
+                for (Enemy e : tileMap[tileY][tileX].getEnemies()) {
+                    e.setSprayed(true, nuclearSpray);
                 }
+                foundEnemy = true;
+            } else {
+                for (; Math.abs(x) <= sprayLength && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
+                    ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
+                    if (!enemiesInTile.isEmpty()) {
+                        for (Enemy e : enemiesInTile) {
+                            // Mark enemies as sprayed
+                            e.setSprayed(true, nuclearSpray);
+                        }
+                        foundEnemy = true;
+                        break;
+                    }
+                }
+                spray.show(flipped, imgX, imgY, Math.abs(x));
             }
-            spray.show(flipped, imgX, imgY, Math.abs(x));
+
             if (!foundEnemy) {
                 x += -dir;
                 tileMap[tileY][tileX+x].setStinky(true, sprayDuration);
