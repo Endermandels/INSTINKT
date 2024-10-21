@@ -642,4 +642,8 @@ public class Player extends GameObject {
     public void setNuclearSpray(boolean nuclearSpray) {
         this.nuclearSpray = nuclearSpray;
     }
+
+    public boolean isNuclearSpray() {
+        return nuclearSpray;
+    }
 }
