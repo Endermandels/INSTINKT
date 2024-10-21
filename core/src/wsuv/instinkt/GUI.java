@@ -77,7 +77,7 @@ public class GUI {
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_HEART_ICON_IMG)
                 ,"Sharper Claws", "+1 ATK", 5, 1));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_BERRY_ICON_IMG)
-                ,"Quality Berries", "+1 HP and Spray on eating a Berry", 5, 2));
+                ,"Quality Berries", "+1 HP/Spray Berry Regen", 5, 2));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_BERRY_ICON_IMG)
                 ,"Fertilizer", "+2 Berry Gathering", 3, 3));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
@@ -87,7 +87,7 @@ public class GUI {
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
                 ,"Ferment", "+1 Spray Radius", 20, 6));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
-                ,"Nuclear Spray", "Stink overpowers sprayed Enemy", 200, 7));
+                ,"Nuclear Spray", "Overwhelm sprayed Enemies", 200, 7));
     }
 
     public void update(boolean hudOpen) {
@@ -178,6 +178,29 @@ public class GUI {
         switchSound.play(0.1f);
     }
 
+    private String getCurrentStat(int idx) {
+        Stats stats = player.getStats();
+        switch (idx) {
+            case 0:
+                return "Max HP: " + stats.getMaxHP();
+            case 1:
+                return "ATK: " + stats.getAtk();
+            case 2:
+                return "Regen: " + player.getBerryHPRegen();
+            case 3:
+                return "Max Production: " + berryManager.getBushBound();
+            case 4:
+                return "Max Sprays: " + player.getMaxSprays();
+            case 5:
+                return "Spray Length: " + player.getSprayLength();
+            case 6:
+                return "Spray Radius: " + player.getSprayRadius();
+            case 7:
+                return "Status: " + (player.isNuclearSpray() ? "Nuclear" : "Normal");
+        }
+        return "NA";
+    }
+
     public void draw(Batch batch) {
         TextureRegion bg = am.getCurrentImage(false);
         batch.draw(bg, 0f, 0f, bg.getRegionWidth()*8f, bg.getRegionHeight()*8f);
@@ -201,6 +224,7 @@ public class GUI {
                 drawGUIText(batch, font, "Cost: " + selectedUpgrade.cost, x, y + (0*dy));
                 drawGUIText(batch, font, selectedUpgrade.desc, x, y + (2*dy));
                 drawGUIText(batch, font, selectedUpgrade.details, x, y + (3*dy));
+                drawGUIText(batch, font, getCurrentStat(selectedIdx), x + 500f, y);
             }
         }
     }

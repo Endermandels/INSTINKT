@@ -482,9 +482,10 @@ public class PlayScreen extends ScreenAdapter {
                 ////////////////////////////////// COOLDOWN //////////////////////////////////
                 player.update(tileMap, enemies, state);
 
+                aoeEffectTiles.clear();
                 for (Tile[] tiles : tileMap) {
                     for (Tile tile : tiles) {
-                        if (tile.update()) aoeEffectTiles.remove(tile);
+                        tile.setStinky(false, 0);
                     }
                 }
 
