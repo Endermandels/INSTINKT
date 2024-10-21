@@ -16,6 +16,7 @@ public class Tile {
     public static final float INF = 10000f;
 
     private TextureRegion img;
+    private StinkEffect stinkEffect;
 
     private float imgX;
     private float imgY;
@@ -41,6 +42,7 @@ public class Tile {
         this.y = y;
 
         enemies = new ArrayList<>();
+        stinkEffect = new StinkEffect(game, x, y);
 
         containsObstacle = false;
         stinky = false;
@@ -62,6 +64,7 @@ public class Tile {
      * @return Whether the tile changed from stinky to not
      */
     public boolean update() {
+        stinkEffect.update();
         if (stinky && System.currentTimeMillis() > timeStinked + stinkDuration) {
             stinky = false;
             return true;
@@ -86,12 +89,18 @@ public class Tile {
         this.stinky = stinky;
         if (stinky) {
             timeStinked = System.currentTimeMillis();
-            stinkDuration = duration;
+        } else {
+            timeStinked = -1L;
         }
+        stinkDuration = duration;
     }
 
     public boolean isStinky() {
         return stinky;
+    }
+
+    public StinkEffect getStinkEffect() {
+        return stinkEffect;
     }
 
     public ArrayList<Enemy> getEnemies() {

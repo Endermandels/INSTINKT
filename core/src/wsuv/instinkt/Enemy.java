@@ -600,8 +600,4 @@ public class Enemy extends GameObject {
     public boolean isPassedOut() {
         return passedOut;
     }
-
-    public Direction getDir() {
-        return dir;
-    }
 }
