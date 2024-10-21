@@ -64,12 +64,10 @@ public class Tile {
      * @return Whether the tile changed from stinky to not
      */
     public boolean update() {
+        stinkEffect.update();
         if (stinky && System.currentTimeMillis() > timeStinked + stinkDuration) {
             stinky = false;
             return true;
-        }
-        if (stinky) {
-            stinkEffect.update();
         }
 
         return false;
@@ -91,8 +89,10 @@ public class Tile {
         this.stinky = stinky;
         if (stinky) {
             timeStinked = System.currentTimeMillis();
-            stinkDuration = duration;
+        } else {
+            timeStinked = -1L;
         }
+        stinkDuration = duration;
     }
 
     public boolean isStinky() {

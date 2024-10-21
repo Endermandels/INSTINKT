@@ -421,6 +421,7 @@ public class PlayScreen extends ScreenAdapter {
                     for (Enemy e : enemies) {
                         gameObjects.remove(e);
                     }
+                    enemies.clear();
 
                     berryManager.startOfCooldown();
                     player.startCooldown();

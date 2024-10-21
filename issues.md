@@ -65,10 +65,10 @@ change the frequency (Introduces longer waves)
 - **[61]** Create good enemy formations, separate difficulty levels
 - **[62]** Balance Player, Enemy, and World stats, Add restart mechanic
 - **[63]** Show current stats in shop
+- **[64]** Create AOE Effect image (instead of green tiles)
 
 ## Open Issues ##
 
-- **[64]** Create AOE Effect image (instead of green tiles)
 
 ## Backlog ##
 
