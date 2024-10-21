@@ -26,10 +26,13 @@ public class Stats {
         if (opponentStats.isDead() || isDead()) return;
         long curTime = System.currentTimeMillis();
         if (curTime - lastAttacked > atkInv) {
-            lastAttacked = curTime;
             hp -= opponentStats.getAtk();
             if (hp < 0) hp = 0;
         }
+    }
+
+    public void registerAttack() {
+        lastAttacked = System.currentTimeMillis();
     }
 
     public void reset() {

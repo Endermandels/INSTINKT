@@ -360,6 +360,7 @@ public class Player extends GameObject {
     }
 
     public void collision(ArrayList<Enemy> enemies) {
+        boolean attacked = false;
         for (Enemy e : enemies) {
             if (e.getTileX() == tileX && e.getTileY() == tileY
                     && stats.canBeAttacked() && e.getStats().canBeAttacked()) {
@@ -369,8 +370,10 @@ public class Player extends GameObject {
 
                 stats.getAttacked(e.getStats());
                 e.getStats().getAttacked(stats);
+                e.getStats().registerAttack();
 
-                if (!stats.isDead() && playerHP != stats.getHp()) {
+                if (!attacked && !stats.isDead() && playerHP != stats.getHp()) {
+                    attacked = true;
                     am.switchAnimState("HURT", "RUN");
                     if (e.getType() == Enemy.Type.CBR) {
                         timeSlowed = System.currentTimeMillis();
@@ -379,7 +382,8 @@ public class Player extends GameObject {
                     long id = hurtSound.play();
                     hurtSound.setVolume(id, 0.1f);
                     hurtSound.setPitch(id, 0.8f);
-                } else if (stats.isDead()) {
+                } else if (!attacked && stats.isDead()) {
+                    attacked = true;
                     long id = deathSound.play();
                     deathSound.setVolume(id, 0.1f);
                     deathSound.setPitch(id, 0.6f);
@@ -389,9 +393,9 @@ public class Player extends GameObject {
                     e.getAm().switchAnimState("HURT", "RUN");
                     e.playHurtSound();
                 }
-                break;
             }
         }
+        if (attacked) stats.registerAttack();
     }
 
     private void updateSpray(Tile[][] tileMap) {
