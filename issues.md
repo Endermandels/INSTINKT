@@ -68,11 +68,12 @@ change the frequency (Introduces longer waves)
 
 ## Backlog ##
 
+- **[]** Create good enemy formations
 - **[]** Balance Player, Enemy, and World stats
+- **[]** Spawn berries during enemy waves
+- **[]** 
+- **[]** 
 - **[]** Enemies run away from stinky tiles
-- **[]** 
-- **[]** 
-- **[]** 
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** 
