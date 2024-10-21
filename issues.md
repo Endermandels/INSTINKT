@@ -62,10 +62,10 @@ disappear when all other normal enemies have been defeated)
 - **[59]** Refactor level design to have more horizontal enemy movement
 - **[60]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
+- **[61]** Create good enemy formations, separate difficulty levels
 
 ## Open Issues ##
 
-- **[61]** Create good enemy formations, separate difficulty levels
 - **[62]** Balance Player, Enemy, and World stats
 
 ## Backlog ##
