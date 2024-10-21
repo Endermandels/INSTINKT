@@ -455,8 +455,13 @@ public class PlayScreen extends ScreenAdapter {
                     escPressed = false;
                 } else if (!escPressed && !hud.isOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                        paused = true;
-                        escPressed = true;
+                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                            // Shortcut for Gameover
+                            player.getStats().setHp(0);
+                        } else {
+                            paused = true;
+                            escPressed = true;
+                        }
                     } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed && !player.getStats().isDead()) {
                         interactPressed = true;
                         int amount = berryManager.getBerriesCollected();

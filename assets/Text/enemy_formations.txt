@@ -30,8 +30,11 @@ sql bleft
 ---
 1000
 cbr top
+sql top
 cbr bleft
+sql bleft
 cbr bright
+sql bright
 
 !!!!!!!! Medium !!!!!!!!
 

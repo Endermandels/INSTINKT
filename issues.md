@@ -63,11 +63,12 @@ disappear when all other normal enemies have been defeated)
 - **[60]** In enemy_formations.txt, when a number is encountered in the same enemy chain,
 change the frequency (Introduces longer waves)
 - **[61]** Create good enemy formations, separate difficulty levels
+- **[62]** Balance Player, Enemy, and World stats, Add restart mechanic
 
 ## Open Issues ##
 
-- **[62]** Balance Player, Enemy, and World stats
-- **[63]** Create AOE Effect image (instead of green tiles)
+- **[63]** Show current stats in shop
+- **[64]** Create AOE Effect image (instead of green tiles)
 
 ## Backlog ##
 
