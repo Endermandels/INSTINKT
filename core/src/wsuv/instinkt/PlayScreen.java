@@ -457,7 +457,7 @@ public class PlayScreen extends ScreenAdapter {
                     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                         paused = true;
                         escPressed = true;
-                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed && !player.getStats().isDead()) {
                         interactPressed = true;
                         int amount = berryManager.getBerriesCollected();
                         if (amount > 0 && (player.getSpraysLeft() < player.getMaxSprays()

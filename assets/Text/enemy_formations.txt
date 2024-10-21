@@ -71,18 +71,12 @@ fox bleft
 fox bleft
 fox bright
 fox bright
-fox bleft
-fox bleft
-fox bright
-fox bright
 cbr top
 cbr top
 cbr top
+6000
 fox bleft
-fox bleft
-fox bright
-fox bright
-fox bleft
+1000
 fox bleft
 fox bright
 fox bright

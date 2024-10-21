@@ -116,12 +116,12 @@ public class Player extends GameObject {
 
         sprayCooldown = 1000L;
         startSprayCooldown = sprayCooldown;
-        maxSprays = 8;
+        maxSprays = 2;
         startMaxSprays = maxSprays;
         spraysLeft = maxSprays;
         sprayRadius = 1;
         startSprayRadius = sprayRadius;
-        sprayDuration = 1000L;
+        sprayDuration = 800L;
         startSprayDuration = sprayDuration;
         sprayLength = 2;
         startSprayLength = sprayLength;

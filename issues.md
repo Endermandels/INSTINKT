@@ -67,9 +67,11 @@ change the frequency (Introduces longer waves)
 ## Open Issues ##
 
 - **[62]** Balance Player, Enemy, and World stats
+- **[63]** Create AOE Effect image (instead of green tiles)
 
 ## Backlog ##
 
+- **[]** Create README with instructions and info
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
@@ -77,7 +79,6 @@ change the frequency (Introduces longer waves)
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** Create difficulty levels of enemy formation spawning
-- **[]** 
 - **[]** 
 - **[]** 
 - **[]** How to Play Screen

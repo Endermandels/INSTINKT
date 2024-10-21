@@ -122,7 +122,6 @@ public class EnemySpawner {
 
             // Store the last formation
             if (toAdd) {
-                System.out.println("Adding...");
                 formationsMap.put(idx, new EnemyFormation(currentEnemiesToSpawn));
             }
             if (!formationsMap.isEmpty()) {
@@ -171,7 +170,6 @@ public class EnemySpawner {
     public void setFormation(int difficulty) {
         lastSpawn = System.currentTimeMillis();
         Map<Integer, EnemyFormation> formationMap = formations.get(difficulty);
-        System.out.println(formationMap);
         formation = formationMap.get(game.random.nextInt(formationMap.size())).reset();
         noMoreEnemiesToSpawn = false;
     }

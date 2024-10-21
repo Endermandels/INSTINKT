@@ -280,7 +280,7 @@ public class GUI {
 
     public void reset() {
         for (Upgrade upgrade : upgrades) {
-            upgrade.resetCost();
+            upgrade.reset();
         }
         am.switchAnimState("SHORT");
         shopOpen = false;
@@ -304,6 +304,8 @@ class Upgrade {
     public int cost;
     public String desc;
     public String details;
+    public String startDesc;
+    public String startDetails;
 
     public Upgrade(Texture spriteSheet, String description, String details, int cost, int idx) {
         this.am = new AnimationManager(
@@ -319,6 +321,8 @@ class Upgrade {
 
         this.desc = description;
         this.details = details;
+        startDesc = description;
+        startDetails = details;
         this.cost = cost;
         startCost = cost;
     }
@@ -377,7 +381,9 @@ class Upgrade {
         batch.draw(img, x, y, width, height);
     }
 
-    public void resetCost() {
+    public void reset() {
+        desc = startDesc;
+        details = startDetails;
         cost = startCost;
     }
 
