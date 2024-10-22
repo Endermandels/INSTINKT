@@ -87,7 +87,7 @@ public class GUI {
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
                 ,"Ferment", "+1 Spray Radius", 20, 6));
         upgrades.add(new Upgrade(game.am.get(Game.RSC_SS_SPRAY_ICON_IMG)
-                ,"Nuclear Spray", "Overwhelm sprayed Enemies", 200, 7));
+                ,"Nuclear Spray", "Overwhelm sprayed Enemies", 100, 7));
     }
 
     public void update(boolean hudOpen) {
