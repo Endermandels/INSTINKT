@@ -58,6 +58,10 @@ public class PlayScreen extends ScreenAdapter {
 
     private boolean skipToCooldownPhase;
 
+    private float startEnemyWaveTransparency;
+    private float startEnemyWaveTimer;
+    private float startEnemyWaveDuration;
+
     public PlayScreen(Game game) {
         this.game = game;
 
@@ -103,6 +107,10 @@ public class PlayScreen extends ScreenAdapter {
         showEnemyStats = false;
 
         skipToCooldownPhase = false;
+
+        startEnemyWaveTransparency = 0f;
+        startEnemyWaveTimer = 0f;
+        startEnemyWaveDuration = 2f;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -523,24 +531,35 @@ public class PlayScreen extends ScreenAdapter {
 
                 if (!hud.isOpen() && !gui.isShopOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                        // Start new enemy wave
-                        state = SubState.ENEMY_WAVE;
-                        skipToCooldownPhase = false;
-                        gui.startEnemyWave();
-                        fillAllDijkstraValues();
-                        if (wave < medThresh) {
-                            // EASY
-                            enemySpawner.setFormation(0);
-                        } else if (wave < hardThresh) {
-                            // MEDIUM
-                            enemySpawner.setFormation(1);
-                        } else {
-                            // HARD
-                            enemySpawner.setFormation(2);
+                        startEnemyWaveTimer += delta;
+                        startEnemyWaveTransparency = startEnemyWaveTimer / startEnemyWaveDuration;
+                        if (startEnemyWaveTimer > startEnemyWaveDuration) {
+                            // Start new enemy wave
+                            startEnemyWaveTransparency = 0f;
+                            startEnemyWaveTimer = 0f;
+                            state = SubState.ENEMY_WAVE;
+                            skipToCooldownPhase = false;
+                            gui.startEnemyWave();
+                            fillAllDijkstraValues();
+                            if (wave < medThresh) {
+                                // EASY
+                                enemySpawner.setFormation(0);
+                            } else if (wave < hardThresh) {
+                                // MEDIUM
+                                enemySpawner.setFormation(1);
+                            } else {
+                                // HARD
+                                enemySpawner.setFormation(2);
+                            }
+                            game.cooldownMusic.stop();
+                            game.battleMusic.play();
                         }
-                        game.cooldownMusic.stop();
-                        game.battleMusic.play();
-                    } else if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
+                    } else {
+                        startEnemyWaveTimer = 0f;
+                        startEnemyWaveTransparency = 0f;
+                    }
+
+                    if (Gdx.input.isKeyPressed(Input.Keys.E) && !interactPressed) {
                         // Plant Berry bush
                         interactPressed = true;
                         berryManager.plantNewBerryBush();
@@ -557,6 +576,8 @@ public class PlayScreen extends ScreenAdapter {
                     }
                     player.setTakeInput(true);
                 } else {
+                    startEnemyWaveTimer = 0f;
+                    startEnemyWaveTransparency = 0f;
                     player.setTakeInput(false);
 
                     if (!hud.isOpen()) {
@@ -739,6 +760,11 @@ public class PlayScreen extends ScreenAdapter {
 
             debugImages.clear();
             gui.draw(game.batch);
+            bigFont.setColor(1,1,1,startEnemyWaveTransparency);
+            bigFont.draw(game.batch, "Starting Wave"
+                    ,Gdx.graphics.getWidth() / 2f - 340f
+                    ,Gdx.graphics.getHeight() / 2f + 100f);
+            bigFont.setColor(1,1,1,1);
         }
         hud.draw(game.batch);
         game.batch.end();
