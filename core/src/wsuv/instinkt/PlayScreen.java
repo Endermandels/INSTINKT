@@ -628,7 +628,7 @@ public class PlayScreen extends ScreenAdapter {
                         debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
                         debugFont.draw(game.batch, num, tile.getImgX(),
                                 tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
-                        debugFont.setColor(0, 0, 0, 1);  // Reset to white
+                        debugFont.setColor(0.3f, 0.02f, 0.3f, 1);  // Reset to white
                         debugFont.draw(game.batch, berryNum, tile.getImgX(),
                                 tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
                         debugFont.setColor(1, 1, 1, 1);  // Reset to white
