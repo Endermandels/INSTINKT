@@ -67,10 +67,10 @@ change the frequency (Introduces longer waves)
 - **[63]** Show current stats in shop
 - **[64]** Create AOE Effect image (instead of green tiles)
 - **[65]** Create README with instructions and info
+- **[66]** Debug Grid Tile
 
 ## Open Issues ##
 
-- **[66]** Debug Grid Tile
 - **[67]** Eat Berry SFX
 - **[68]** Wave HUD command
 - **[69]** Press and Hold space to move to next enemy wave

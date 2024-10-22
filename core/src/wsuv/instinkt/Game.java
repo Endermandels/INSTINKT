@@ -22,6 +22,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_PRESSAKEY_IMG = "Images/pressakey.png";
     public static final String RSC_OVERLAY_IMG = "Images/Overlay Image.png";
     public static final String RSC_AOE_EFFECT_IMG = "Images/AOE Effect.png";
+    public static final String RSC_DEBUG_TILE_GRID_IMG = "Images/debug grid tile.png";
 
     // Sprite Sheets
     public static final String RSC_SS_GRASS_IMG = "Images/Tileset Grass.png";
@@ -49,6 +50,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_DPCOMIC_FONT_GUI = "DPComic_GUI.ttf";
     public static final String RSC_DPCOMIC_FONT_BLACK = "DPComic_Black.ttf";
     public static final String RSC_DPCOMIC_FONT_BIG = "DPComic_Big.ttf";
+    public static final String RSC_DPCOMIC_FONT_DEBUG = "DPComic_Debug.ttf";
 
     // SFX
     public static final String RSC_SQUIRREL_NOISE_SFX = "SFX/squirrel noise 1.mp3";
@@ -105,6 +107,12 @@ public class Game extends com.badlogic.gdx.Game {
         myFontBlack.fontParameters.color = new Color(Color.BLACK);
         am.load(RSC_DPCOMIC_FONT_BLACK, BitmapFont.class, myFontBlack);
 
+        // Black Font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter myFontDebug = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        myFontDebug.fontFileName = RSC_DPCOMIC_FONT_FILE;
+        myFontDebug.fontParameters.size = 28;
+        am.load(RSC_DPCOMIC_FONT_DEBUG, BitmapFont.class, myFontDebug);
+
         // GUI Font
         FreetypeFontLoader.FreeTypeFontLoaderParameter myFontGUI = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         myFontGUI.fontFileName = RSC_DPCOMIC_FONT_FILE;
@@ -116,6 +124,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_PRESSAKEY_IMG, Texture.class);
         am.load(RSC_OVERLAY_IMG, Texture.class);
         am.load(RSC_AOE_EFFECT_IMG, Texture.class);
+        am.load(RSC_DEBUG_TILE_GRID_IMG, Texture.class);
         am.load(RSC_SS_GRASS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_IMG, Texture.class);
         am.load(RSC_SS_PLANTS_SHADOW_IMG, Texture.class);
