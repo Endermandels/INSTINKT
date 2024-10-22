@@ -80,9 +80,9 @@ change the frequency (Introduces longer waves)
 
 ## Backlog ##
 
+- **[]** Walking SFX
 - **[]** Plant Berry Seed VFX
 - **[]** Spawn berries during enemy waves
-- **[]** 
 - **[]** 
 - **[]** 
 - **[]** Add Druid leader
