@@ -760,6 +760,10 @@ public class PlayScreen extends ScreenAdapter {
 
             debugImages.clear();
             gui.draw(game.batch);
+            bigFont.setColor(0,0,0,startEnemyWaveTransparency);
+            bigFont.draw(game.batch, "Starting Wave"
+                    ,Gdx.graphics.getWidth() / 2f - 336f
+                    ,Gdx.graphics.getHeight() / 2f + 96f);
             bigFont.setColor(1,1,1,startEnemyWaveTransparency);
             bigFont.draw(game.batch, "Starting Wave"
                     ,Gdx.graphics.getWidth() / 2f - 340f
