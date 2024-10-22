@@ -223,6 +223,25 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
+        // Wave - Set wave to specified number (max = WAVES_GOAL-1, min = 1)
+        hud.registerAction("wave", new HUDActionCommand() {
+            static final String help = "usage: wave <number>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    wave = Math.min(WAVES_GOAL-1, Math.max(1, Integer.parseInt(cmd[1])));
+                    return "Set wave to " + wave;
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set the current wave to specified number";
+            }
+        });
+
         PlayerHUDCommands hudSetup = new PlayerHUDCommands(hud, player);
         hudSetup.initHUDCommands();
 
