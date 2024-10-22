@@ -98,7 +98,7 @@ public class Enemy extends GameObject {
     private final int BERRIES_TAKEN = 3;
     private int berriesStolen;
 
-    private final float WHIMPER_DURATION = 1f;
+    private final float WHIMPER_DURATION = 2f;
     private float whimperTimer;
 
     private final float FROZEN_DURATION = 0.5f;
@@ -442,6 +442,8 @@ public class Enemy extends GameObject {
                         break;
                 }
                 whimperTimer = 0f;
+                am.switchAnimState("HURT", "RUN");
+                frozenTimer += 1f/60f;
             }
         }
 
@@ -629,9 +631,9 @@ public class Enemy extends GameObject {
                     break;
             }
             am.switchAnimState("HURT", "RUN");
+            frozenTimer += 1f/60f;
             nuclearSprayed = nuclearSpray;
             repelled = true;
-            frozenTimer += 1f/60f;
         }
     }
 
