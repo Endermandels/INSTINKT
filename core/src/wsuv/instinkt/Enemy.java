@@ -86,6 +86,7 @@ public class Enemy extends GameObject {
 
     private boolean sprayed;
     private boolean passedOut;
+    private boolean repelled;
 
     private final long TIME_TO_PASS_OUT = 800L;
     private long lastTimeSprayed;
@@ -96,6 +97,9 @@ public class Enemy extends GameObject {
     private long startStealingBerries;
     private final int BERRIES_TAKEN = 3;
     private int berriesStolen;
+
+    private final float WHIMPER_DURATION = 1f;
+    private float whimperTimer;
 
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations, Player player, BerryManager berryManager) {
@@ -109,6 +113,8 @@ public class Enemy extends GameObject {
         hurtSound = null;
         deathSound = null;
         sprayedSound = null;
+
+        whimperTimer = 0f;
 
         switch (type) {
             case FOX:
@@ -221,6 +227,7 @@ public class Enemy extends GameObject {
         sprayed = false;
         nuclearSprayed = false;
         passedOut = false;
+        repelled = false;
 
 
         this.dir = dir;
@@ -417,6 +424,23 @@ public class Enemy extends GameObject {
 
         am.update();
 
+        if ((repelled || sprayed) && sprayedSound != null && !stats.isDead()) {
+            float time = Gdx.graphics.getDeltaTime();
+            if (time > 1f) time = 1f / 60f;
+            whimperTimer += time;
+            if (whimperTimer > WHIMPER_DURATION) {
+                switch (type) {
+                    case FOX:
+                        sprayedSound.play(2f, 2f, 0f);
+                        break;
+                    case SQL:
+                        sprayedSound.play(2f, 3f, 0f);
+                        break;
+                }
+                whimperTimer = 0f;
+            }
+        }
+
         // Update stinky tiles
         if (sprayed) {
             for (int row = -player.getSprayRadius(); row <= player.getSprayRadius(); row++) {
@@ -453,6 +477,7 @@ public class Enemy extends GameObject {
 
         if (sprayedSound != null && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
             targetType = Tile.DistanceType.EXIT;
+            repelled = true;
         }
 
         if (nuclearSprayed) {

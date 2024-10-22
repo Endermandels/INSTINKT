@@ -71,14 +71,15 @@ change the frequency (Introduces longer waves)
 - **[67]** Eat Berry SFX
 - **[68]** Wave HUD command
 - **[69]** Press and Hold space to move to next enemy wave
+- **[70]** Whimper SFX
 
 ## Open Issues ##
 
-- **[70]** Whimper SFX
+- **[71]** Enemies run away from stinky tiles
 
 ## Backlog ##
 
-- **[]** Enemies run away from stinky tiles
+- **[]** Stop enemy when first smelling stink (hurt animation).
 - **[]** Plant Berry Seed VFX
 - **[]** Spawn berries during enemy waves
 - **[]** 
@@ -89,7 +90,6 @@ change the frequency (Introduces longer waves)
 - **[]** 
 - **[]** 
 - **[]** How to Play Screen
-- **[]** Stop enemy when first smelling stink (hurt animation).
 - **[]** Make shop upgrades more interesting
 - **[]** 
 - **[]** 
@@ -97,9 +97,7 @@ change the frequency (Introduces longer waves)
 - **[]** 
 - **[]** 
 - **[]** Separate enemies in their own classes
-- **[]** Enemies run a certain amount of distance before fainting from smell
 - **[]** Fade out AOE effect
-- **[]** Improve AOE effect texture
 - **[]** Fix player movement stickiness
 - **[]** Once the spray cooldown drops below 0.1 seconds,
 Change SFX and animation to be a constant spray sound while spraying

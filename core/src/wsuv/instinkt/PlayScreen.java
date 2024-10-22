@@ -58,9 +58,9 @@ public class PlayScreen extends ScreenAdapter {
 
     private boolean skipToCooldownPhase;
 
+    private final float START_ENEMY_WAVE_DURATION = 2f;
     private float startEnemyWaveTransparency;
     private float startEnemyWaveTimer;
-    private float startEnemyWaveDuration;
 
     public PlayScreen(Game game) {
         this.game = game;
@@ -110,7 +110,6 @@ public class PlayScreen extends ScreenAdapter {
 
         startEnemyWaveTransparency = 0f;
         startEnemyWaveTimer = 0f;
-        startEnemyWaveDuration = 2f;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -532,8 +531,8 @@ public class PlayScreen extends ScreenAdapter {
                 if (!hud.isOpen() && !gui.isShopOpen()) {
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                         startEnemyWaveTimer += delta;
-                        startEnemyWaveTransparency = startEnemyWaveTimer / startEnemyWaveDuration;
-                        if (startEnemyWaveTimer > startEnemyWaveDuration) {
+                        startEnemyWaveTransparency = startEnemyWaveTimer / START_ENEMY_WAVE_DURATION;
+                        if (startEnemyWaveTimer > START_ENEMY_WAVE_DURATION) {
                             // Start new enemy wave
                             startEnemyWaveTransparency = 0f;
                             startEnemyWaveTimer = 0f;
@@ -760,6 +759,10 @@ public class PlayScreen extends ScreenAdapter {
 
             debugImages.clear();
             gui.draw(game.batch);
+            bigFont.setColor(0,0,0,startEnemyWaveTransparency);
+            bigFont.draw(game.batch, "Starting Wave"
+                    ,Gdx.graphics.getWidth() / 2f - 336f
+                    ,Gdx.graphics.getHeight() / 2f + 96f);
             bigFont.setColor(1,1,1,startEnemyWaveTransparency);
             bigFont.draw(game.batch, "Starting Wave"
                     ,Gdx.graphics.getWidth() / 2f - 340f
