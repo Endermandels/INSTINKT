@@ -15,26 +15,22 @@ fox bleft
 fox bleft
 500
 sql top
-sql top
 ---
 1000
 fox bleft
 400
 sql top
-sql bleft
 3000
 fox bright
 400
 sql top
-sql bleft
 ---
 1000
 cbr top
 sql top
 cbr bleft
-sql bleft
+sql top
 cbr bright
-sql bright
 
 !!!!!!!! Medium !!!!!!!!
 

@@ -534,6 +534,7 @@ public class Player extends GameObject {
     public void eatBerry() {
         spraysLeft = Math.min(spraysLeft+berrySprayRegen, maxSprays);
         stats.setHp(Math.min(stats.getHp()+berryHPRegen, stats.getMaxHP()));
+        slowed = false;
     }
 
     public void startCooldown() {

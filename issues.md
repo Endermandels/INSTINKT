@@ -70,20 +70,25 @@ change the frequency (Introduces longer waves)
 ## Open Issues ##
 
 - **[65]** Create README with instructions and info
+- **[66]** Debug Grid Tile
+- **[67]** Eat Berry SFX
+- **[68]** Wave HUD command
+- **[69]** Press and Hold space to move to next enemy wave
+- **[70]** Whimper SFX
 
 ## Backlog ##
 
+- **[]** Enemies run away from stinky tiles
+- **[]** Plant Berry Seed VFX
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
-- **[]** Enemies run away from stinky tiles
+- **[]** 
 - **[]** Add Druid leader
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
-- **[]** Create difficulty levels of enemy formation spawning
 - **[]** 
 - **[]** 
 - **[]** How to Play Screen
-- **[]** Press and Hold space to move to next enemy wave
 - **[]** Stop enemy when first smelling stink (hurt animation).
 - **[]** Make shop upgrades more interesting
 - **[]** 
