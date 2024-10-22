@@ -62,6 +62,9 @@ public class PlayScreen extends ScreenAdapter {
     private float startEnemyWaveTransparency;
     private float startEnemyWaveTimer;
 
+    private final float UPDATE_STINKY_TILES_DURATION = 10f/60f;
+    private float updateStinkyTilesTimer;
+
     public PlayScreen(Game game) {
         this.game = game;
 
@@ -110,6 +113,8 @@ public class PlayScreen extends ScreenAdapter {
 
         startEnemyWaveTransparency = 0f;
         startEnemyWaveTimer = 0f;
+
+        updateStinkyTilesTimer = 0f;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -315,6 +320,15 @@ public class PlayScreen extends ScreenAdapter {
                     , first);
             first = false;
         }
+
+        first = true;
+        for (Integer[] location : enemySpawnLocations) {
+            fillDijkstraFromTile(Tile.DistanceType.SPRAYED_EXIT
+                    , location[1]
+                    , location[0]
+                    , first);
+            first = false;
+        }
     }
 
     private void fillDijkstraFromTile(Tile.DistanceType dt, int tileX, int tileY) {
@@ -330,7 +344,7 @@ public class PlayScreen extends ScreenAdapter {
         Comparator<Tile> comparator = new DistanceComparator(dt);
         PriorityQueue<Tile> queue = new PriorityQueue<>(comparator);
 
-        if (dt != Tile.DistanceType.EXIT)  {
+        if (dt != Tile.DistanceType.EXIT && dt != Tile.DistanceType.SPRAYED_EXIT)  {
             source = tileMap[tileY][tileX];
             source.setDistance(dt, 0f);
         } else {
@@ -352,11 +366,14 @@ public class PlayScreen extends ScreenAdapter {
             float playerDist = 0f;
             if (dt != Tile.DistanceType.PLAYER) {
                 playerDist = tileMap[tile.getY()][tile.getX()].getDistance(Tile.DistanceType.PLAYER);
-                playerDist = 10f/(float)Math.pow(playerDist, 2);
+                playerDist = 10f/(float)Math.pow(playerDist+1, 2);
             }
+
 
             float pathDist = tile.getDistance(dt) + 1f
                     + playerDist;
+            if (dt == Tile.DistanceType.EXIT)
+                pathDist += tile.getStinkPower();
 
             for (Tile neighbor : getNeighbors(tile, queue)) {
                 // Each path has a weight of 1 for now.
@@ -423,7 +440,7 @@ public class PlayScreen extends ScreenAdapter {
 
                     for (Tile[] tiles : tileMap) {
                         for (Tile tile : tiles) {
-                            tile.setStinky(false, 0L);
+                            tile.setStinky(false, 0L, 0f);
                             aoeEffectTiles.remove(tile);
                         }
                     }
@@ -458,7 +475,7 @@ public class PlayScreen extends ScreenAdapter {
 
                     for (Tile[] tiles : tileMap) {
                         for (Tile tile : tiles) {
-                            tile.setStinky(false, 0L);
+                            tile.setStinky(false, 0L, 0f);
                             tile.getEnemies().clear();
                             aoeEffectTiles.remove(tile);
                         }
@@ -479,6 +496,20 @@ public class PlayScreen extends ScreenAdapter {
                         if (tile.update()) aoeEffectTiles.remove(tile);
                     }
                 }
+
+                if (updateStinkyTilesTimer > UPDATE_STINKY_TILES_DURATION) {
+                    updateStinkyTilesTimer = 0f;
+                    ArrayList<Integer[]> enemySpawnLocations = enemySpawner.getEnemySpawnLocations();
+                    boolean first = true;
+                    for (Integer[] location : enemySpawnLocations) {
+                        fillDijkstraFromTile(Tile.DistanceType.EXIT
+                                , location[1]
+                                , location[0]
+                                , first);
+                        first = false;
+                    }
+                }
+                updateStinkyTilesTimer += delta;
 
                 if (escPressed && !Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
                     escPressed = false;
@@ -514,7 +545,7 @@ public class PlayScreen extends ScreenAdapter {
                 aoeEffectTiles.clear();
                 for (Tile[] tiles : tileMap) {
                     for (Tile tile : tiles) {
-                        tile.setStinky(false, 0);
+                        tile.setStinky(false, 0, 0f);
                     }
                 }
 
