@@ -27,6 +27,7 @@
 
 ### HUD
     next:       Skip the current enemy wave and go to the next cooldown phase
+    wave:       Set the current wave to specified number (Min=1, Max=WAVES_GOAL-1)
     berries:    Set the player's berry count to specified amount
     tl:         Show the tile location of all moving entities.
                 Also shows the Dijkstra distances of each tile.
