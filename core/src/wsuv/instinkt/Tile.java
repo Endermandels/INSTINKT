@@ -94,6 +94,7 @@ public class Tile {
     public void setStinky(boolean stinky, long duration, float stinkPower) {
         this.stinky = stinky;
         if (stinky) {
+            stinkEffect.show(duration);
             timeStinked = System.currentTimeMillis();
         } else {
             timeStinked = -1L;

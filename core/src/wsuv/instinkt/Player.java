@@ -425,21 +425,27 @@ public class Player extends GameObject {
             boolean foundEnemy = false;
             int x = dir;
             if (!tileMap[tileY][tileX].getEnemies().isEmpty()) {
+                foundEnemy = false;
                 for (Enemy e : tileMap[tileY][tileX].getEnemies()) {
-                    e.setSprayed(true, nuclearSpray);
+                    if (!e.isPassedOut()) {
+                        foundEnemy = true;
+                        e.setSprayed(true, nuclearSpray);
+                    }
                 }
-                foundEnemy = true;
             }
-            if (tileMap[tileY][tileX].getEnemies().isEmpty() || nuclearSpray) {
+            if (!foundEnemy || nuclearSpray) {
                 for (; Math.abs(x) <= sprayLength && game.validMove(tileMap, tileX+x, tileY); x+=dir) {
                     ArrayList<Enemy> enemiesInTile = tileMap[tileY][tileX+x].getEnemies();
                     if (!enemiesInTile.isEmpty()) {
+                        foundEnemy = false;
                         for (Enemy e : enemiesInTile) {
                             // Mark enemies as sprayed
-                            e.setSprayed(true, nuclearSpray);
+                            if (!e.isPassedOut()) {
+                                foundEnemy = true;
+                                e.setSprayed(true, nuclearSpray);
+                            }
                         }
-                        foundEnemy = true;
-                        if (!nuclearSpray)
+                        if (!nuclearSpray && foundEnemy)
                             break;
                     }
                 }
