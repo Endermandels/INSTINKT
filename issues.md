@@ -72,10 +72,10 @@ change the frequency (Introduces longer waves)
 - **[68]** Wave HUD command
 - **[69]** Press and Hold space to move to next enemy wave
 - **[70]** Whimper SFX
+- **[71]** Stop enemy when first smelling stink (hurt animation)
 
 ## Open Issues ##
 
-- **[71]** Stop enemy when first smelling stink (hurt animation).
 - **[72]** Enemies run away from stinky tiles
 
 ## Backlog ##

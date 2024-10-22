@@ -101,6 +101,9 @@ public class Enemy extends GameObject {
     private final float WHIMPER_DURATION = 1f;
     private float whimperTimer;
 
+    private final float FROZEN_DURATION = 0.5f;
+    private float frozenTimer;
+
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations, Player player, BerryManager berryManager) {
         super(null, 0, 0, 20);
@@ -115,6 +118,7 @@ public class Enemy extends GameObject {
         sprayedSound = null;
 
         whimperTimer = 0f;
+        frozenTimer = 0f;
 
         switch (type) {
             case FOX:
@@ -421,13 +425,13 @@ public class Enemy extends GameObject {
 
     public boolean update(Tile[][] tileMap, ArrayList<Enemy> enemies) {
         boolean toRemove = false;
+        float delta = Gdx.graphics.getDeltaTime();
+        if (delta > 1f) delta = 1f / 60f;
 
         am.update();
 
         if ((repelled || sprayed) && sprayedSound != null && !stats.isDead()) {
-            float time = Gdx.graphics.getDeltaTime();
-            if (time > 1f) time = 1f / 60f;
-            whimperTimer += time;
+            whimperTimer += delta;
             if (whimperTimer > WHIMPER_DURATION) {
                 switch (type) {
                     case FOX:
@@ -477,7 +481,12 @@ public class Enemy extends GameObject {
 
         if (sprayedSound != null && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
             targetType = Tile.DistanceType.EXIT;
-            repelled = true;
+            if (!sprayed && !repelled) {
+                am.switchAnimState("HURT", "RUN");
+                frozenTimer += delta;
+                whimperTimer = WHIMPER_DURATION + 1f;
+                repelled = true;
+            }
         }
 
         if (nuclearSprayed) {
@@ -519,9 +528,14 @@ public class Enemy extends GameObject {
                 }
                 if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
             }
-        } else {
+        } else if (frozenTimer == 0f) {
             if (move(tileMap)) {
                 toRemove = true;
+            }
+        } else {
+            frozenTimer += delta;
+            if (frozenTimer > FROZEN_DURATION) {
+                frozenTimer = 0f;
             }
         }
         return toRemove;
@@ -614,7 +628,10 @@ public class Enemy extends GameObject {
                     sprayedSound.setPitch(id, 3f);
                     break;
             }
+            am.switchAnimState("HURT", "RUN");
             nuclearSprayed = nuclearSpray;
+            repelled = true;
+            frozenTimer += 1f/60f;
         }
     }
 
