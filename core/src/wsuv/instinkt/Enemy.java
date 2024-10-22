@@ -78,6 +78,7 @@ public class Enemy extends GameObject {
     private boolean movingHorizontal;
     private boolean movingVertical;
     private boolean flipped;
+    private boolean onNewTile;
     private Direction dir;
 
     private boolean finishedDeathAnimation;
@@ -85,6 +86,7 @@ public class Enemy extends GameObject {
     private boolean wasDead;
 
     private boolean sprayed;
+    private boolean wasSprayed;
     private boolean passedOut;
     private boolean repelled;
 
@@ -229,6 +231,7 @@ public class Enemy extends GameObject {
 
         lastTimeSprayed = -1L;
         sprayed = false;
+        wasSprayed = false;
         nuclearSprayed = false;
         passedOut = false;
         repelled = false;
@@ -241,6 +244,7 @@ public class Enemy extends GameObject {
         this.tileY = tileY;
         pathX = tileX;
         pathY = tileY;
+        onNewTile = false;
         targetPos = new int[2];
 
         stealBerriesDuration = 1500L;
@@ -415,10 +419,13 @@ public class Enemy extends GameObject {
 
         // Each tile keeps track of which enemies are in it.
         if (prevTileX != tileX || prevTileY != tileY) {
+            onNewTile = true;
             if (game.validMove(prevTileX, prevTileY))
                 tileMap[prevTileY][prevTileX].getEnemies().remove(this);
             if (game.validMove(tileX, tileY))
                 tileMap[tileY][tileX].getEnemies().add(this);
+        } else {
+            onNewTile = false;
         }
 
         return toRemove;
@@ -449,7 +456,8 @@ public class Enemy extends GameObject {
         }
 
         // Update stinky tiles
-        if (sprayed) {
+        if (sprayed && (onNewTile || !wasSprayed)) {
+            wasSprayed = true;
             for (int row = -player.getSprayRadius(); row <= player.getSprayRadius(); row++) {
                 for (int col = -player.getSprayRadius(); col <= player.getSprayRadius(); col++) {
                     // Spawn stinky tiles in a circle (roughly)
@@ -458,7 +466,9 @@ public class Enemy extends GameObject {
 
                     if (game.validMove(tileX+col, tileY+row)
                             && distance <= Math.pow(player.getSprayRadius(),2)*alpha) {
-                        tileMap[tileY+row][tileX+col].setStinky(true, player.getSprayDuration()
+                        int weight = nuclearSprayed ? 3 : 2;
+
+                        tileMap[tileY+row][tileX+col].setStinky(true, player.getSprayDuration() * weight
                                 , 1000f/(float)(distance+1));
                     }
                 }
@@ -494,13 +504,9 @@ public class Enemy extends GameObject {
             }
         }
 
-        if (nuclearSprayed) {
-            if (!passedOut && System.currentTimeMillis() > lastTimeSprayed + TIME_TO_PASS_OUT) {
-                passedOut = true;
+        if (nuclearSprayed && !stats.isDead()) {
+            if (System.currentTimeMillis() > lastTimeSprayed + TIME_TO_PASS_OUT) {
                 stats.setHp(0);
-            } else if (passedOut && System.currentTimeMillis() > lastTimeSprayed + TIME_TO_PASS_OUT
-                + player.getSprayDuration()*2) {
-                sprayed = false;
             }
         } else if (sprayed && System.currentTimeMillis() > lastTimeSprayed + player.getSprayDuration()*2) {
             sprayed = false;
@@ -527,11 +533,15 @@ public class Enemy extends GameObject {
             am.switchAnimState("DEAD");
             am.setOneShot(true);
             if (am.isFinished() && !passedOut) {
-                if(!finishedDeathAnimation) {
-                    finishedDeathAnimation = true;
-                    timeFinishedDeathAnimation = System.currentTimeMillis();
+                if (nuclearSprayed) {
+                    passedOut = true;
+                } else {
+                    if(!finishedDeathAnimation) {
+                        finishedDeathAnimation = true;
+                        timeFinishedDeathAnimation = System.currentTimeMillis();
+                    }
+                    if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
                 }
-                if (System.currentTimeMillis() > timeFinishedDeathAnimation + 1000L) toRemove = true;
             }
         } else if (frozenTimer == 0f) {
             if (move(tileMap)) {

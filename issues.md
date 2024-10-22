@@ -74,10 +74,10 @@ change the frequency (Introduces longer waves)
 - **[70]** Whimper SFX
 - **[71]** Stop enemy when first smelling stink (hurt animation)
 - **[72]** Enemies run away from stinky tiles
+- **[73]** Fade out AOE effect
 
 ## Open Issues ##
 
-- **[73]** Fade out AOE effect
 
 ## Backlog ##
 
