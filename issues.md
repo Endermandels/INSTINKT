@@ -75,11 +75,11 @@ change the frequency (Introduces longer waves)
 
 ## Open Issues ##
 
-- **[71]** Enemies run away from stinky tiles
+- **[71]** Stop enemy when first smelling stink (hurt animation).
+- **[72]** Enemies run away from stinky tiles
 
 ## Backlog ##
 
-- **[]** Stop enemy when first smelling stink (hurt animation).
 - **[]** Plant Berry Seed VFX
 - **[]** Spawn berries during enemy waves
 - **[]** 
