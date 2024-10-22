@@ -66,10 +66,10 @@ change the frequency (Introduces longer waves)
 - **[62]** Balance Player, Enemy, and World stats, Add restart mechanic
 - **[63]** Show current stats in shop
 - **[64]** Create AOE Effect image (instead of green tiles)
+- **[65]** Create README with instructions and info
 
 ## Open Issues ##
 
-- **[65]** Create README with instructions and info
 - **[66]** Debug Grid Tile
 - **[67]** Eat Berry SFX
 - **[68]** Wave HUD command
