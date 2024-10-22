@@ -448,7 +448,7 @@ public class Player extends GameObject {
 
             if (!foundEnemy) {
                 x += -dir;
-                tileMap[tileY][tileX+x].setStinky(true, sprayDuration);
+                tileMap[tileY][tileX+x].setStinky(true, sprayDuration, 1000f);
 
 
                 for (int row = -sprayRadius; row <= sprayRadius; row++) {
@@ -459,7 +459,8 @@ public class Player extends GameObject {
 
                         if (game.validMove(tileX+col, tileY+row)
                                 && distance <= Math.pow(sprayRadius,2)*alpha) {
-                            tileMap[tileY+row][tileX+col].setStinky(true, sprayDuration);
+                            tileMap[tileY+row][tileX+col].setStinky(true, sprayDuration
+                                    , 1000f/(float)(distance+1));
                         }
                     }
                 }

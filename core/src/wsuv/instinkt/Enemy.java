@@ -307,7 +307,8 @@ public class Enemy extends GameObject {
             }
         }
 
-        if (targetType == Tile.DistanceType.EXIT && game.validMove(tileX, tileY)
+        if ((targetType == Tile.DistanceType.EXIT || targetType == Tile.DistanceType.SPRAYED_EXIT)
+                && game.validMove(tileX, tileY)
                 && tileMap[tileY][tileX].getDistance(targetType) == 1f) {
             if (isSpawnTile(tileX, tileY+1)) dir = Direction.UP;
             if (isSpawnTile(tileX, tileY-1)) dir = Direction.DOWN;
@@ -430,7 +431,7 @@ public class Enemy extends GameObject {
 
         am.update();
 
-        if ((repelled || sprayed) && sprayedSound != null && !stats.isDead()) {
+        if ((repelled || sprayed) && sprayedSound != null && !stats.isDead() && !passedOut) {
             whimperTimer += delta;
             if (whimperTimer > WHIMPER_DURATION) {
                 switch (type) {
@@ -457,7 +458,8 @@ public class Enemy extends GameObject {
 
                     if (game.validMove(tileX+col, tileY+row)
                             && distance <= Math.pow(player.getSprayRadius(),2)*alpha) {
-                        tileMap[tileY+row][tileX+col].setStinky(true, player.getSprayDuration());
+                        tileMap[tileY+row][tileX+col].setStinky(true, player.getSprayDuration()
+                                , 1000f/(float)(distance+1));
                     }
                 }
             }
@@ -482,7 +484,8 @@ public class Enemy extends GameObject {
         }
 
         if (sprayedSound != null && game.validMove(tileX, tileY) && tileMap[tileY][tileX].isStinky()) {
-            targetType = Tile.DistanceType.EXIT;
+            if (sprayed) targetType = Tile.DistanceType.SPRAYED_EXIT;
+            else targetType = Tile.DistanceType.EXIT;
             if (!sprayed && !repelled) {
                 am.switchAnimState("HURT", "RUN");
                 frozenTimer += delta;

@@ -10,7 +10,8 @@ public class Tile {
     public enum DistanceType {
         PLAYER,
         BERRIES,
-        EXIT
+        EXIT,
+        SPRAYED_EXIT,
     }
 
     public static final float INF = 10000f;
@@ -32,6 +33,7 @@ public class Tile {
 
     private long timeStinked;
     private long stinkDuration;
+    private float stinkPower;
 
     private ArrayList<Enemy> enemies;
 
@@ -48,6 +50,7 @@ public class Tile {
         stinky = false;
         timeStinked = -1L;
         stinkDuration = 1000L;
+        stinkPower = 0;
         distances = new float[DistanceType.values().length];
         setDistance(DistanceType.PLAYER, INF);
         setDistance(DistanceType.BERRIES, INF);
@@ -67,8 +70,11 @@ public class Tile {
         stinkEffect.update();
         if (stinky && System.currentTimeMillis() > timeStinked + stinkDuration) {
             stinky = false;
+            stinkPower = 0f;
             return true;
         }
+
+        if (!stinky) stinkPower = 0f;
 
         return false;
     }
@@ -85,7 +91,7 @@ public class Tile {
         return containsObstacle;
     }
 
-    public void setStinky(boolean stinky, long duration) {
+    public void setStinky(boolean stinky, long duration, float stinkPower) {
         this.stinky = stinky;
         if (stinky) {
             timeStinked = System.currentTimeMillis();
@@ -93,10 +99,15 @@ public class Tile {
             timeStinked = -1L;
         }
         stinkDuration = duration;
+        this.stinkPower = stinkPower;
     }
 
     public boolean isStinky() {
         return stinky;
+    }
+
+    public float getStinkPower() {
+        return stinkPower;
     }
 
     public StinkEffect getStinkEffect() {
