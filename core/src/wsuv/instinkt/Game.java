@@ -65,6 +65,7 @@ public class Game extends com.badlogic.gdx.Game {
     public static final String RSC_SEED_SFX = "SFX/plant seed.mp3";
     public static final String RSC_TWIG_BLIGHT_HURT_SFX = "SFX/twig hurt.mp3";
     public static final String RSC_TWIG_BLIGHT_DEATH_SFX = "SFX/twig death.mp3";
+    public static final String RSC_EAT_SFX = "SFX/eat.mp3";
 
     public AssetManager am;  // AssetManager provides a single source for loaded resources
     public SpriteBatch batch;
@@ -157,6 +158,7 @@ public class Game extends com.badlogic.gdx.Game {
         am.load(RSC_SEED_SFX, Sound.class);
         am.load(RSC_TWIG_BLIGHT_HURT_SFX, Sound.class);
         am.load(RSC_TWIG_BLIGHT_DEATH_SFX, Sound.class);
+        am.load(RSC_EAT_SFX, Sound.class);
 
         batch = new SpriteBatch();
         setScreen(new LoadScreen(this));
