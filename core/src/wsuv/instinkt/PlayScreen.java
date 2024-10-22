@@ -25,6 +25,7 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<GameObject> debugImages;
     private Set<Tile> aoeEffectTiles;
     private Texture aoeEffectImg;
+    private Texture debugTileGridImg;
     private Integer[] berryPile;
 
     private Tile[][] tileMap;
@@ -67,7 +68,7 @@ public class PlayScreen extends ScreenAdapter {
         aoeEffectTiles = new HashSet<>();
 
         hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
-        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT);
+        debugFont = game.am.get(Game.RSC_DPCOMIC_FONT_DEBUG);
         bigFont = game.am.get(Game.RSC_DPCOMIC_FONT_BIG);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
         berryManager = new BerryManager(game, gameObjects);
@@ -77,6 +78,7 @@ public class PlayScreen extends ScreenAdapter {
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
+        debugTileGridImg = game.am.get(Game.RSC_DEBUG_TILE_GRID_IMG);
 
 
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
@@ -615,6 +617,8 @@ public class PlayScreen extends ScreenAdapter {
                     game.batch.draw(tile.getImg(), tile.getImgX(), tile.getImgY()+GUI_SPACE
                             , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                     if (showTileLocations) {
+                        game.batch.draw(debugTileGridImg, tile.getImgX(), tile.getImgY()+GUI_SPACE
+                            , TILE_SCALED_SIZE, TILE_SCALED_SIZE);
                         float dist = tile.getDistance(Tile.DistanceType.PLAYER);
                         float berryDist = tile.getDistance(Tile.DistanceType.BERRIES);
                         float exitDist = tile.getDistance(Tile.DistanceType.EXIT);
@@ -625,15 +629,18 @@ public class PlayScreen extends ScreenAdapter {
                         float clampedDist = Math.min(Math.max(dist, 0), 12);
                         float redIntensity = clampedDist / 12.0f;
 
+                        float xOff = 4f;
+                        float yOff = 2f;
+
                         debugFont.setColor(redIntensity, 0, 0, 1); // Color more red for higher values
-                        debugFont.draw(game.batch, num, tile.getImgX(),
-                                tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE);
+                        debugFont.draw(game.batch, num, tile.getImgX()+xOff,
+                                tile.getImgY() + TILE_SCALED_SIZE+GUI_SPACE - yOff);
                         debugFont.setColor(0.3f, 0.02f, 0.3f, 1);  // Reset to white
-                        debugFont.draw(game.batch, berryNum, tile.getImgX(),
-                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+                        debugFont.draw(game.batch, berryNum, tile.getImgX()+xOff,
+                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE - yOff);
                         debugFont.setColor(1, 1, 1, 1);  // Reset to white
                         debugFont.draw(game.batch, exitNum, tile.getImgX() + TILE_SCALED_SIZE/2f,
-                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE);
+                                tile.getImgY() + TILE_SCALED_SIZE/2f+GUI_SPACE - yOff);
 
                         for (Enemy e : tile.getEnemies()) {
                             game.batch.draw((Texture) game.am.get(Game.RSC_OVERLAY_IMG)
