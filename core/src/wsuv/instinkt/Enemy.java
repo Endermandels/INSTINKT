@@ -157,7 +157,7 @@ public class Enemy extends GameObject {
 
                 // Stats
                 stats = new Stats(1, 0, 0L);
-                imgSpeed = 240f;
+                imgSpeed = 220f;
                 targetType = Tile.DistanceType.BERRIES;
                 break;
             case CBR:
