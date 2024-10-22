@@ -20,6 +20,7 @@ public class Player extends GameObject {
     private Sound hurtSound;
     private Sound deathSound;
     private Sound spraySound;
+    private Sound eatSound;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -93,6 +94,7 @@ public class Player extends GameObject {
         hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
         deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
         spraySound = game.am.get(Game.RSC_SPRAY_SFX);
+        eatSound = game.am.get(Game.RSC_EAT_SFX);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -535,6 +537,7 @@ public class Player extends GameObject {
         spraysLeft = Math.min(spraysLeft+berrySprayRegen, maxSprays);
         stats.setHp(Math.min(stats.getHp()+berryHPRegen, stats.getMaxHP()));
         slowed = false;
+        eatSound.play(0.1f, 0.9f, 0f);
     }
 
     public void startCooldown() {
