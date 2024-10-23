@@ -80,7 +80,7 @@ public class PlayScreen extends ScreenAdapter {
         berriesToRemove = new ArrayList<>();
         aoeEffectTiles = new HashSet<>();
 
-        hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
+        hud = new HUD(20, 13, 10, 600, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT_DEBUG);
         bigFont = game.am.get(Game.RSC_DPCOMIC_FONT_BIG);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
@@ -225,13 +225,22 @@ public class PlayScreen extends ScreenAdapter {
             }
         });
 
-        // Berries - Set berries to specified amount
-        hud.registerAction("berries", new HUDActionCommand() {
-            static final String help = "usage: berries <amount>";
+        // Berries - Set berries to specified amount ("max" gives infinite berries; "grow" grows bushes)
+        hud.registerAction("ber", new HUDActionCommand() {
+            static final String help = "usage: ber <option>";
 
             @Override
             public String execute(String[] cmd) {
                 try {
+                    if (cmd[1].equalsIgnoreCase("max")) {
+                        berryManager.setInfBerries(true);
+                        return "Set player's berry count to infinite";
+                    }
+                    if (cmd[1].equalsIgnoreCase("grow")) {
+                        if (state != SubState.COOLDOWN) skipToCooldownPhase = true;
+                        berryManager.startOfCooldown();
+                        return "Grew bushes";
+                    }
                     int berries = Integer.parseInt(cmd[1]);
                     berryManager.setBerriesCollected(berries);
                     return "Set player's berry count to " + berryManager.getBerriesCollected();
@@ -241,7 +250,7 @@ public class PlayScreen extends ScreenAdapter {
             }
 
             public String help(String[] cmd) {
-                return "set the player's berry count to specified amount";
+                return "Set berry count (\"max\" = infinite berries; \"grow\" skips to cooldown and grows bushes)";
             }
         });
 

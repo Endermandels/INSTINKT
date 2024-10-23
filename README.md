@@ -29,7 +29,7 @@
     next:       Skip the current enemy wave and go to the next cooldown phase
     wave:       Set the current wave to specified number (Min=1, Max=WAVES_GOAL-1)
     form:       Set next enemy formation to specified difficulty and number
-    berries:    Set the player's berry count to specified amount
+    ber:        Set berry count ("max" = infinite berries; "grow" skips to cooldown and grows bushes)
     tl:         Show the tile location of all moving entities.
                 Also shows the Dijkstra distances of each tile.
                 The top left number is the distance to the player 
