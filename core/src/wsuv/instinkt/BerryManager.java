@@ -24,7 +24,7 @@ public class BerryManager {
     private ArrayList<Berry> berries;
 
     private Sound plantSeed;
-
+    private Sound collectBerrySound;
 
     public BerryManager(Game game, ArrayList<GameObject> gameObjects, Integer[] berryPileLocation) {
         this.game = game;
@@ -35,6 +35,7 @@ public class BerryManager {
 
         bushes = new ArrayList<>();
         plantSeed = game.am.get(Game.RSC_SEED_SFX);
+        collectBerrySound = game.am.get(Game.RSC_SELECT_SFX);
 
         ArrayList<Integer[]> blueBushSpriteLocation = new ArrayList<>(Arrays.asList(
                 new Integer[]{0,2},
@@ -89,21 +90,36 @@ public class BerryManager {
     }
 
     public void startOfCooldown() {
+        float delay = 0f;
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
             else if (bb.state == BerryBush.State.GROWN) {
                 int x = BUSH_LOWER_BOUND + bushBound/START_BUSH_BOUND;
-                berriesCollected += x+game.random.nextInt(bushBound-x);
+                int berriesToCollect = x+game.random.nextInt(bushBound-x);
+                for (int i = 0; i < berriesToCollect; i++) {
+                    berries.add(new Berry(game, bb.getImgX(), bb.getImgY()+PlayScreen.GUI_SPACE
+                        , berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
+                        , berryPileLocation[1]*PlayScreen.TILE_SCALED_SIZE + PlayScreen.GUI_SPACE
+                        , delay));
+                    delay += 1f/60f;
+                }
             }
         }
     }
 
     public void berryArrived(Berry berry) {
-        for (BerryBush bb : bushes) {
-            if (bb.imgX == berry.getTargetX() && bb.imgY == berry.getTargetY() - PlayScreen.GUI_SPACE) {
-                bb.grow();
-                plantSeed.play(0.05f);
-                berries.remove(berry);
+        if (berry.getTargetX() == berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
+                && berry.getTargetY() == berryPileLocation[1]*PlayScreen.TILE_SCALED_SIZE + PlayScreen.GUI_SPACE) {
+            berriesCollected += 1;
+            berries.remove(berry);
+            collectBerrySound.play(0.01f, 1.5f, 0f);
+        } else {
+            for (BerryBush bb : bushes) {
+                if (bb.imgX == berry.getTargetX() && bb.imgY == berry.getTargetY() - PlayScreen.GUI_SPACE) {
+                    bb.grow();
+                    plantSeed.play(0.05f);
+                    berries.remove(berry);
+                }
             }
         }
     }

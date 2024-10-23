@@ -464,6 +464,7 @@ public class PlayScreen extends ScreenAdapter {
     }
 
     public void update(float delta) {
+        if (delta > 1f) delta = 1f/60f;
         if (!paused || doStep) {
             if (state == SubState.ENEMY_WAVE) {
                 ////////////////////////////////// ENEMY WAVE //////////////////////////////////
@@ -589,7 +590,7 @@ public class PlayScreen extends ScreenAdapter {
                 }
 
                 for (Berry b : berryManager.getBerries()) {
-                    if (b.update()) {
+                    if (b.update(delta)) {
                         berriesToRemove.add(b);
                     }
                 }
