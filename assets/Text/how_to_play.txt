@@ -1,0 +1,13 @@
+Objective:
+    Survive 10 Waves
+
+Controls:
+    Movement:                                          WASD/Arrow keys
+    Spray / Start Wave / Select Upgrade:        Space
+    Plant Berry / Eat Berry / Select Upgrade:    E
+    Toggle Upgrade Shop:                             Q
+
+Tips:
+    Enemy waves are exhausting; eat a berry when low on health or spray
+    Squirrels go NUTS for berries; kill them to retrieve stolen berries
+    Skunks love snacking; upgrade your skunk between waves

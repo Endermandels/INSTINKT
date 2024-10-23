@@ -49,7 +49,7 @@ public class LoadScreen extends ScreenAdapter {
             font = game.am.get(Game.RSC_DPCOMIC_FONT);
             font_big = game.am.get(Game.RSC_DPCOMIC_FONT_BIG);
         } else if (game.am.isFinished() && (credits_offset >= credits.length || Gdx.input.isKeyPressed(Input.Keys.SPACE)) ) {
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new HowToPlayScreen(game));
         } else if (font != null) {
             // once the font is loaded, start showing credits.
             // we'll assume a fairly smooth framerate at just start scrolling
