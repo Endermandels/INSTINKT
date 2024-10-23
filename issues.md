@@ -77,14 +77,14 @@ change the frequency (Introduces longer waves)
 - **[73]** Fade out AOE effect
 - **[74]** Walking SFX
 - **[75]** Set next enemy formation HUD command
+- **[76]** Plant and gather berry VFX
 
 ## Open Issues ##
 
-- **[76]** Plant and gather berry VFX
+- **[77]** How to Play Screen
 
 ## Backlog ##
 
-- **[]** How to Play Screen
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
