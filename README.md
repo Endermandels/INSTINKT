@@ -1,7 +1,5 @@
 # INSTINKT
 
-## How to Play
-
 ## Controls
 
 ### Enemy Wave/Cooldown
