@@ -76,14 +76,15 @@ change the frequency (Introduces longer waves)
 - **[72]** Enemies run away from stinky tiles
 - **[73]** Fade out AOE effect
 - **[74]** Walking SFX
+- **[75]** Set next enemy formation HUD command
 
 ## Open Issues ##
 
-- **[75]** Set next enemy formation HUD command
+- **[76]** Plant and gather berry VFX
 
 ## Backlog ##
 
-- **[]** Plant Berry Seed VFX
+- **[]** How to Play Screen
 - **[]** Spawn berries during enemy waves
 - **[]** 
 - **[]** 
@@ -91,7 +92,6 @@ change the frequency (Introduces longer waves)
 (Makes waves harder to defeat while on screen, fragile, stays back, throws projectiles)
 - **[]** 
 - **[]** 
-- **[]** How to Play Screen
 - **[]** Make shop upgrades more interesting
 - **[]** 
 - **[]** 
