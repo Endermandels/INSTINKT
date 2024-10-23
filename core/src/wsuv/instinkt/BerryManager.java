@@ -16,6 +16,8 @@ public class BerryManager {
     private final int START_BERRY_COUNT = 6;
     private int berriesCollected;
 
+    private boolean infBerries;
+
     private final int START_BUSH_BOUND = 5;
     private final int BUSH_LOWER_BOUND = 3;
     private int bushBound;
@@ -32,6 +34,7 @@ public class BerryManager {
 
         berriesCollected = START_BERRY_COUNT;
         bushBound = START_BUSH_BOUND;
+        infBerries = false;
 
         bushes = new ArrayList<>();
         plantSeed = game.am.get(Game.RSC_SEED_SFX);
@@ -75,10 +78,10 @@ public class BerryManager {
     }
 
     public void plantNewBerryBush() {
-        if (berriesCollected < BUSH_PRICE) return;
+        if (berriesCollected < BUSH_PRICE && !infBerries) return;
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.UNPLANTED && !bb.expectingBerry) {
-                berriesCollected-=BUSH_PRICE;
+                if (!infBerries) berriesCollected-=BUSH_PRICE;
                 bb.expectingBerry = true;
                 berries.add(new Berry(game
                         , berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
@@ -91,6 +94,7 @@ public class BerryManager {
 
     public void startOfCooldown() {
         float delay = 0f;
+        float offset = 0f;
         for (BerryBush bb : bushes) {
             if (bb.state == BerryBush.State.PLANTED) bb.grow();
             else if (bb.state == BerryBush.State.GROWN) {
@@ -100,9 +104,11 @@ public class BerryManager {
                     berries.add(new Berry(game, bb.getImgX(), bb.getImgY()+PlayScreen.GUI_SPACE
                         , berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
                         , berryPileLocation[1]*PlayScreen.TILE_SCALED_SIZE + PlayScreen.GUI_SPACE
-                        , delay));
-                    delay += 1f/60f;
+                        , delay+offset));
+                    delay += 3f/60f;
                 }
+                delay = 0f;
+                offset += 3f/60f;
             }
         }
     }
@@ -110,7 +116,7 @@ public class BerryManager {
     public void berryArrived(Berry berry) {
         if (berry.getTargetX() == berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
                 && berry.getTargetY() == berryPileLocation[1]*PlayScreen.TILE_SCALED_SIZE + PlayScreen.GUI_SPACE) {
-            berriesCollected += 1;
+            if (!infBerries) berriesCollected += 1;
             berries.remove(berry);
             collectBerrySound.play(0.01f, 1.5f, 0f);
         } else {
@@ -122,6 +128,11 @@ public class BerryManager {
                 }
             }
         }
+    }
+
+    public void setInfBerries(boolean infBerries) {
+        this.infBerries = infBerries;
+        if (infBerries) berriesCollected = (int)Tile.INF - 1;
     }
 
     public void setBushBound(int bushBound) {
@@ -141,13 +152,15 @@ public class BerryManager {
     }
 
     public int setBerriesCollected(int berriesCollected) {
-        this.berriesCollected = Math.max(0,berriesCollected);
+        if (infBerries) this.berriesCollected = (int) Tile.INF - 1;
+        else this.berriesCollected = Math.max(0,berriesCollected);
         return this.berriesCollected;
     }
 
     public void reset() {
         berriesCollected = START_BERRY_COUNT;
         bushBound = START_BUSH_BOUND;
+        infBerries = false;
         boolean first = true;
         for (BerryBush bb : bushes) {
             if (first) {

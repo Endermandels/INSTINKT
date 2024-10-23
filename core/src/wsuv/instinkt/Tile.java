@@ -14,7 +14,7 @@ public class Tile {
         SPRAYED_EXIT,
     }
 
-    public static final float INF = 10000f;
+    public static final float INF = 999999999f;
 
     private TextureRegion img;
     private StinkEffect stinkEffect;

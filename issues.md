@@ -78,10 +78,11 @@ change the frequency (Introduces longer waves)
 - **[74]** Walking SFX
 - **[75]** Set next enemy formation HUD command
 - **[76]** Plant and gather berry VFX
+- **[77]** Berries VFX update and HUD command: berries max
 
 ## Open Issues ##
 
-- **[77]** How to Play Screen
+- **[78]** How to Play Screen
 
 ## Backlog ##
 
