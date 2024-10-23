@@ -65,6 +65,10 @@ public class PlayScreen extends ScreenAdapter {
     private final float UPDATE_STINKY_TILES_DURATION = 10f/60f;
     private float updateStinkyTilesTimer;
 
+    // Manually change enemy wave difficulty and formation
+    private int diffIdx;
+    private int formIdx;
+
     public PlayScreen(Game game) {
         this.game = game;
 
@@ -115,6 +119,9 @@ public class PlayScreen extends ScreenAdapter {
         startEnemyWaveTimer = 0f;
 
         updateStinkyTilesTimer = 0f;
+
+        diffIdx = -1;
+        formIdx = -1;
 
         // the HUD will show FPS always, by default.  Here's how
         // to use the HUD interface to silence it (and other HUD Data)
@@ -232,6 +239,32 @@ public class PlayScreen extends ScreenAdapter {
 
             public String help(String[] cmd) {
                 return "set the player's berry count to specified amount";
+            }
+        });
+
+        // form - Set next enemy formation to specified difficulty and number
+        hud.registerAction("form", new HUDActionCommand() {
+            static final String help = "usage: form <difficulty> <number>";
+
+            @Override
+            public String execute(String[] cmd) {
+                try {
+                    int d = Math.min(2, Math.max(0, Integer.parseInt(cmd[1])));
+                    ArrayList<Map<Integer, EnemyFormation>> formations = enemySpawner.getFormations();
+                    int f = Math.min(formations.get(d).size()-1
+                            , Math.max(0, Integer.parseInt(cmd[2])));
+
+                    diffIdx = d;
+                    formIdx = f;
+
+                    return "Set difficulty to " + diffIdx + "; Set formation to " + formIdx;
+                } catch (Exception e) {
+                    return help;
+                }
+            }
+
+            public String help(String[] cmd) {
+                return "set next enemy formation to specified difficulty and number";
             }
         });
 
@@ -403,7 +436,10 @@ public class PlayScreen extends ScreenAdapter {
 
         fillAllDijkstraValues();
         gameObjects.add(player);
-        enemySpawner.setFormation(0);
+
+        Map<Integer, EnemyFormation> formationMap = enemySpawner.getFormations().get(0);
+        int formation = game.random.nextInt(formationMap.size());
+        enemySpawner.setFormation(0, formation);
 
         wave = 1;
         skipToCooldownPhase = false;
@@ -571,15 +607,25 @@ public class PlayScreen extends ScreenAdapter {
                             skipToCooldownPhase = false;
                             gui.startEnemyWave();
                             fillAllDijkstraValues();
-                            if (wave < medThresh) {
+                            if (formIdx >= 0 && diffIdx >= 0) {
+                                enemySpawner.setFormation(diffIdx, formIdx);
+                                formIdx = -1;
+                                diffIdx = -1;
+                            } else if (wave < medThresh) {
                                 // EASY
-                                enemySpawner.setFormation(0);
+                                Map<Integer, EnemyFormation> formationMap = enemySpawner.getFormations().get(0);
+                                int formation = game.random.nextInt(formationMap.size());
+                                enemySpawner.setFormation(0, formation);
                             } else if (wave < hardThresh) {
                                 // MEDIUM
-                                enemySpawner.setFormation(1);
+                                Map<Integer, EnemyFormation> formationMap = enemySpawner.getFormations().get(1);
+                                int formation = game.random.nextInt(formationMap.size());
+                                enemySpawner.setFormation(1, formation);
                             } else {
                                 // HARD
-                                enemySpawner.setFormation(2);
+                                Map<Integer, EnemyFormation> formationMap = enemySpawner.getFormations().get(2);
+                                int formation = game.random.nextInt(formationMap.size());
+                                enemySpawner.setFormation(2, formation);
                             }
                             game.cooldownMusic.stop();
                             game.battleMusic.play();

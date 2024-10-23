@@ -167,10 +167,9 @@ public class EnemySpawner {
         }
     }
 
-    public void setFormation(int difficulty) {
+    public void setFormation(int difficulty, int formation) {
+        this.formation = formations.get(difficulty).get(formation).reset();
         lastSpawn = System.currentTimeMillis();
-        Map<Integer, EnemyFormation> formationMap = formations.get(difficulty);
-        formation = formationMap.get(game.random.nextInt(formationMap.size())).reset();
         noMoreEnemiesToSpawn = false;
     }
 
@@ -181,37 +180,9 @@ public class EnemySpawner {
     public boolean areNoMoreEnemiesToSpawn() {
         return noMoreEnemiesToSpawn;
     }
-}
 
-class EnemyFrequencyTuple {
-    public Enemy enemy;
-    public int frequency;
-    public EnemyFrequencyTuple(Enemy enemy, int frequency) {
-        this.enemy = enemy;
-        this.frequency = frequency;
+    public ArrayList<Map<Integer, EnemyFormation>> getFormations() {
+        return formations;
     }
 }
 
-class EnemyFormation {
-
-    private ArrayList<EnemyFrequencyTuple> enemiesToSpawn;
-    private int idx;
-
-    public EnemyFormation(ArrayList<EnemyFrequencyTuple> enemiesToSpawn) {
-        this.enemiesToSpawn = enemiesToSpawn;
-        this.idx = 0;
-    }
-
-    public Enemy getNextEnemy() {
-        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx++).enemy.clone() : null;
-    }
-
-    public long getFrequency() {
-        return idx < enemiesToSpawn.size() ? enemiesToSpawn.get(idx).frequency : -1;
-    }
-
-    public EnemyFormation reset() {
-        idx = 0;
-        return this;
-    }
-}
