@@ -49,7 +49,7 @@ public class HowToPlayScreen extends ScreenAdapter {
             // then we'll switch to the playing state.
             game.batch.begin();
             float y = 600f;
-            float x = Gdx.graphics.getWidth() / 2f - 400f;
+            float x = Gdx.graphics.getWidth() / 2f - 420f;
             float lineHeight = font.getLineHeight() + 6f;
             font_big.draw(game.batch, TITLE, x, y + 2f * lineHeight + 80f);
 
