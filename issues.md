@@ -78,10 +78,10 @@ change the frequency (Introduces longer waves)
 
 ## Open Issues ##
 
+- **[74]** Walking SFX
 
 ## Backlog ##
 
-- **[]** Walking SFX
 - **[]** Plant Berry Seed VFX
 - **[]** Spawn berries during enemy waves
 - **[]** 
