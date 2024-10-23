@@ -55,8 +55,6 @@ public class StinkEffect {
         float k = 1f; // Higher value, faster fade
         transparency = (float) Math.exp(-k * normalizedTime);
 
-        System.out.println(transparency);
-
         batch.setColor(c.r, c.g, c.b, transparency);
 
         batch.draw(img,x - 20f,y - 20f, width, height);
