@@ -169,6 +169,7 @@ public class BerryManager {
             }
             bb.resetState();
         }
+        berries.clear();
     }
 }
 

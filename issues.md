@@ -80,6 +80,7 @@ change the frequency (Introduces longer waves)
 - **[76]** Plant and gather berry VFX
 - **[77]** Berries VFX update and HUD command: berries max
 - **[78]** How to Play Screen
+- **[79]** Fix Berries reset new game
 
 ## Open Issues ##
 
