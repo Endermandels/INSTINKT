@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class BerryManager {
 
     private Game game;
+    private Integer[] berryPileLocation;
 
     private final int BUSH_PRICE = 2;
 
@@ -20,11 +21,14 @@ public class BerryManager {
     private int bushBound;
 
     private ArrayList<BerryBush> bushes;
+    private ArrayList<Berry> berries;
 
     private Sound plantSeed;
 
-    public BerryManager(Game game, ArrayList<GameObject> gameObjects) {
+
+    public BerryManager(Game game, ArrayList<GameObject> gameObjects, Integer[] berryPileLocation) {
         this.game = game;
+        this.berryPileLocation = berryPileLocation;
 
         berriesCollected = START_BERRY_COUNT;
         bushBound = START_BUSH_BOUND;
@@ -64,15 +68,21 @@ public class BerryManager {
         gameObjects.add(bushes.get(8));
         bushes.add(new BerryBush(game, PlayScreen.TILE_ROWS-2, 4, pinkBushSpriteLocation, Game.RSC_SS_BERRIES_IMG, 0));
         gameObjects.add(bushes.get(9));
+
+
+        berries = new ArrayList<>();
     }
 
     public void plantNewBerryBush() {
         if (berriesCollected < BUSH_PRICE) return;
         for (BerryBush bb : bushes) {
-            if (bb.state == BerryBush.State.UNPLANTED) {
-                bb.grow();
+            if (bb.state == BerryBush.State.UNPLANTED && !bb.expectingBerry) {
                 berriesCollected-=BUSH_PRICE;
-                plantSeed.play(0.05f);
+                bb.expectingBerry = true;
+                berries.add(new Berry(game
+                        , berryPileLocation[0]*PlayScreen.TILE_SCALED_SIZE
+                        , berryPileLocation[1]*PlayScreen.TILE_SCALED_SIZE + PlayScreen.GUI_SPACE
+                        , bb.getImgX(), bb.getImgY() + PlayScreen.GUI_SPACE));
                 break;
             }
         }
@@ -88,12 +98,26 @@ public class BerryManager {
         }
     }
 
+    public void berryArrived(Berry berry) {
+        for (BerryBush bb : bushes) {
+            if (bb.imgX == berry.getTargetX() && bb.imgY == berry.getTargetY() - PlayScreen.GUI_SPACE) {
+                bb.grow();
+                plantSeed.play(0.05f);
+                berries.remove(berry);
+            }
+        }
+    }
+
     public void setBushBound(int bushBound) {
         this.bushBound = bushBound;
     }
 
     public int getBushBound() {
         return bushBound;
+    }
+
+    public ArrayList<Berry> getBerries() {
+        return berries;
     }
 
     public int getBerriesCollected() {
@@ -117,7 +141,6 @@ public class BerryManager {
             bb.resetState();
         }
     }
-
 }
 
 class BerryBush extends GameObject {
@@ -127,6 +150,7 @@ class BerryBush extends GameObject {
     private TextureRegion bushTexture;
 
     public State state;
+    public boolean expectingBerry;
 
     public BerryBush(Game game, int row, int col, ArrayList<Integer[]> ssTiles, String fileName, int priority) {
         super(game, row, col, ssTiles, fileName, priority);
@@ -141,6 +165,7 @@ class BerryBush extends GameObject {
         seedlingTexture = GameObject.getImgRegion(game, seedlingSpriteLocation, Game.RSC_SS_BERRIES_IMG);
 
         state = State.UNPLANTED;
+        expectingBerry = false;
     }
 
     public void grow() {
@@ -150,6 +175,7 @@ class BerryBush extends GameObject {
 
     public void resetState() {
         state = State.UNPLANTED;
+        expectingBerry = false;
     }
 
     @Override

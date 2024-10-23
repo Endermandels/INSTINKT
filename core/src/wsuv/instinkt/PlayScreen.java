@@ -22,6 +22,7 @@ public class PlayScreen extends ScreenAdapter {
     private ArrayList<GameObject> gameObjects;
     private ArrayList<Enemy> enemies;
     private ArrayList<Enemy> enemiesToRemove;
+    private ArrayList<Berry> berriesToRemove;
     private ArrayList<GameObject> debugImages;
     private Set<Tile> aoeEffectTiles;
     private Texture aoeEffectImg;
@@ -76,16 +77,14 @@ public class PlayScreen extends ScreenAdapter {
         debugImages = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesToRemove = new ArrayList<>();
+        berriesToRemove = new ArrayList<>();
         aoeEffectTiles = new HashSet<>();
 
         hud = new HUD(20, 13, 10, 500, game.am.get(Game.RSC_DPCOMIC_FONT_BLACK));
         debugFont = game.am.get(Game.RSC_DPCOMIC_FONT_DEBUG);
         bigFont = game.am.get(Game.RSC_DPCOMIC_FONT_BIG);
         tileMap = new Tile[TILE_ROWS][TILE_COLS];
-        berryManager = new BerryManager(game, gameObjects);
         player = new Player(game,6,10, gameObjects);
-        gui = new GUI(game, player, berryManager, this);
-        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player, berryManager);
 
         gameObjects.add(player);
         aoeEffectImg = game.am.get(Game.RSC_AOE_EFFECT_IMG);
@@ -95,6 +94,10 @@ public class PlayScreen extends ScreenAdapter {
         AssetsSpawner assetsSpawner = new AssetsSpawner(game, tileMap, gameObjects);
         ArrayList<Integer[]> importantLocations = assetsSpawner.spawnAllAssets();
         berryPile = importantLocations.get(0);
+
+        berryManager = new BerryManager(game, gameObjects, berryPile);
+        gui = new GUI(game, player, berryManager, this);
+        enemySpawner = new EnemySpawner(game, enemies, gameObjects, player, berryManager);
 
         fillAllDijkstraValues();
 
@@ -585,6 +588,16 @@ public class PlayScreen extends ScreenAdapter {
                     }
                 }
 
+                for (Berry b : berryManager.getBerries()) {
+                    if (b.update()) {
+                        berriesToRemove.add(b);
+                    }
+                }
+                for (Berry b : berriesToRemove) {
+                    berryManager.berryArrived(b);
+                }
+                berriesToRemove.clear();
+
                 if (skipToCooldownPhase) {
                     if (++wave >= WAVES_GOAL) {
                         game.cooldownMusic.stop();
@@ -812,12 +825,17 @@ public class PlayScreen extends ScreenAdapter {
                     }
                 }
             }
+
             for (GameObject d : debugImages) {
                 if (d instanceof Enemy) {
                     Enemy e = (Enemy) d;
                     debugFont.draw(game.batch, "HP: " + e.getStats().getHp(),
                             e.getImgX(), e.getImgY() + (float) TILE_SCALED_SIZE * 3/2+GUI_SPACE);
                 }
+            }
+
+            for (Berry b : berryManager.getBerries()) {
+                b.draw(game.batch);
             }
 
             if (showTileLocations) {
