@@ -64,6 +64,7 @@ public class Enemy extends GameObject {
     private Sound hurtSound;
     private Sound deathSound;
     private Sound sprayedSound;
+    private Sound stepSound;
 
     private float imgX;
     private float imgY;
@@ -106,6 +107,11 @@ public class Enemy extends GameObject {
     private final float FROZEN_DURATION = 0.5f;
     private float frozenTimer;
 
+    private float stepTimerDuration;
+    private float stepTimer;
+    private float stepSoundVolume;
+    private float stepSoundPitch;
+
     public Enemy(Game game, int tileX, int tileY, Direction dir, Type type,
                  ArrayList<Integer[]> enemySpawnLocations, Player player, BerryManager berryManager) {
         super(null, 0, 0, 20);
@@ -118,9 +124,15 @@ public class Enemy extends GameObject {
         hurtSound = null;
         deathSound = null;
         sprayedSound = null;
+        stepSound = null;
 
         whimperTimer = 0f;
         frozenTimer = 0f;
+
+        stepTimer = 0f;
+        stepTimerDuration = 0.35f;
+        stepSoundVolume = 0.02f;
+        stepSoundPitch = 1.5f;
 
         switch (type) {
             case FOX:
@@ -142,6 +154,7 @@ public class Enemy extends GameObject {
                 hurtSound = game.am.get(Game.RSC_SQUIRREL_NOISE_SFX);
                 deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
                 sprayedSound = game.am.get(Game.RSC_SQUIRREL_NOISE_3_SFX);
+                stepSound = game.am.get(Game.RSC_SMALL_STEP_SFX);
 
                 // Stats
                 stats = new Stats(2, 2, 800L);
@@ -166,6 +179,7 @@ public class Enemy extends GameObject {
                 // Sounds
                 deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
                 sprayedSound = game.am.get(Game.RSC_SQUIRREL_NOISE_3_SFX);
+                stepSound = game.am.get(Game.RSC_SMALL_STEP_SFX);
 
                 // Stats
                 stats = new Stats(1, 0, 0L);
@@ -188,11 +202,15 @@ public class Enemy extends GameObject {
                 // Sounds
                 hurtSound = game.am.get(Game.RSC_SNAKE_NOISE_SFX);
                 deathSound = game.am.get(Game.RSC_SNAKE_NOISE_2_SFX);
+                stepSound = game.am.get(Game.RSC_SNAKE_NOISE_2_SFX);
 
                 // Stats
                 stats = new Stats(1, 1, 800L);
                 imgSpeed = 100f;
                 targetType = Tile.DistanceType.PLAYER;
+                stepTimerDuration = 2.3f;
+                stepSoundVolume = 0.1f;
+                stepSoundPitch = 1.5f;
                 break;
             case TWG:
                 am = new AnimationManager(game.am.get(Game.RSC_SS_TWIG_BLIGHT_IMG)
@@ -210,11 +228,14 @@ public class Enemy extends GameObject {
                 // Sounds
                 hurtSound = game.am.get(Game.RSC_TWIG_BLIGHT_HURT_SFX);
                 deathSound = game.am.get(Game.RSC_TWIG_BLIGHT_DEATH_SFX);
+                stepSound = game.am.get(Game.RSC_LARGE_STEP_SFX);
 
                 // Stats
                 stats = new Stats(10, 6, 1000L);
                 imgSpeed = 80f;
                 targetType = Tile.DistanceType.PLAYER;
+                stepTimerDuration = 0.7f;
+                stepSoundVolume = 0.2f;
                 this.setPriority(2);
                 break;
         }
@@ -319,6 +340,13 @@ public class Enemy extends GameObject {
             if (isSpawnTile(tileX-1, tileY)) dir = Direction.LEFT;
             if (isSpawnTile(tileX+1, tileY)) dir = Direction.RIGHT;
         }
+
+        if (stepSound != null && stepTimer > stepTimerDuration) {
+            stepTimer = 0f - stepTimerDuration * game.random.nextFloat() / 3f;
+            stepSound.play(stepSoundVolume, stepSoundPitch, 0f);
+        }
+
+        stepTimer += time;
 
         if (dir != null) {
             if (!am.getCurrentAnimState().equals("HURT")) {

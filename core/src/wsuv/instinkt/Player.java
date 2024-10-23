@@ -21,6 +21,7 @@ public class Player extends GameObject {
     private Sound deathSound;
     private Sound spraySound;
     private Sound eatSound;
+    private Sound stepSound;
 
     // Track the position of the player's image separately from tile coordinates
     private float imgX;
@@ -73,6 +74,9 @@ public class Player extends GameObject {
     private long slowedDuration;
     private float slowedAmount;
 
+    private final float STEP_SOUND_DURATION = 0.3f;
+    private float stepTimer;
+
     public Player(Game game, int tileX, int tileY, ArrayList<GameObject> gameObjects) {
         super(null, tileX * PlayScreen.TILE_SCALED_SIZE
                 , tileY * PlayScreen.TILE_SCALED_SIZE, 10);
@@ -95,6 +99,7 @@ public class Player extends GameObject {
         deathSound = game.am.get(Game.RSC_SQUIRREL_NOISE_2_SFX);
         spraySound = game.am.get(Game.RSC_SPRAY_SFX);
         eatSound = game.am.get(Game.RSC_EAT_SFX);
+        stepSound = game.am.get(Game.RSC_SMALL_STEP_SFX);
 
         imgX = tileX * PlayScreen.TILE_SCALED_SIZE;
         imgY = tileY * PlayScreen.TILE_SCALED_SIZE;
@@ -148,6 +153,8 @@ public class Player extends GameObject {
         this.tileX = tileX;
         this.tileY = tileY;
         targetTile = null;
+
+        stepTimer = STEP_SOUND_DURATION;
     }
 
     /**
@@ -166,7 +173,14 @@ public class Player extends GameObject {
             rightInput = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
             upInput = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
             downInput = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
+            if (leftInput || rightInput || upInput || downInput) {
+                if (stepTimer > STEP_SOUND_DURATION) {
+                    stepSound.play(0.1f, 1.5f, 0f);
+                    stepTimer = 0f;
+                }
+            }
         }
+        stepTimer += time;
 
         // TODO: Any movement requests 1 second old are stale and should be set to -1L
 
@@ -182,6 +196,7 @@ public class Player extends GameObject {
         if (downInput && pressedButtons.get(Direction.DOWN) < 0) {
             pressedButtons.put(Direction.DOWN, System.currentTimeMillis());
         }
+
 
 
         if (movingHorizontal) {

@@ -75,10 +75,11 @@ change the frequency (Introduces longer waves)
 - **[71]** Stop enemy when first smelling stink (hurt animation)
 - **[72]** Enemies run away from stinky tiles
 - **[73]** Fade out AOE effect
+- **[74]** Walking SFX
 
 ## Open Issues ##
 
-- **[74]** Walking SFX
+- **[75]** Set next enemy formation HUD command
 
 ## Backlog ##
 
