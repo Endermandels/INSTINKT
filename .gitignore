@@ -1,6 +1,8 @@
 # From Lib GDX...
 ## Java
 
+assets
+
 *.class
 *.war
 *.ear
